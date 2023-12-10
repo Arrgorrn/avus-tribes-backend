@@ -15,6 +15,7 @@ Review the following materials for this project:
 - [Frontend](#frontend)
 
 ## Git(hub) Collaboration
+
 - branching & pull requests (short overview) https://www.youtube.com/watch?v=oFYyTZwMyAg
 - pull requests (short overview) https://www.youtube.com/watch?v=jhtbhSpV5YA&t=66s
 - branching & merging (detailed) https://www.youtube.com/watch?v=BF2OHMM86Ik
@@ -40,7 +41,8 @@ Review the following materials for this project:
 
 ## Java 2FA
 
-- 2FA with Java and Google Authenticator: https://medium.com/@ihorsokolyk/two-factor-authentication-with-java-and-google-authenticator-9d7ea15ffee6
+- 2FA with Java and Google
+  Authenticator: https://medium.com/@ihorsokolyk/two-factor-authentication-with-java-and-google-authenticator-9d7ea15ffee6
 - gradle package: https://mvnrepository.com/artifact/dev.samstevens.totp/totp
 
 ## Email
@@ -54,6 +56,7 @@ Review the following materials for this project:
 - readme: https://github.com/cdimascio/dotenv-java
 
 .env
+
 ```bash
 DB_URL=jdbc:mysql://localhost/test_db?serverTimezone=UTC
 DB_USERNAME=test_db_user
@@ -61,6 +64,7 @@ DB_PASSWORD=P4$$w0Rd
 ```
 
 application.properties
+
 ```bash
 spring.config.import=optional:file:.env.sample[.properties]
 spring.datasource.url=${DB_URL}
@@ -70,11 +74,13 @@ spring.datasource.password=${DB_PASSWORD}
 
 ## ControllerAdvice
 
-- Error handling for REST with Spring: https://www.baeldung.com/exception-handling-for-rest-with-spring
+- Error handling for REST with
+  Spring: https://www.baeldung.com/exception-handling-for-rest-with-spring
 
 ## REST
 
 Retrofit
+
 - overview: https://www.youtube.com/watch?v=kLZri-UFEN0
 - Retrofit + Spring + Intellij: https://www.youtube.com/watch?v=usALVozMLXE
 

@@ -24,7 +24,6 @@ public class World {
         this.name = name;
     }
 
-
     public World() {
         name = generatorOfName();
     }

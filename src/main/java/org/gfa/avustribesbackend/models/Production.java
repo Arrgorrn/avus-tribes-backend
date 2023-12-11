@@ -57,28 +57,28 @@ public class Production {
         this.id = id;
     }
 
-    public Long getKingdomId() {
-        return kingdomId;
+    public Kingdom getKingdom() {
+        return kingdom;
     }
 
-    public void setKingdomId(Long kingdomId) {
-        this.kingdomId = kingdomId;
+    public void setKingdom(Kingdom kingdom) {
+        this.kingdom = kingdom;
     }
 
-    public Long getBuildingId() {
-        return buildingId;
+    public Building getBuilding() {
+        return building;
     }
 
-    public void setBuildingId(Long buildingId) {
-        this.buildingId = buildingId;
+    public void setBuilding(Building building) {
+        this.building = building;
     }
 
-    public Long getResourceId() {
-        return resourceId;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setResourceId(Long resourceId) {
-        this.resourceId = resourceId;
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
     public int getAmount() {

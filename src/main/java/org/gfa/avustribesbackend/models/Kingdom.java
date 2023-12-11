@@ -1,4 +1,5 @@
 package org.gfa.avustribesbackend.models;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -22,19 +23,24 @@ public class Kingdom {
     @Column(name = "coordinate_y")
     private Double coordinateY;
 
-    // Constructors, getters, setters, and other methods
+    @ManyToOne
+    @JoinColumn(name = "world_id", nullable = false)
+    private World world;
 
-    // Default constructor
+    @OneToMany(mappedBy = "kingdom")
+    private List<Production> productions;
+
+
     public Kingdom() {
     }
 
-    // Parameterized constructor
     public Kingdom(Long worldId, String name, Double coordinateX, Double coordinateY) {
         this.worldId = worldId;
         this.name = name;
         this.coordinateX = coordinateX;
         this.coordinateY = coordinateY;
     }
+
 
     // Getters and setters
 

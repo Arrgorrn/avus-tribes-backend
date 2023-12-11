@@ -11,14 +11,17 @@ public class Production {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "kingdom_id", nullable = false)
-    private Long kingdomId;
+    @ManyToOne
+    @JoinColumn(name = "kingdom_id", nullable = false)
+    private Kingdom kingdom;
 
-    @Column(name = "building_id", nullable = false)
-    private Long buildingId;
+    @ManyToOne
+    @JoinColumn(name = "building_id", nullable = false)
+    private Building building;
 
-    @Column(name = "resource_id", nullable = false)
-    private Long resourceId;
+    @OneToOne
+    @JoinColumn(name = "resource_id", nullable = false)
+    private Resource resource;
 
     @Column(nullable = false)
     private int amount;
@@ -35,11 +38,11 @@ public class Production {
     public Production() {
     }
 
-    public Production(Long kingdomId, Long buildingId, Long resourceId, int amount,
+    public Production(Kingdom kingdom, Building building, Resource resource, int amount,
                       boolean collected, LocalDateTime startedAt, LocalDateTime completedAt) {
-        this.kingdomId = kingdomId;
-        this.buildingId = buildingId;
-        this.resourceId = resourceId;
+        this.kingdom = kingdom;
+        this.building = building;
+        this.resource = resource;
         this.amount = amount;
         this.collected = collected;
         this.startedAt = startedAt;

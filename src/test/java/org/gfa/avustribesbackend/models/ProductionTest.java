@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class ProductionTest {
 
     @Test
-    public void testDefaultConstructor() {
+    public void test_default_constructor() {
 
         Production production = new Production();
 
@@ -22,7 +22,7 @@ public class ProductionTest {
     }
 
     @Test
-    public void testConstructorWithParameters() {
+    public void test_constructor_with_parameters() {
 
         Kingdom kingdom = new Kingdom();
         Building building = new Building();

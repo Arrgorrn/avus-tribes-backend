@@ -1,10 +1,7 @@
 package org.gfa.avustribesbackend.models;
 
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDateTime;
 import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {

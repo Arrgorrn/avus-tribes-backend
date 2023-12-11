@@ -1,6 +1,5 @@
 # Environment variables
 .env
-.env.sample
 
 # Compiled class file
 *.class

@@ -29,8 +29,8 @@ public class Player {
     private Date forgottenPasswordTokenExpiresAt;
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
-    @ManyToMany(mappedBy = "players")
-    private List<World> worlds;
+//    @ManyToMany(mappedBy = "players")
+//    private List<World> worlds;
 
     public Player() {
         createdAt = new Date(System.currentTimeMillis());
@@ -116,11 +116,11 @@ public class Player {
         this.createdAt = createdAt;
     }
 
-    public List<World> getWorlds() {
-        return worlds;
-    }
-
-    public void setWorlds(List<World> worlds) {
-        this.worlds = worlds;
-    }
+//    public List<World> getWorlds() {
+//        return worlds;
+//    }
+//
+//    public void setWorlds(List<World> worlds) {
+//        this.worlds = worlds;
+//    }
 }

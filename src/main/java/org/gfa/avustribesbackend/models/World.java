@@ -25,7 +25,7 @@ public class World {
     }
 
     public World() {
-        name = generatorOfName();
+        this.name = generatorOfName();
     }
 
     public String generatorOfName(){

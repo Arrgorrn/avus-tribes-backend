@@ -23,12 +23,12 @@ public class Kingdom {
     @Column(name = "coordinate_y")
     private Double coordinateY;
 
-    @ManyToOne
+ /*   @ManyToOne
     @JoinColumn(name = "world_id", nullable = false)
     private World world;
 
     @OneToMany(mappedBy = "kingdom")
-    private List<Production> productions;
+    private List<Production> productions; */
 
 
     public Kingdom() {

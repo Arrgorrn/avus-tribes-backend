@@ -2,8 +2,9 @@ package org.gfa.avustribesbackend.models;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
-@Table(name = "kingdoms")
 public class Kingdom {
 
     @Id
@@ -22,17 +23,16 @@ public class Kingdom {
 
  /*   @ManyToOne
     @JoinColumn(name = "world_id", nullable = false)
-    private World world;
+    private World world;*/
 
     @OneToMany(mappedBy = "kingdom")
-    private List<Production> productions; */
+    private List<Production> productions;
 
 
     public Kingdom() {
     }
 
-    public Kingdom(Long worldId, String name, Double coordinateX, Double coordinateY) {
-        this.worldId = worldId;
+    public Kingdom(String name, Double coordinateX, Double coordinateY) {
         this.name = name;
         this.coordinateX = coordinateX;
         this.coordinateY = coordinateY;
@@ -47,14 +47,6 @@ public class Kingdom {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getWorldId() {
-        return worldId;
-    }
-
-    public void setWorldId(Long worldId) {
-        this.worldId = worldId;
     }
 
     public String getName() {
@@ -80,6 +72,5 @@ public class Kingdom {
     public void setCoordinateY(Double coordinateY) {
         this.coordinateY = coordinateY;
     }
-
 
 }

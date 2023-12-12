@@ -11,9 +11,6 @@ public class Kingdom {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "world_id", nullable = false)
-    private Long worldId;
-
     @Column(name = "name", nullable = false)
     private String name;
 

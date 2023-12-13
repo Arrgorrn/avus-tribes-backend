@@ -5,18 +5,18 @@ import jakarta.persistence.*;
 @Entity
 public class Resource {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @OneToOne(mappedBy = "resource")
-    private Production production;
+  @OneToOne(mappedBy = "resource")
+  private Production production;
 
-    @ManyToOne
-    @JoinColumn(name = "kingdom_id", nullable = false)
-    private Kingdom kingdom;
+  @ManyToOne
+  @JoinColumn(name = "kingdom_id", nullable = false)
+  private Kingdom kingdom;
 
-    private int amount;
+  private int amount;
 
   public Resource() {
     this.amount = 0;

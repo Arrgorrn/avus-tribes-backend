@@ -22,8 +22,7 @@ public class Resource {
     this.amount = 0;
   }
 
-  public Resource(Long id, Production production, Kingdom kingdom) {
-    this.id = id;
+  public Resource(Production production, Kingdom kingdom) {
     this.production = production;
     this.kingdom = kingdom;
     this.amount = 0;

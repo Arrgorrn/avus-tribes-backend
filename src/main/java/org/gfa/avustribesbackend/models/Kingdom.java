@@ -88,4 +88,12 @@ public class Kingdom {
   public void setProductions(List<Production> productions) {
     this.productions = productions;
   }
+
+  public List<Resource> getResources() {
+    return resources;
+  }
+
+  public void setResources(List<Resource> resources) {
+    this.resources = resources;
+  }
 }

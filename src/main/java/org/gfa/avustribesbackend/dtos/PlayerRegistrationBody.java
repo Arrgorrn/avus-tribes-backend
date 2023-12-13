@@ -11,6 +11,9 @@ public class PlayerRegistrationBody {
         this.password = password;
     }
 
+    public PlayerRegistrationBody() {
+    }
+
     public String getUsername() {
         return username;
     }

@@ -60,7 +60,7 @@ public class PlayerServiceImpl implements PlayerService{
         }
       return ResponseEntity.ok("successful creation");
     }
-
+    @Override
     public boolean validateEmail(String email) {
         boolean isValid = false;
         try {
@@ -72,8 +72,8 @@ public class PlayerServiceImpl implements PlayerService{
         }
         return isValid;
     }
-
-    private String verificationToken() {
+    @Override
+    public String verificationToken() {
         SecureRandom secureRandom = new SecureRandom();
         byte[] tokenBytes = new byte[32];
         secureRandom.nextBytes(tokenBytes);

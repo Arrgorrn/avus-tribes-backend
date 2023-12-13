@@ -21,9 +21,9 @@ public class Kingdom {
     @Column(name = "coordinate_y")
     private Double coordinateY;
 
- /*   @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "world_id", nullable = false)
-    private World world;*/
+    private World world;
 
     @OneToMany(mappedBy = "kingdom")
     private List<Production> productions;
@@ -73,4 +73,19 @@ public class Kingdom {
         this.coordinateY = coordinateY;
     }
 
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    public List<Production> getProductions() {
+        return productions;
+    }
+
+    public void setProductions(List<Production> productions) {
+        this.productions = productions;
+    }
 }

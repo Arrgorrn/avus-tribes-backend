@@ -11,11 +11,11 @@ import java.util.Date;
 @RestControllerAdvice
 public class PlayerExceptionHandler {
 
-    @ExceptionHandler({UserNameException.class,
-            PasswordException.class,
-            EmailException.class,
+    @ExceptionHandler({
+            CredentialException.class,
             VerificationException.class,
-            NewPlayerCreationException.class})
+            CreationException.class
+    })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorResponse badRequestExceptionHandler(RuntimeException runtimeException,
                                                     HttpServletRequest httpServletRequest) {
@@ -27,7 +27,7 @@ public class PlayerExceptionHandler {
         );
     }
 
-    @ExceptionHandler({UserNameAlreadyExistsException.class})
+    @ExceptionHandler({AlreadyExistsException.class})
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public ErrorResponse conflictExceptionHandler(RuntimeException runtimeException,
                                                   HttpServletRequest httpServletRequest) {

@@ -9,5 +9,4 @@ public class AvusTribesBackendApplication {
   public static void main(String[] args) {
     SpringApplication.run(AvusTribesBackendApplication.class, args);
   }
-
 }

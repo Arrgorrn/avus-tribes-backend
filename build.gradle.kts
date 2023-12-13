@@ -22,6 +22,9 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     runtimeOnly("com.mysql:mysql-connector-j")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+    //for email validation
+    implementation ("javax.mail:javax.mail-api:1.5.6")
+    implementation ("javax.mail:mail:1.4.7")
 }
 
 tasks.withType<Test> {

@@ -2,6 +2,7 @@ package org.gfa.avustribesbackend.models;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Random;
 
 @Entity
@@ -14,11 +15,11 @@ public class World {
     @Column(unique = true, nullable = false)
     private String name;
 
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = "world_player",
-//            joinColumns = @JoinColumn(name = "world_id"),
-//            inverseJoinColumns = @JoinColumn(name = "player_id"))
-//    private List<Player> players;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "world_player",
+            joinColumns = @JoinColumn(name = "world_id"),
+            inverseJoinColumns = @JoinColumn(name = "player_id"))
+    private List<Player> players;
 
     public World(String name) {
         this.name = name;
@@ -58,11 +59,11 @@ public class World {
         this.name = name;
     }
 
-//    public List<Player> getPlayers() {
-//        return players;
-//    }
-//
-//    public void setPlayers(List<Player> players) {
-//        this.players = players;
-//    }
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
 }

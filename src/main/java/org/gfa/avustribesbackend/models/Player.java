@@ -38,14 +38,13 @@ public class Player {
     }
 
     public Player(String userName, String email, String password,
-                  String verificationToken, Date verificationTokenExpiresAt,
-                  Date createdAt) {
+                  String verificationToken){
         this.userName = userName;
         this.email = email;
         this.password = password;
         this.verificationToken = verificationToken;
-        this.verificationTokenExpiresAt = verificationTokenExpiresAt;
-        this.createdAt = createdAt;
+        this.verificationTokenExpiresAt = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
+        this.createdAt = new Date(System.currentTimeMillis());
     }
 
     public Long getId() {

@@ -8,7 +8,9 @@ public class ErrorResponse {
     private String endpoint;
     private Date time;
 
-    public ErrorResponse(String message, String endpoint, Date time) {
+    public ErrorResponse(String message,
+                         String endpoint,
+                         Date time) {
         this.message = message;
         this.endpoint = endpoint;
         this.time = time;

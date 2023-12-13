@@ -37,6 +37,17 @@ public class Player {
         createdAt = new Date(System.currentTimeMillis());
     }
 
+    public Player(String userName, String email, String password,
+                  String verificationToken, Date verificationTokenExpiresAt,
+                  Date createdAt) {
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.verificationToken = verificationToken;
+        this.verificationTokenExpiresAt = verificationTokenExpiresAt;
+        this.createdAt = createdAt;
+    }
+
     public Long getId() {
         return id;
     }

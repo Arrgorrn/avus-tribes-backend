@@ -28,6 +28,8 @@ public class Kingdom {
     @OneToMany(mappedBy = "kingdom")
     private List<Production> productions;
 
+    @OneToMany(mappedBy = "kingdom")
+    private List<Resource> resources;
 
     public Kingdom() {
     }

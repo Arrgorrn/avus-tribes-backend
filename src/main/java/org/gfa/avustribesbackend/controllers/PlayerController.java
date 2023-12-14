@@ -10,14 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class PlayerController {
-    private final PlayerService playerService;
-    @Autowired
-    public PlayerController(PlayerService playerService) {
-        this.playerService = playerService;
-    }
+  private final PlayerService playerService;
 
-    @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody PlayerRegistrationBody request){
-        return playerService.registerPlayer(request);
-    }
+  @Autowired
+  public PlayerController(PlayerService playerService) {
+    this.playerService = playerService;
+  }
+
+  @PostMapping("/register")
+  public ResponseEntity<Object> register(@RequestBody PlayerRegistrationBody request) {
+    return playerService.registerPlayer(request);
+  }
 }

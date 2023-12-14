@@ -11,29 +11,27 @@ import java.util.Date;
 @RestControllerAdvice
 public class PlayerExceptionHandler {
 
-    @ExceptionHandler({
-            CredentialException.class,
-            VerificationException.class,
-            CreationException.class,
-    })
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse badRequestExceptionHandler(RuntimeException runtimeException,
-                                                    HttpServletRequest httpServletRequest) {
-        return new ErrorResponse(
-                runtimeException.getMessage(),
-                httpServletRequest.getRequestURI(),
-                new Date(System.currentTimeMillis())
-        );
-    }
+  @ExceptionHandler({
+    CredentialException.class,
+    VerificationException.class,
+    CreationException.class,
+  })
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public ErrorResponse badRequestExceptionHandler(
+      RuntimeException runtimeException, HttpServletRequest httpServletRequest) {
+    return new ErrorResponse(
+        runtimeException.getMessage(),
+        httpServletRequest.getRequestURI(),
+        new Date(System.currentTimeMillis()));
+  }
 
-    @ExceptionHandler({AlreadyExistsException.class})
-    @ResponseStatus(value = HttpStatus.CONFLICT)
-    public ErrorResponse conflictExceptionHandler(RuntimeException runtimeException,
-                                                  HttpServletRequest httpServletRequest) {
-        return new ErrorResponse(
-                runtimeException.getMessage(),
-                httpServletRequest.getRequestURI(),
-                new Date(System.currentTimeMillis())
-        );
-    }
+  @ExceptionHandler({AlreadyExistsException.class})
+  @ResponseStatus(value = HttpStatus.CONFLICT)
+  public ErrorResponse conflictExceptionHandler(
+      RuntimeException runtimeException, HttpServletRequest httpServletRequest) {
+    return new ErrorResponse(
+        runtimeException.getMessage(),
+        httpServletRequest.getRequestURI(),
+        new Date(System.currentTimeMillis()));
+  }
 }

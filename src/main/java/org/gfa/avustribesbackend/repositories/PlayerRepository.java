@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Long> {
-    boolean existsByUserName(String name);
-    boolean existsByEmail(String email);
+  boolean existsByUserName(String name);
+
+  boolean existsByEmail(String email);
 }

@@ -2,21 +2,68 @@ package org.gfa.avustribesbackend.services.Player;
 
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.models.MyError;
+import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 class PlayerServiceImplTest {
-    private PlayerService playerService;
+    @InjectMocks
+    private PlayerServiceImpl playerService;
     PlayerRegistrationBody playerRegistrationBody;
+    @Mock
+    PlayerRepository playerRepository;
 
     @BeforeEach
     public void beforeEach() {
         playerRegistrationBody= new PlayerRegistrationBody();
-        playerService = Mockito.mock(PlayerService.class);
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void test_register_player_username_null() {
+        ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
+        assertErrorResponse(responseEntity, "Username is required");
+    }
+
+    @Test
+    void test_register_player_password_null() {
+        playerRegistrationBody.setUsername("testUser");
+        ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
+        assertErrorResponse(responseEntity, "Password is required");
+    }
+
+    @Test
+    void test_register_player_email_null() {
+        playerRegistrationBody.setUsername("testUser");
+        playerRegistrationBody.setPassword("password");
+        ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
+        assertErrorResponse(responseEntity, "Email is required");
+    }
+
+    @Test
+    void test_register_player_username_already_taken() {
+        playerRegistrationBody.setUsername("existingUser");
+        playerRegistrationBody.setPassword("password");
+        playerRegistrationBody.setEmail("test@gmail.com");
+        when(playerRepository.existsByUserName(playerRegistrationBody.getUsername())).thenReturn(false);
+        assertFalse(playerRepository.existsByUserName(playerRegistrationBody.getUsername()));
+    }
+
+    @Test
+    void test_register_player_email_already_taken() {
+        playerRegistrationBody.setUsername("testUser");
+        playerRegistrationBody.setPassword("password");
+        playerRegistrationBody.setEmail("existing@gmail.com");
+        when(playerRepository.existsByEmail(playerRegistrationBody.getEmail())).thenReturn(false);
+        assertFalse(playerRepository.existsByEmail(playerRegistrationBody.getEmail()));
     }
 
     @Test
@@ -25,12 +72,9 @@ class PlayerServiceImplTest {
         playerRegistrationBody.setEmail("hello@gmail.com");
         playerRegistrationBody.setPassword("password");
 
-        MyError error = new MyError("Username must be at least 4 characters long");
-        ResponseEntity<Object> responseEntity = new ResponseEntity<>(error,
-                HttpStatusCode.valueOf(400));
-        Mockito.when(playerService.registerPlayer(Mockito.any(PlayerRegistrationBody.class)))
-                .thenReturn(responseEntity);
-        assertEquals(responseEntity, playerService.registerPlayer(playerRegistrationBody));
+        ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
+
+        assertErrorResponse(responseEntity, "Username must be at least 4 characters long");
     }
 
     @Test
@@ -39,37 +83,20 @@ class PlayerServiceImplTest {
         playerRegistrationBody.setEmail("hello@gmail.com");
         playerRegistrationBody.setPassword("short");
 
-        MyError error = new MyError("Password must be at least 8 characters long");
-        ResponseEntity<Object> responseEntity = new ResponseEntity<>(error,
-                HttpStatusCode.valueOf(400));
-        Mockito.when(playerService.registerPlayer(Mockito.any(PlayerRegistrationBody.class)))
-                .thenReturn(responseEntity);
-        assertEquals(responseEntity, playerService.registerPlayer(playerRegistrationBody));
+        ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
+
+        assertErrorResponse(responseEntity, "Password must be at least 8 characters long");
     }
 
     @Test
     void email_validation(){
         playerRegistrationBody.setUsername("Hello");
-        playerRegistrationBody.setEmail("hello@gmail");
+        playerRegistrationBody.setEmail("hellogmail.com");
         playerRegistrationBody.setPassword("password");
 
-        MyError error = new MyError("Invalid email");
-        ResponseEntity<Object> responseEntity = new ResponseEntity<>(error,
-                HttpStatusCode.valueOf(400));
-        Mockito.when(playerService.registerPlayer(Mockito.any(PlayerRegistrationBody.class)))
-                .thenReturn(responseEntity);
-        assertEquals(responseEntity, playerService.registerPlayer(playerRegistrationBody));
-    }
+        ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
 
-    @Test
-    void null_user(){
-
-        MyError error = new MyError("Unknown error");
-        ResponseEntity<Object> responseEntity = new ResponseEntity<>(error,
-                HttpStatusCode.valueOf(400));
-        Mockito.when(playerService.registerPlayer(Mockito.any(PlayerRegistrationBody.class)))
-                .thenReturn(responseEntity);
-        assertEquals(responseEntity, playerService.registerPlayer(playerRegistrationBody));
+        assertErrorResponse(responseEntity, "Invalid email");
     }
 
     @Test
@@ -78,10 +105,17 @@ class PlayerServiceImplTest {
         playerRegistrationBody.setEmail("hello@gmail.com");
         playerRegistrationBody.setPassword("password");
 
-        ResponseEntity<Object> responseEntity = new ResponseEntity<>("successful creation",
-                HttpStatusCode.valueOf(200));
-        Mockito.when(playerService.registerPlayer(Mockito.any(PlayerRegistrationBody.class)))
-                .thenReturn(responseEntity);
-        assertEquals(responseEntity, playerService.registerPlayer(playerRegistrationBody));
+        ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
+        ResponseEntity<Object> responseEntity1 = new ResponseEntity<>("successful creation", HttpStatusCode.valueOf(200));
+
+        assertEquals(responseEntity, responseEntity1);
+    }
+
+    private void assertErrorResponse(
+            ResponseEntity<Object> responseEntity, String expectedErrorMessage) {
+        assertEquals(400, responseEntity.getStatusCodeValue());
+        assertTrue(responseEntity.getBody() instanceof MyError);
+        MyError error = (MyError) responseEntity.getBody();
+        assertEquals(expectedErrorMessage, error.getError());
     }
 }

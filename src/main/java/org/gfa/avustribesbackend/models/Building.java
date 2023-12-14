@@ -7,10 +7,10 @@ import java.util.List;
 @Entity
 public class Building {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @OneToMany(mappedBy = "building")
-    private List<Production> productions;
+  @OneToMany(mappedBy = "building")
+  private List<Production> productions;
 }

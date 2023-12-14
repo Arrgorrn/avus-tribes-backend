@@ -8,130 +8,138 @@ import java.util.List;
 @Table(name = "players")
 public class Player {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id", unique = true, nullable = false)
-    private Long id;
-    @Column(name = "username", unique = true, nullable = false)
-    private String userName;
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
-    @Column(name = "password", nullable = false)
-    private String password;
-    @Column(name = "verified_at")
-    private Date verifiedAt;
-    @Column(name = "verification_token", unique = true, nullable = false)
-    private String verificationToken;
-    @Column(name = "verification_token_expires_at", nullable = false)
-    private Date verificationTokenExpiresAt;
-    @Column(name = "forgotten_password_token", unique = true)
-    private String forgottenPasswordToken;
-    @Column(name = "forgotten_password_token_expires_at")
-    private Date forgottenPasswordTokenExpiresAt;
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
-    @ManyToMany(mappedBy = "players")
-    private List<World> worlds;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "Id", unique = true, nullable = false)
+  private Long id;
 
-    public Player() {
-        createdAt = new Date(System.currentTimeMillis());
-    }
+  @Column(name = "username", unique = true, nullable = false)
+  private String userName;
+  @Column(name = "email", unique = true, nullable = false)
+  private String email;
 
-    public Player(String userName, String email, String password,
-                  String verificationToken){
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
-        this.verificationToken = verificationToken;
-        this.verificationTokenExpiresAt = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
-        this.createdAt = new Date(System.currentTimeMillis());
-    }
+  @Column(name = "password", nullable = false)
+  private String password;
 
-    public Long getId() {
-        return id;
-    }
+  @Column(name = "verified_at")
+  private Date verifiedAt;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  @Column(name = "verification_token", unique = true, nullable = false)
+  private String verificationToken;
 
-    public String getUserName() {
-        return userName;
-    }
+  @Column(name = "verification_token_expires_at", nullable = false)
+  private Date verificationTokenExpiresAt;
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+  @Column(name = "forgotten_password_token", unique = true)
+  private String forgottenPasswordToken;
 
-    public String getEmail() {
-        return email;
-    }
+  @Column(name = "forgotten_password_token_expires_at")
+  private Date forgottenPasswordTokenExpiresAt;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  @Column(name = "created_at", nullable = false)
+  private Date createdAt;
 
-    public String getPassword() {
-        return password;
-    }
+  @ManyToMany(mappedBy = "players")
+  private List<World> worlds;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public Player() {
+    createdAt = new Date(System.currentTimeMillis());
+  }
+  public Player(String userName, String email, String password,
+                String verificationToken){
+    this.userName = userName;
+    this.email = email;
+    this.password = password;
+    this.verificationToken = verificationToken;
+    this.verificationTokenExpiresAt = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
+    this.createdAt = new Date(System.currentTimeMillis());
+  }
 
-    public Date getVerifiedAt() {
-        return verifiedAt;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void setVerifiedAt(Date verifiedAt) {
-        this.verifiedAt = verifiedAt;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public String getVerificationToken() {
-        return verificationToken;
-    }
+  public String getUserName() {
+    return userName;
+  }
 
-    public void setVerificationToken(String verificationToken) {
-        this.verificationToken = verificationToken;
-    }
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
 
-    public Date getVerificationTokenExpiresAt() {
-        return verificationTokenExpiresAt;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void setVerificationTokenExpiresAt(Date verificationTokenExpiresAt) {
-        this.verificationTokenExpiresAt = verificationTokenExpiresAt;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public String getForgottenPasswordToken() {
-        return forgottenPasswordToken;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public void setForgottenPasswordToken(String forgottenPasswordToken) {
-        this.forgottenPasswordToken = forgottenPasswordToken;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public Date getForgottenPasswordTokenExpiresAt() {
-        return forgottenPasswordTokenExpiresAt;
-    }
+  public Date getVerifiedAt() {
+    return verifiedAt;
+  }
 
-    public void setForgottenPasswordTokenExpiresAt(Date forgottenPasswordTokenExpiresAt) {
-        this.forgottenPasswordTokenExpiresAt = forgottenPasswordTokenExpiresAt;
-    }
+  public void setVerifiedAt(Date verifiedAt) {
+    this.verifiedAt = verifiedAt;
+  }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
+  public String getVerificationToken() {
+    return verificationToken;
+  }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
+  public void setVerificationToken(String verificationToken) {
+    this.verificationToken = verificationToken;
+  }
 
-    public List<World> getWorlds() {
-        return worlds;
-    }
+  public Date getVerificationTokenExpiresAt() {
+    return verificationTokenExpiresAt;
+  }
 
-    public void setWorlds(List<World> worlds) {
-        this.worlds = worlds;
-    }
+  public void setVerificationTokenExpiresAt(Date verificationTokenExpiresAt) {
+    this.verificationTokenExpiresAt = verificationTokenExpiresAt;
+  }
+
+  public String getForgottenPasswordToken() {
+    return forgottenPasswordToken;
+  }
+
+  public void setForgottenPasswordToken(String forgottenPasswordToken) {
+    this.forgottenPasswordToken = forgottenPasswordToken;
+  }
+
+  public Date getForgottenPasswordTokenExpiresAt() {
+    return forgottenPasswordTokenExpiresAt;
+  }
+
+  public void setForgottenPasswordTokenExpiresAt(Date forgottenPasswordTokenExpiresAt) {
+    this.forgottenPasswordTokenExpiresAt = forgottenPasswordTokenExpiresAt;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public List<World> getWorlds() {
+    return worlds;
+  }
+
+  public void setWorlds(List<World> worlds) {
+    this.worlds = worlds;
+  }
 }

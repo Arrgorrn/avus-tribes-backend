@@ -21,7 +21,7 @@ public class PlayerExceptionHandler {
                                                     HttpServletRequest httpServletRequest) {
         return new ErrorResponse(
                 runtimeException.getMessage(),
-                httpServletRequest.getContextPath(),
+                httpServletRequest.getRequestURI(),
                 HttpStatus.BAD_REQUEST,
                 new Date(System.currentTimeMillis())
         );

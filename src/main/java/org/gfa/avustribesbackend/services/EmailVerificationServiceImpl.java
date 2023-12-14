@@ -18,23 +18,20 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
   }
 
 
-    @Override
-    public boolean verifyEmail(String token) {
-      //find the player
+  @Override
+  public void sendVerificationEmail(String email) {
 
-      //if player not null, update verifiedAt, send email, return true
+    // the email sending logic with the link - the link is the endpoint GET /email/verify/{token}
 
+  }
 
-      sendVerificationEmail(playerRepository.findByVerificationToken(token).getEmail());
+  @Override
+  public boolean verifyEmail(String token) {
 
-      //if player not found, return false
-      return false;
-    }
-
-    @Override
-    public void sendVerificationEmail(String email) {
-
-    }
-
-
+    // check it the token is valid? i think
+    // if token valid:
+    // playerservice.findplayer --> update Verified at
+   
+    return false; // return true if the verification is ok, false otherwise
+  }
 }

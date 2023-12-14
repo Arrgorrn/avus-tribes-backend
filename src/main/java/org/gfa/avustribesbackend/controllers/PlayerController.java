@@ -9,15 +9,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PlayerController {
 
-private final EmailVerificationService emailVerificationService;
+  private final EmailVerificationService emailVerificationService;
 
-    public PlayerController(EmailVerificationService emailVerificationService) {
-        this.emailVerificationService = emailVerificationService;
+  public PlayerController(EmailVerificationService emailVerificationService) {
+    this.emailVerificationService = emailVerificationService;
+  }
+
+  @GetMapping("/email/verify/{token}")
+  public ResponseEntity<Object> verifyEmail(@PathVariable String token) {
+    if (emailVerificationService.verifyEmail(token)) {
+      return ResponseEntity.ok().body("ok");
+    } else {
+      return ResponseEntity.badRequest().body("not ok, some error message");
     }
-
-    @GetMapping("/email/verify/{token}")
-    public ResponseEntity<Object> verifyEmail(@PathVariable String token){
-    return ResponseEntity.ok().body("ok");
-    }
-
+  }
 }

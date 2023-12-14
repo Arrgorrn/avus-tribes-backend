@@ -22,7 +22,6 @@ public class PlayerExceptionHandler {
         return new ErrorResponse(
                 runtimeException.getMessage(),
                 httpServletRequest.getRequestURI(),
-                HttpStatus.BAD_REQUEST,
                 new Date(System.currentTimeMillis())
         );
     }
@@ -34,7 +33,6 @@ public class PlayerExceptionHandler {
         return new ErrorResponse(
                 runtimeException.getMessage(),
                 httpServletRequest.getRequestURI(),
-                HttpStatus.CONFLICT,
                 new Date(System.currentTimeMillis())
         );
     }

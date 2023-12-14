@@ -1,6 +1,5 @@
 package org.gfa.avustribesbackend.dtos;
 
-import org.gfa.avustribesbackend.models.MyError;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

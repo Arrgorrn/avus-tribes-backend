@@ -8,12 +8,6 @@ import org.mockito.Mockito;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
-import java.security.SecureRandom;
-import java.util.Base64;
-
 import static org.junit.jupiter.api.Assertions.*;
 class PlayerServiceImplTest {
     private PlayerService playerService;
@@ -89,28 +83,5 @@ class PlayerServiceImplTest {
         Mockito.when(playerService.registerPlayer(Mockito.any(PlayerRegistrationBody.class)))
                 .thenReturn(responseEntity);
         assertEquals(responseEntity, playerService.registerPlayer(playerRegistrationBody));
-    }
-
-    @Test
-    void creation_of_token(){
-        playerRegistrationBody.setUsername("Hello");
-        playerRegistrationBody.setEmail("hello@gmail.com");
-        playerRegistrationBody.setPassword("password");
-
-        ResponseEntity<Object> responseEntity = new ResponseEntity<>("successful creation",
-                HttpStatusCode.valueOf(200));
-        Mockito.when(playerService.registerPlayer(Mockito.any(PlayerRegistrationBody.class)))
-                .thenReturn(responseEntity);
-        assertEquals(responseEntity, playerService.registerPlayer(playerRegistrationBody));
-    }
-
-
-
-    @Override
-    public String verificationToken() {
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] tokenBytes = new byte[32];
-        secureRandom.nextBytes(tokenBytes);
-        return Base64.getEncoder().encodeToString(tokenBytes);
     }
 }

@@ -1,4 +1,4 @@
-package org.gfa.avustribesbackend.services;
+package org.gfa.avustribesbackend.services.Email;
 
 public interface EmailVerificationService {
 boolean verifyEmail(String token);

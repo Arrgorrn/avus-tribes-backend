@@ -23,6 +23,7 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     implementation ("org.springframework.boot:spring-boot-starter-mail")
+    implementation ("org.springframework:spring-context-support:5.3.10")
 }
 
 tasks.withType<Test> {

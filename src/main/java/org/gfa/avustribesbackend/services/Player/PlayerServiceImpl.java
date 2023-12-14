@@ -58,7 +58,8 @@ public class PlayerServiceImpl implements PlayerService{
             error.setError("Unknown error");
             return ResponseEntity.status(400).body(error);
         }
-      return ResponseEntity.ok("successful creation");
+        playerRepository.save(player);
+        return ResponseEntity.ok("successful creation");
     }
     @Override
     public boolean validateEmail(String email) {

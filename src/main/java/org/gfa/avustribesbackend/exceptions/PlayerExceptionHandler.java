@@ -14,7 +14,7 @@ public class PlayerExceptionHandler {
     @ExceptionHandler({
             CredentialException.class,
             VerificationException.class,
-            CreationException.class
+            CreationException.class,
     })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorResponse badRequestExceptionHandler(RuntimeException runtimeException,
@@ -33,7 +33,7 @@ public class PlayerExceptionHandler {
                                                   HttpServletRequest httpServletRequest) {
         return new ErrorResponse(
                 runtimeException.getMessage(),
-                httpServletRequest.getContextPath(),
+                httpServletRequest.getRequestURI(),
                 HttpStatus.CONFLICT,
                 new Date(System.currentTimeMillis())
         );

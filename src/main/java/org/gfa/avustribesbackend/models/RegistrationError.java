@@ -1,13 +1,13 @@
 package org.gfa.avustribesbackend.models;
 
-public class MyError {
+public class RegistrationError {
   private String error;
 
-  public MyError(String error) {
+  public RegistrationError(String error) {
     this.error = error;
   }
 
-  public MyError() {}
+  public RegistrationError() {}
 
   public String getError() {
     return error;

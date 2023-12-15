@@ -1,7 +1,7 @@
 package org.gfa.avustribesbackend.services.Player;
 
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
-import org.gfa.avustribesbackend.models.MyError;
+import org.gfa.avustribesbackend.models.RegistrationError;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -113,8 +113,8 @@ class PlayerServiceImplTest {
   private void assertErrorResponse(
       ResponseEntity<Object> responseEntity, String expectedErrorMessage) {
     assertEquals(400, responseEntity.getStatusCodeValue());
-    assertTrue(responseEntity.getBody() instanceof MyError);
-    MyError error = (MyError) responseEntity.getBody();
+    assertTrue(responseEntity.getBody() instanceof RegistrationError);
+    RegistrationError error = (RegistrationError) responseEntity.getBody();
     assertEquals(expectedErrorMessage, error.getError());
   }
 }

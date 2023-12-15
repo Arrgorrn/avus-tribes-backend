@@ -1,7 +1,7 @@
 package org.gfa.avustribesbackend.services.Player;
 
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
-import org.gfa.avustribesbackend.models.MyError;
+import org.gfa.avustribesbackend.models.RegistrationError;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,36 +25,36 @@ public class PlayerServiceImpl implements PlayerService {
 
   @Override
   public ResponseEntity<Object> registerPlayer(PlayerRegistrationBody request) {
-    MyError error = new MyError();
+    RegistrationError error = new RegistrationError();
     if (request.getUsername() == null) {
       error.setError("Username is required");
       return ResponseEntity.status(400).body(error);
     }
-    if (request.getPassword() == null) {
+    else if (request.getPassword() == null) {
       error.setError("Password is required");
       return ResponseEntity.status(400).body(error);
     }
-    if (request.getEmail() == null) {
+    else if (request.getEmail() == null) {
       error.setError("Email is required");
       return ResponseEntity.status(400).body(error);
     }
-    if (playerRepository.existsByUserName(request.getUsername())) {
+    else if (playerRepository.existsByUserName(request.getUsername())) {
       return ResponseEntity.status(409).body("Username is already taken");
     }
     // extra one:) ->
-    if (playerRepository.existsByEmail(request.getEmail())) {
+    else if (playerRepository.existsByEmail(request.getEmail())) {
       return ResponseEntity.status(400).body("Email is already taken");
     }
     // <-
-    if (request.getUsername().length() < 4) {
+    else if (request.getUsername().length() < 4) {
       error.setError("Username must be at least 4 characters long");
       return ResponseEntity.status(400).body(error);
     }
-    if (request.getPassword().length() < 8) {
+    else if (request.getPassword().length() < 8) {
       error.setError("Password must be at least 8 characters long");
       return ResponseEntity.status(400).body(error);
     }
-    if (!validateEmail(request.getEmail())) {
+    else if (!validateEmail(request.getEmail())) {
       error.setError("Invalid email");
       return ResponseEntity.status(400).body(error);
     }

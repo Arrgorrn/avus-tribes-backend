@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MyErrorTest {
+class RegistrationErrorTest {
 
   @Test
   void create_error_with_message() {
@@ -12,7 +12,7 @@ class MyErrorTest {
     String errorMessage = "Invalid test";
 
     // Act
-    MyError error = new MyError(errorMessage);
+    RegistrationError error = new RegistrationError(errorMessage);
 
     // Assert
     assertNotNull(error);

@@ -4,6 +4,7 @@ import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.models.RegistrationError;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
+import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,13 @@ import javax.mail.internet.InternetAddress;
 public class PlayerServiceImpl implements PlayerService {
 
   private final PlayerRepository playerRepository;
+  private final EmailVerificationService emailVerificationService;
 
   @Autowired
-  public PlayerServiceImpl(PlayerRepository playerRepository) {
+  public PlayerServiceImpl(
+      PlayerRepository playerRepository, EmailVerificationService emailVerificationService) {
     this.playerRepository = playerRepository;
+    this.emailVerificationService = emailVerificationService;
   }
 
   @Override
@@ -29,16 +33,13 @@ public class PlayerServiceImpl implements PlayerService {
     if (request.getUsername() == null) {
       error.setError("Username is required");
       return ResponseEntity.status(400).body(error);
-    }
-    else if (request.getPassword() == null) {
+    } else if (request.getPassword() == null) {
       error.setError("Password is required");
       return ResponseEntity.status(400).body(error);
-    }
-    else if (request.getEmail() == null) {
+    } else if (request.getEmail() == null) {
       error.setError("Email is required");
       return ResponseEntity.status(400).body(error);
-    }
-    else if (playerRepository.existsByUserName(request.getUsername())) {
+    } else if (playerRepository.existsByUserName(request.getUsername())) {
       return ResponseEntity.status(409).body("Username is already taken");
     }
     // extra one:) ->
@@ -49,15 +50,14 @@ public class PlayerServiceImpl implements PlayerService {
     else if (request.getUsername().length() < 4) {
       error.setError("Username must be at least 4 characters long");
       return ResponseEntity.status(400).body(error);
-    }
-    else if (request.getPassword().length() < 8) {
+    } else if (request.getPassword().length() < 8) {
       error.setError("Password must be at least 8 characters long");
       return ResponseEntity.status(400).body(error);
-    }
-    else if (!validateEmail(request.getEmail())) {
+    } else if (!validateEmail(request.getEmail())) {
       error.setError("Invalid email");
       return ResponseEntity.status(400).body(error);
     }
+
     Player player =
         new Player(
             request.getUsername(), request.getEmail(), request.getPassword(), verificationToken());
@@ -66,6 +66,8 @@ public class PlayerServiceImpl implements PlayerService {
       return ResponseEntity.status(400).body(error);
     }
     playerRepository.save(player);
+    String token = player.getVerificationToken();
+    emailVerificationService.sendVerificationEmail(token);
     return ResponseEntity.ok("successful creation");
   }
 

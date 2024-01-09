@@ -29,7 +29,7 @@ public class PlayerController {
     if (emailVerificationService.verifyEmail(token)) {
       return ResponseEntity.ok().body("ok");
     } else {
-      // request for a new token?
+      // request for a new token? Gerzson?
       return ResponseEntity.badRequest().body("not ok, some error message or exception");
     }
   }

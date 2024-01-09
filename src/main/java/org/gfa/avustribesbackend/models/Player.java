@@ -15,7 +15,6 @@ public class Player {
 
   @Column(name = "username", unique = true, nullable = false)
   private String userName;
-
   @Column(name = "email", unique = true, nullable = false)
   private String email;
 
@@ -45,6 +44,15 @@ public class Player {
 
   public Player() {
     createdAt = new Date(System.currentTimeMillis());
+  }
+  public Player(String userName, String email, String password,
+                String verificationToken){
+    this.userName = userName;
+    this.email = email;
+    this.password = password;
+    this.verificationToken = verificationToken;
+    this.verificationTokenExpiresAt = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
+    this.createdAt = new Date(System.currentTimeMillis());
   }
 
   public Long getId() {

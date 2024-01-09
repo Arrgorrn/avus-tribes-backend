@@ -20,10 +20,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    //mockito
+    testImplementation ("org.mockito:mockito-core:3.11.2")
     runtimeOnly("com.mysql:mysql-connector-j")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     implementation ("org.springframework.boot:spring-boot-starter-mail")
     implementation ("org.springframework:spring-context-support:5.3.10")
+    //for email validation
+    implementation ("javax.mail:javax.mail-api:1.5.6")
+    implementation ("javax.mail:mail:1.4.7")
 }
 
 tasks.withType<Test> {

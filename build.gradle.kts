@@ -25,6 +25,8 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     //for email validation
+    implementation ("org.springframework.boot:spring-boot-starter-mail")
+    implementation ("org.springframework:spring-context-support:5.3.10")
     implementation ("javax.mail:javax.mail-api:1.5.6")
     implementation ("javax.mail:mail:1.4.7")
 }

@@ -33,10 +33,11 @@ public class Kingdom {
 
   public Kingdom() {}
 
-  public Kingdom(String name, Double coordinateX, Double coordinateY) {
+  public Kingdom(String name, Double coordinateX, Double coordinateY, World world) {
     this.name = name;
     this.coordinateX = coordinateX;
     this.coordinateY = coordinateY;
+    this.world = world;
   }
 
   // Getters and setters

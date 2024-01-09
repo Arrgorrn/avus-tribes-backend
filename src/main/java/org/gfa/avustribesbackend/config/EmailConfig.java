@@ -14,8 +14,8 @@ public class EmailConfig {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("sandbox.smtp.mailtrap.io");
         mailSender.setPort(587);
-        mailSender.setUsername("1cd74ddffae1ab");
-        mailSender.setPassword("f7a6d7c0a9c2f8");
+        mailSender.setUsername("7d9e62f18bd080");
+        mailSender.setPassword("1d87b2eaa60d6a");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.smtp.auth", "true");
@@ -24,6 +24,7 @@ public class EmailConfig {
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.socketFactory.fallback", "false");
         props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        props.put("mail.smtp.ssl.enable", "false");
 
         return mailSender;
     }

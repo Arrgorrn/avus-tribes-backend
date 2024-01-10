@@ -1,5 +1,6 @@
-package org.gfa.avustribesbackend.models;
+package org.gfa.avustribesbackend.services.Email;
 
+import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationServiceImpl;
 import org.junit.jupiter.api.Test;

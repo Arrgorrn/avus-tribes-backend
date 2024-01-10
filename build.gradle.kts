@@ -29,6 +29,7 @@ dependencies {
     implementation ("org.springframework:spring-context-support:5.3.10")
     implementation ("javax.mail:javax.mail-api:1.5.6")
     implementation ("javax.mail:mail:1.4.7")
+    implementation ("io.github.cdimascio:java-dotenv:5.2.0")
 }
 
 tasks.withType<Test> {

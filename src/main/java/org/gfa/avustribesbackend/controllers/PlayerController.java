@@ -22,7 +22,9 @@ public class PlayerController {
 
   @Autowired
   public PlayerController(
-          PlayerService playerService, EmailVerificationService emailVerificationService, ResetPasswordService resetPasswordService) {
+      PlayerService playerService,
+      EmailVerificationService emailVerificationService,
+      ResetPasswordService resetPasswordService) {
     this.playerService = playerService;
     this.emailVerificationService = emailVerificationService;
     this.resetPasswordService = resetPasswordService;
@@ -31,10 +33,10 @@ public class PlayerController {
   @GetMapping("/email/verify/{token}")
   public ResponseEntity<Object> verifyEmail(@PathVariable String token) {
     if (emailVerificationService.verifyEmail(token)) {
-      return ResponseEntity.ok().body("ok");
+      return ResponseEntity.ok().body("User successfully verified");
     } else {
       // request for a new token? Gerzson?
-      return ResponseEntity.badRequest().body("not ok, some error message or exception");
+      return ResponseEntity.badRequest().body("Invalid token");
     }
   }
 
@@ -44,7 +46,8 @@ public class PlayerController {
   }
 
   @PostMapping("/reset-password")
-  public ResponseEntity<Object> sendResetPasswordEmail(@RequestBody(required = false) EmailDTO email) {
+  public ResponseEntity<Object> sendResetPasswordEmail(
+      @RequestBody(required = false) EmailDTO email) {
     if (email == null) {
       throw new CredentialException("Invalid Email!");
     }

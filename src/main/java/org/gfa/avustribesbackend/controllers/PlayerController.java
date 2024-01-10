@@ -2,6 +2,7 @@ package org.gfa.avustribesbackend.controllers;
 
 import org.gfa.avustribesbackend.dtos.EmailDTO;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
+import org.gfa.avustribesbackend.services.ResetPassword.ResetPasswordService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
@@ -17,12 +18,14 @@ public class PlayerController {
 
   private final EmailVerificationService emailVerificationService;
   private final PlayerService playerService;
+  private final ResetPasswordService resetPasswordService;
 
   @Autowired
   public PlayerController(
-      PlayerService playerService, EmailVerificationService emailVerificationService) {
+          PlayerService playerService, EmailVerificationService emailVerificationService, ResetPasswordService resetPasswordService) {
     this.playerService = playerService;
     this.emailVerificationService = emailVerificationService;
+    this.resetPasswordService = resetPasswordService;
   }
 
   @GetMapping("/email/verify/{token}")
@@ -41,12 +44,12 @@ public class PlayerController {
   }
 
   @PostMapping("/reset-password")
-  public ResponseEntity<Object> passwordReset(@RequestBody EmailDTO email) {
-    return ResponseEntity.ok().body(new StatusDTO("ok"));
+  public ResponseEntity<Object> resetPassword(@RequestBody EmailDTO email) {
+    return resetPasswordService.resetPassword(email);
   }
 
   @GetMapping("/reset-password/{token}")
-  public ResponseEntity<Object> passwordReset(@PathVariable TokenDTO token) {
+  public ResponseEntity<Object> resetPassword(@PathVariable TokenDTO token) {
     return ResponseEntity.ok().body(token);
   }
 }

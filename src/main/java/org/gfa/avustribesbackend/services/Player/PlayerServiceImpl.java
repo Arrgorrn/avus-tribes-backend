@@ -43,7 +43,7 @@ public class PlayerServiceImpl implements PlayerService {
       return ResponseEntity.status(409).body("Username is already taken");
     }
     // extra one:) ->
-    else if (playerRepository.existsByEmail(request.getEmail())) {
+    else if (playerRepository.existsByEmailIgnoreCase(request.getEmail())) {
       return ResponseEntity.status(400).body("Email is already taken");
     }
     // <-

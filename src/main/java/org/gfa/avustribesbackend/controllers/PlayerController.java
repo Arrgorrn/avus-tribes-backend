@@ -35,8 +35,8 @@ public class PlayerController {
     if (emailVerificationService.verifyEmail(token)) {
       return ResponseEntity.ok().body("User successfully verified");
     } else {
-      // request for a new token? Gerzson?
-      return ResponseEntity.badRequest().body("Invalid token");
+      throw new VerificationException("Verification failed, expired token");
+      // redirect to Gerzson's method?
     }
   }
 

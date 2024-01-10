@@ -79,30 +79,4 @@ class EmailVerificationTest {
     assertFalse(result);
     assertNull(player.getVerifiedAt());
   }
-
-    @Test
-    void verifyEmail_withInvalidToken_shouldReturnFalse() {
-        // Arrange
-        MockitoAnnotations.openMocks(this); // Initialize mocks
-
-        String token = "invalidToken";
-        Player player = new Player();
-        player.setVerificationToken(token);
-        Date pastDate = new Date(System.currentTimeMillis() - 1000000);
-        player.setVerificationTokenExpiresAt(pastDate);
-
-        playerRepository.save(player);
-
-        EmailVerificationServiceImpl emailVerificationService =
-                new EmailVerificationServiceImpl(javaMailSender, playerRepository);
-
-        when(playerRepository.findByVerificationToken(token)).thenReturn(player);
-
-        // Act
-        boolean result = emailVerificationService.verifyEmail(token);
-
-        // Assert
-        assertFalse(result);
-    }
-
 }

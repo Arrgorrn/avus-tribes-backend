@@ -2,6 +2,7 @@ package org.gfa.avustribesbackend.controllers;
 
 import org.gfa.avustribesbackend.dtos.EmailDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
+import org.gfa.avustribesbackend.exceptions.EmailException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.gfa.avustribesbackend.services.ResetPassword.ResetPasswordService;
@@ -32,11 +33,15 @@ public class PlayerController {
 
   @GetMapping("/email/verify/{token}")
   public ResponseEntity<Object> verifyEmail(@PathVariable String token) {
-    if (emailVerificationService.verifyEmail(token)) {
-      return ResponseEntity.ok().body("User successfully verified");
+    if (!emailVerificationService.isVerified(token)) {
+      if (emailVerificationService.verifyEmail(token)) {
+        return ResponseEntity.ok().body("User successfully verified");
+      } else {
+        throw new VerificationException("Verification failed, expired token");
+        // redirect to Gerzson's method?
+      }
     } else {
-      throw new VerificationException("Verification failed, expired token");
-      // redirect to Gerzson's method?
+      throw new EmailException("User already verified");
     }
   }
 

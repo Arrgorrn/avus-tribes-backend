@@ -22,6 +22,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     //mockito
     testImplementation ("org.mockito:mockito-core:3.11.2")
+    testImplementation ("org.powermock:powermock-api-mockito2:2.0.9")
+    testImplementation ("org.powermock:powermock-module-junit4:2.0.9")
     runtimeOnly("com.mysql:mysql-connector-j")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     //for email validation

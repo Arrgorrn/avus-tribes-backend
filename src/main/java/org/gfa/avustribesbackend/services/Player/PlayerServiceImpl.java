@@ -75,6 +75,7 @@ public class PlayerServiceImpl implements PlayerService {
     } else {
       Date date = new Date(System.currentTimeMillis());
       player.setVerifiedAt(date);
+      player.setIsVerified(true);
       playerRepository.save(player);
     }
     return ResponseEntity.ok("successful creation");

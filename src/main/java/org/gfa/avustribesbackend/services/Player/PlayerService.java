@@ -10,5 +10,4 @@ public interface PlayerService {
   boolean validateEmail(String email);
 
   String verificationToken();
-//  String encodePassword(String password);
 }

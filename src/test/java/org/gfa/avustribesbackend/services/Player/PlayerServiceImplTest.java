@@ -1,7 +1,7 @@
 package org.gfa.avustribesbackend.services.Player;
 
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
-import org.gfa.avustribesbackend.models.RegistrationError;
+import org.gfa.avustribesbackend.exceptions.ErrorResponse;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,8 +60,8 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setUsername("testUser");
     playerRegistrationBody.setPassword("password");
     playerRegistrationBody.setEmail("existing@gmail.com");
-    when(playerRepository.existsByEmail(playerRegistrationBody.getEmail())).thenReturn(false);
-    assertFalse(playerRepository.existsByEmail(playerRegistrationBody.getEmail()));
+    when(playerRepository.existsByEmailIgnoreCase(playerRegistrationBody.getEmail())).thenReturn(false);
+    assertFalse(playerRepository.existsByEmailIgnoreCase(playerRegistrationBody.getEmail()));
   }
 
   @Test
@@ -113,8 +113,8 @@ class PlayerServiceImplTest {
   private void assertErrorResponse(
       ResponseEntity<Object> responseEntity, String expectedErrorMessage) {
     assertEquals(400, responseEntity.getStatusCodeValue());
-    assertTrue(responseEntity.getBody() instanceof RegistrationError);
-    RegistrationError error = (RegistrationError) responseEntity.getBody();
-    assertEquals(expectedErrorMessage, error.getError());
+    assertTrue(responseEntity.getBody() instanceof ErrorResponse);
+    ErrorResponse error = (ErrorResponse) responseEntity.getBody();
+    assertEquals(expectedErrorMessage, error.getMessage());
   }
 }

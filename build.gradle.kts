@@ -29,7 +29,6 @@ dependencies {
     implementation ("org.springframework:spring-context-support:5.3.10")
     implementation ("javax.mail:javax.mail-api:1.5.6")
     implementation ("javax.mail:mail:1.4.7")
-//    implementation ("org.springframework.boot:spring-boot-starter-security")
 }
 
 tasks.withType<Test> {

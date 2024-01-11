@@ -22,6 +22,9 @@ public class Player {
   @Column(name = "password", nullable = false)
   private String password;
 
+  @Column(name = "is_verified")
+  private boolean isVerified;
+
   @Column(name = "verified_at")
   private Date verifiedAt;
 
@@ -55,6 +58,7 @@ public class Player {
     this.userName = userName;
     this.email = email;
     this.password = password;
+    this.isVerified = false;
     this.verificationToken = verificationToken;
     this.verificationTokenExpiresAt = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
     this.createdAt = new Date(System.currentTimeMillis());
@@ -90,6 +94,14 @@ public class Player {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public boolean isVerified() {
+    return isVerified;
+  }
+
+  public void setVerified(boolean verified) {
+    isVerified = verified;
   }
 
   public Date getVerifiedAt() {

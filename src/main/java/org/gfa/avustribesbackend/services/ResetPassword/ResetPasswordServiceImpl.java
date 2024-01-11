@@ -41,7 +41,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     Player player = playerRepository.findByEmailIgnoreCase(email.getEmail());
 
-    if (player.getVerifiedAt() == null) {
+    if (!player.isVerified()) {
       throw new VerificationException("Unverified email!");
     }
 

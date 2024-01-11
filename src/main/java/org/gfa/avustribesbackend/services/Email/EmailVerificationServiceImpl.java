@@ -46,6 +46,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     if (tokenValid) {
       player.setVerifiedAt(currentDate);
+      player.setVerified(true);
       playerRepository.save(player);
       return true;
     } else {

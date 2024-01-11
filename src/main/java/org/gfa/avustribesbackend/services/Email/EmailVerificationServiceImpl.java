@@ -13,6 +13,7 @@ import java.util.Date;
 public class EmailVerificationServiceImpl implements EmailVerificationService {
   private final JavaMailSender javaMailSender;
   private final PlayerRepository playerRepository;
+
   @Autowired
   public EmailVerificationServiceImpl(
       JavaMailSender javaMailSender, PlayerRepository playerRepository) {
@@ -27,7 +28,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     SimpleMailMessage message = new SimpleMailMessage();
     message.setTo(player.getEmail());
     message.setSubject("Registration Confirmation");
-    message.setText("Hello new player! Click this link: http://localhost:8080/email/verify/"+token); // insert Gerzson's awesome method here
+    message.setText("Hello new player! Click this link: http://localhost:8080/email/verify/" + player.getVerificationToken());
 
     javaMailSender.send(message);
   }
@@ -36,19 +37,19 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
   public boolean verifyEmail(String token) {
     Player player = playerRepository.findByVerificationToken(token);
 
-    // check if token valid
     boolean tokenValid = false;
     Date expirationDate = player.getVerificationTokenExpiresAt();
     Date currentDate = new Date(System.currentTimeMillis());
-    if (currentDate.before(expirationDate)){
+    if (currentDate.before(expirationDate)) {
       tokenValid = true;
     }
 
-    // verify player
-    if (tokenValid){
+    if (tokenValid) {
       player.setVerifiedAt(currentDate);
+      playerRepository.save(player);
       return true;
     } else {
-      return false; }
+      return false;
+    }
   }
 }

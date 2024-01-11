@@ -12,13 +12,14 @@ import java.util.Date;
 public class PlayerExceptionHandler {
 
   @ExceptionHandler({
-    CredentialException.class,
-    VerificationException.class,
-    CreationException.class,
+      CredentialException.class,
+      VerificationException.class,
+      CreationException.class,
   })
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public ErrorResponse badRequestExceptionHandler(
-      RuntimeException runtimeException, HttpServletRequest httpServletRequest) {
+      RuntimeException runtimeException,
+      HttpServletRequest httpServletRequest) {
     return new ErrorResponse(
         runtimeException.getMessage(),
         httpServletRequest.getRequestURI(),
@@ -28,7 +29,8 @@ public class PlayerExceptionHandler {
   @ExceptionHandler({AlreadyExistsException.class})
   @ResponseStatus(value = HttpStatus.CONFLICT)
   public ErrorResponse conflictExceptionHandler(
-      RuntimeException runtimeException, HttpServletRequest httpServletRequest) {
+      RuntimeException runtimeException,
+      HttpServletRequest httpServletRequest) {
     return new ErrorResponse(
         runtimeException.getMessage(),
         httpServletRequest.getRequestURI(),

@@ -1,6 +1,8 @@
 package org.gfa.avustribesbackend.controllers;
 
-import org.gfa.avustribesbackend.dtos.EmailDTO;
+import org.gfa.avustribesbackend.dtos.EmailRequestDTO;
+import org.gfa.avustribesbackend.dtos.PasswordRequestDTO;
+import org.gfa.avustribesbackend.dtos.TokenRequestDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
@@ -22,7 +24,9 @@ public class PlayerController {
 
   @Autowired
   public PlayerController(
-          PlayerService playerService, EmailVerificationService emailVerificationService, ResetPasswordService resetPasswordService) {
+      PlayerService playerService,
+      EmailVerificationService emailVerificationService,
+      ResetPasswordService resetPasswordService) {
     this.playerService = playerService;
     this.emailVerificationService = emailVerificationService;
     this.resetPasswordService = resetPasswordService;
@@ -33,8 +37,7 @@ public class PlayerController {
     if (emailVerificationService.verifyEmail(token)) {
       return ResponseEntity.ok().body("ok");
     } else {
-      // request for a new token? Gerzson?
-      return ResponseEntity.badRequest().body("not ok, some error message or exception");
+      throw new VerificationException("Verification error");
     }
   }
 
@@ -44,18 +47,13 @@ public class PlayerController {
   }
 
   @PostMapping("/reset-password")
-  public ResponseEntity<Object> sendResetPasswordEmail(@RequestBody(required = false) EmailDTO email) {
-    if (email == null) {
-      throw new CredentialException("Invalid Email!");
-    }
+  public ResponseEntity<Object> sendResetPasswordEmail(@RequestBody EmailRequestDTO email) {
     return resetPasswordService.sendResetPasswordEmail(email);
   }
 
-  @GetMapping("/reset-password/{token}")
-  public ResponseEntity<Object> resetPassword(@PathVariable(required = false) String token) {
-    if (token == null) {
-      throw new VerificationException("Invalid token!");
-    }
-    return resetPasswordService.resetPassword(token);
+  @PostMapping("/reset-password/{token}")
+  public ResponseEntity<Object> resetPassword(@PathVariable TokenRequestDTO token,
+                                              @RequestBody PasswordRequestDTO password) {
+    return resetPasswordService.resetPassword(token, password);
   }
 }

@@ -14,6 +14,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -127,5 +128,21 @@ public class PlayerServiceImpl implements PlayerService {
         dtoList.add(dto);
     }
     return dtoList;
+  }
+
+  @Override
+  public PlayerInfoDTO findPlayerDTOById(Long id) {
+    Optional<Player> playerOptional = playerRepository.findById(id);
+    if (playerOptional.isPresent()){
+      PlayerInfoDTO dto = createPlayerInfoDTO(playerOptional.get());
+      return dto;
+    } else {
+      return null;
+    }
+  }
+
+  @Override
+  public boolean checkId(Long id) {
+      return findPlayerDTOById(id) != null;
   }
 }

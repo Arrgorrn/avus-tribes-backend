@@ -3,6 +3,7 @@ package org.gfa.avustribesbackend.controllers;
 import org.gfa.avustribesbackend.dtos.EmailDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.exceptions.EmailException;
+import org.gfa.avustribesbackend.exceptions.NotFoundException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.gfa.avustribesbackend.services.ResetPassword.ResetPasswordService;
@@ -14,6 +15,7 @@ import org.gfa.avustribesbackend.services.Player.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @RestController
 public class PlayerController {
@@ -73,4 +75,12 @@ public class PlayerController {
     return new ResponseEntity<>(playerService.listPlayerInfoDTO(), HttpStatus.OK);
   }
 
+  @GetMapping("/players/{id}")
+  public ResponseEntity<Object> index(@PathVariable Long id) {
+    if (playerService.checkId(id)){
+      return new ResponseEntity<>(playerService.findPlayerDTOById(id),HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>("Player not found",HttpStatus.BAD_REQUEST);
+    }
+  }
 }

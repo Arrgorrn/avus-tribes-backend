@@ -1,6 +1,9 @@
 package org.gfa.avustribesbackend.services.Player;
 
+import org.gfa.avustribesbackend.controllers.PlayerController;
+import org.gfa.avustribesbackend.dtos.PlayerInfoDTO;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
+import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.models.RegistrationError;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,13 +11,23 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class PlayerServiceImplTest {
+  @InjectMocks
+  private PlayerController playerController;
+
+  @Mock
+  private PlayerService playerService1;
   @InjectMocks private PlayerServiceImpl playerService;
   PlayerRegistrationBody playerRegistrationBody;
   @Mock PlayerRepository playerRepository;
@@ -108,6 +121,67 @@ class PlayerServiceImplTest {
         new ResponseEntity<>("successful creation", HttpStatusCode.valueOf(200));
 
     assertEquals(responseEntity, responseEntity1);
+  }
+
+  @Test
+  void list_all_players(){
+    Player player1 = new Player("username", "email@test.com", "password", "token");
+    player1.setIsVerified(true);
+    player1.setVerifiedAt(new Date(System.currentTimeMillis()));
+    playerRepository.save(player1);
+    when(playerRepository.save(player1)).thenReturn(player1);
+
+    Player player2 = new Player("usernameee", "eeemail@test.com", "password", "tokeeen");
+    player2.setIsVerified(true);
+    player2.setVerifiedAt(new Date(System.currentTimeMillis()));
+    playerRepository.save(player2);
+    when(playerRepository.save(player2)).thenReturn(player2);
+
+    List<PlayerInfoDTO> list1 = new ArrayList<>();
+    list1.add(playerService.createPlayerInfoDTO(player1));
+    list1.add(playerService.createPlayerInfoDTO(player2));
+
+    List<PlayerInfoDTO> list2 = playerService.listPlayerInfoDTO();
+
+    assertEquals(list1, list2);
+  }
+
+  @Test
+  void testIndexPlayerFound() {
+    // Arrange
+    long playerId = 1L;
+    PlayerInfoDTO playerInfoDTO = new PlayerInfoDTO(playerId,"username",false,null);
+
+    // Mocking behavior
+    when(playerService1.checkId(playerId)).thenReturn(true);
+    when(playerService1.findPlayerDTOById(playerId)).thenReturn(playerInfoDTO);
+
+    // Act
+    ResponseEntity<Object> responseEntity = playerController.index(playerId);
+
+    // Assert
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    assertEquals(playerInfoDTO, responseEntity.getBody());
+    verify(playerService1, times(1)).checkId(playerId);
+    verify(playerService1, times(1)).findPlayerDTOById(playerId);
+  }
+
+  @Test
+  void testIndexPlayerNotFound() {
+    // Arrange
+    long playerId = 2L;
+
+    // Mocking behavior
+    when(playerService1.checkId(playerId)).thenReturn(false);
+
+    // Act
+    ResponseEntity<Object> responseEntity = playerController.index(playerId);
+
+    // Assert
+    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    assertEquals("Player not found", responseEntity.getBody());
+    verify(playerService1, times(1)).checkId(playerId);
+    verify(playerService1, never()).findPlayerDTOById(anyLong());
   }
 
   private void assertErrorResponse(

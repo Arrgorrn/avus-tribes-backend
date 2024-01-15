@@ -15,5 +15,7 @@ public interface PlayerService {
   String verificationToken();
   PlayerInfoDTO createPlayerInfoDTO(Player player);
   List<PlayerInfoDTO> listPlayerInfoDTO();
+  PlayerInfoDTO findPlayerDTOById(Long id);
+  boolean checkId(Long id);
 
 }

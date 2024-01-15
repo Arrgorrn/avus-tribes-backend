@@ -99,7 +99,7 @@ public class Player {
     this.verifiedAt = verifiedAt;
   }
 
-  public Boolean getIsVerified() {
+  public boolean getIsVerified() {
     return isVerified;
   }
 

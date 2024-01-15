@@ -143,7 +143,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
       javaMailSender.send(mimeMessage);
     } catch (MessagingException e) {
-      e.printStackTrace();
+      throw new EmailException("Unable to send email, please try again");
     }
   }
 

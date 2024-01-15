@@ -1,6 +1,7 @@
 package org.gfa.avustribesbackend.services.Email;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.exceptions.EmailException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.models.Player;
@@ -16,6 +17,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
 
 @Service
@@ -38,24 +42,27 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
   @Override
   public void sendVerificationEmail(String token) {
     Player player = playerRepository.findByVerificationToken(token);
-    String user = player.getUserName();
-    String verificationLink = url + token;
 
-    String htmlTemplate = readHtmlTemplateFromFile(templatePath);
-    htmlTemplate = htmlTemplate.replace("${user}", user);
-    htmlTemplate = htmlTemplate.replace("${verificationLink}", verificationLink);
+    if (player != null) {
+      String user = player.getUserName();
+      String verificationLink = url + token;
 
-    MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-    try {
-      MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-      helper.setTo(player.getEmail());
-      helper.setFrom(sender);
-      helper.setSubject(subject);
-      helper.setText(htmlTemplate, true);
+      String htmlTemplate = readHtmlTemplateFromFile(templatePath);
+      htmlTemplate = htmlTemplate.replace("${user}", user);
+      htmlTemplate = htmlTemplate.replace("${verificationLink}", verificationLink);
 
-      javaMailSender.send(mimeMessage);
-    } catch (MessagingException e) {
-      throw new EmailException("Unable to send email, please try again");
+      MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+      try {
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+        helper.setTo(player.getEmail());
+        helper.setFrom(sender);
+        helper.setSubject(subject);
+        helper.setText(htmlTemplate, true);
+
+        javaMailSender.send(mimeMessage);
+      } catch (MessagingException e) {
+        throw new EmailException("Unable to send email, please try again");
+      }
     }
   }
 
@@ -76,6 +83,11 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
   @Override
   public boolean verifyEmail(String token) {
     Player player = playerRepository.findByVerificationToken(token);
+
+    if (player == null) {
+      return false;
+    }
+
     if (!isVerified(player)) {
 
       // check if token valid
@@ -100,6 +112,49 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     }
   }
 
+  @Override
+  public void resendVerificationEmail(String email) {
+    Player player = playerRepository.findByEmail(email);
+
+    if (player == null) {
+      throw new CredentialException("Email address not found!");
+    }
+
+    if (player.getVerifiedAt() != null) { // change this to (player.isVerified)
+      throw new VerificationException("Email already verified!");
+    }
+
+    String newToken = verificationToken();
+    player.setVerificationToken(newToken);
+    player.setVerificationTokenExpiresAt(calculateTokenExpiration());
+
+    String verificationLink = "http://localhost:8080/email/verify/" + newToken;
+    String htmlMessage =
+        "<p>Please click <a href=\"" + verificationLink + "\">here</a> to verify your email.</p>";
+
+    MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+    MimeMessageHelper helper;
+    try {
+      helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+      helper.setTo(player.getEmail());
+      helper.setFrom("avustribesbackend@gmail.com");
+      helper.setSubject("Resend Verification Email");
+      helper.setText(htmlMessage, true);
+
+      javaMailSender.send(mimeMessage);
+    } catch (MessagingException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public String verificationToken() {
+    SecureRandom secureRandom = new SecureRandom();
+    byte[] tokenBytes = new byte[32];
+    secureRandom.nextBytes(tokenBytes);
+    return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
+  }
+
   private String readHtmlTemplateFromFile(String filePath) {
     try {
       Path path = Paths.get(filePath);
@@ -108,5 +163,11 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     } catch (IOException e) {
       throw new EmailException("Email template path not found");
     }
+  }
+
+  private Date calculateTokenExpiration() {
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.HOUR, 1);
+    return calendar.getTime();
   }
 }

@@ -6,6 +6,7 @@ import org.gfa.avustribesbackend.exceptions.EmailException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.gfa.avustribesbackend.services.ResetPassword.ResetPasswordService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
@@ -66,4 +67,10 @@ public class PlayerController {
     }
     return resetPasswordService.resetPassword(token);
   }
+
+  @GetMapping("/players")
+  public ResponseEntity<Object> index() {
+    return new ResponseEntity<>(playerService.listPlayerInfoDTO(), HttpStatus.OK);
+  }
+
 }

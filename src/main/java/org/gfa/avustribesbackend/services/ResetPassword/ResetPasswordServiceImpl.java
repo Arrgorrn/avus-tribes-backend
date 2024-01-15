@@ -28,7 +28,8 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   private final PlayerService playerService;
   private final Dotenv dotenv = Dotenv.configure().load();
   private final String sender = dotenv.get("VERIFICATION_EMAIL_SENDER");
-  private final String subject = dotenv.get("VERIFICATION_EMAIL_SUBJECT");
+  private final String subject = dotenv.get("VERIFICATION_EMAIL_SUBJECT3");
+  private final String resetPasswordUrl = dotenv.get("RESET_PASSWORD_URL");
 
   @Autowired
   public ResetPasswordServiceImpl(
@@ -57,13 +58,15 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     playerRepository.save(player);
 
+    String htmlMessage = "<p>Hello " + player.getUserName() + ". If you want to reset your password please click <a href=\"" + resetPasswordUrl + player.getForgottenPasswordToken() + "\">" + resetPasswordUrl + player.getForgottenPasswordToken() + "</a></p>";
+
     MimeMessage mimeMessage = javaMailSender.createMimeMessage();
     try {
       MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
       helper.setTo(player.getEmail());
       helper.setFrom(sender);
       helper.setSubject(subject);
-      helper.setText("Hello " + player.getUserName() + ". If you want to reset your password please click on this link: http://localhost:8080/reset-password/" + player.getForgottenPasswordToken());
+      helper.setText(htmlMessage, true);
 
       javaMailSender.send(mimeMessage);
     } catch (MessagingException e) {

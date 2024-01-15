@@ -24,6 +24,9 @@ public class Player {
   @Column(name = "verified_at")
   private Date verifiedAt;
 
+  @Column(name = "is_verified")
+  private Boolean isVerified;
+
   @Column(name = "verification_token", unique = true, nullable = false)
   private String verificationToken;
 
@@ -53,6 +56,7 @@ public class Player {
     this.verificationToken = verificationToken;
     this.verificationTokenExpiresAt = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
     this.createdAt = new Date(System.currentTimeMillis());
+    this.isVerified = false;
   }
 
   public Long getId() {
@@ -93,6 +97,14 @@ public class Player {
 
   public void setVerifiedAt(Date verifiedAt) {
     this.verifiedAt = verifiedAt;
+  }
+
+  public Boolean getIsVerified() {
+    return isVerified;
+  }
+
+  public void setIsVerified(Boolean verified) {
+    isVerified = verified;
   }
 
   public String getVerificationToken() {

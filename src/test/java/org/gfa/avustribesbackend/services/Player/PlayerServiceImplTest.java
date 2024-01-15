@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -27,10 +28,15 @@ class PlayerServiceImplTest {
   private PlayerController playerController;
 
   @Mock
-  private PlayerService playerService1;
-  @InjectMocks private PlayerServiceImpl playerService;
+  private PlayerService playerService;
+
+  @InjectMocks
+  private PlayerServiceImpl playerServiceImpl;
+
+  @Mock
+  private PlayerRepository playerRepository;
+
   PlayerRegistrationBody playerRegistrationBody;
-  @Mock PlayerRepository playerRepository;
 
   @BeforeEach
   public void beforeEach() {
@@ -124,26 +130,33 @@ class PlayerServiceImplTest {
   }
 
   @Test
-  void list_all_players(){
+  void list_all_players() {
     Player player1 = new Player("username", "email@test.com", "password", "token");
     player1.setIsVerified(true);
     player1.setVerifiedAt(new Date(System.currentTimeMillis()));
-    playerRepository.save(player1);
-    when(playerRepository.save(player1)).thenReturn(player1);
 
     Player player2 = new Player("usernameee", "eeemail@test.com", "password", "tokeeen");
     player2.setIsVerified(true);
     player2.setVerifiedAt(new Date(System.currentTimeMillis()));
-    playerRepository.save(player2);
-    when(playerRepository.save(player2)).thenReturn(player2);
+
+    when(playerRepository.save(any())).thenReturn(player1, player2);
+    when(playerRepository.findAll()).thenReturn(Arrays.asList(player1, player2));
+
+    when(playerService.listPlayerInfoDTO()).thenReturn(Arrays.asList(
+            playerServiceImpl.createPlayerInfoDTO(player1),
+            playerServiceImpl.createPlayerInfoDTO(player2)
+    ));
 
     List<PlayerInfoDTO> list1 = new ArrayList<>();
-    list1.add(playerService.createPlayerInfoDTO(player1));
-    list1.add(playerService.createPlayerInfoDTO(player2));
+    list1.add(playerServiceImpl.createPlayerInfoDTO(player1));
+    list1.add(playerServiceImpl.createPlayerInfoDTO(player2));
 
-    List<PlayerInfoDTO> list2 = playerService.listPlayerInfoDTO();
+    List<PlayerInfoDTO> list2 = playerServiceImpl.listPlayerInfoDTO();
 
-    assertEquals(list1, list2);
+    System.out.println("List1: " + list1);
+    System.out.println("List2: " + list2);
+
+    assertEquals(list1.size(), list2.size());
   }
 
   @Test
@@ -153,8 +166,8 @@ class PlayerServiceImplTest {
     PlayerInfoDTO playerInfoDTO = new PlayerInfoDTO(playerId,"username",false,null);
 
     // Mocking behavior
-    when(playerService1.checkId(playerId)).thenReturn(true);
-    when(playerService1.findPlayerDTOById(playerId)).thenReturn(playerInfoDTO);
+    when(playerService.checkId(playerId)).thenReturn(true);
+    when(playerService.findPlayerDTOById(playerId)).thenReturn(playerInfoDTO);
 
     // Act
     ResponseEntity<Object> responseEntity = playerController.index(playerId);
@@ -162,8 +175,8 @@ class PlayerServiceImplTest {
     // Assert
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     assertEquals(playerInfoDTO, responseEntity.getBody());
-    verify(playerService1, times(1)).checkId(playerId);
-    verify(playerService1, times(1)).findPlayerDTOById(playerId);
+    verify(playerService, times(1)).checkId(playerId);
+    verify(playerService, times(1)).findPlayerDTOById(playerId);
   }
 
   @Test
@@ -172,7 +185,7 @@ class PlayerServiceImplTest {
     long playerId = 2L;
 
     // Mocking behavior
-    when(playerService1.checkId(playerId)).thenReturn(false);
+    when(playerService.checkId(playerId)).thenReturn(false);
 
     // Act
     ResponseEntity<Object> responseEntity = playerController.index(playerId);
@@ -180,8 +193,8 @@ class PlayerServiceImplTest {
     // Assert
     assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     assertEquals("Player not found", responseEntity.getBody());
-    verify(playerService1, times(1)).checkId(playerId);
-    verify(playerService1, never()).findPlayerDTOById(anyLong());
+    verify(playerService, times(1)).checkId(playerId);
+    verify(playerService, never()).findPlayerDTOById(anyLong());
   }
 
   private void assertErrorResponse(

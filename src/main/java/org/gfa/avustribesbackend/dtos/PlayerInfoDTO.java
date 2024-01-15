@@ -15,6 +15,9 @@ public class PlayerInfoDTO {
         this.verified_at = verified_at;
     }
 
+    public PlayerInfoDTO() {
+    }
+
     public Long getId() {
         return id;
     }

@@ -60,8 +60,8 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setUsername("testUser");
     playerRegistrationBody.setPassword("password");
     playerRegistrationBody.setEmail("existing@gmail.com");
-    when(playerRepository.existsByEmail(playerRegistrationBody.getEmail())).thenReturn(false);
-    assertFalse(playerRepository.existsByEmail(playerRegistrationBody.getEmail()));
+    when(playerRepository.existsByEmailIgnoreCase(playerRegistrationBody.getEmail())).thenReturn(false);
+    assertFalse(playerRepository.existsByEmailIgnoreCase(playerRegistrationBody.getEmail()));
   }
 
   @Test

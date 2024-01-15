@@ -4,23 +4,31 @@ import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.models.RegistrationError;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
+import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
+import java.sql.Date;
 import java.util.Base64;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
+  Dotenv dotenv = Dotenv.configure().load();
+  String verifyEmailEnabled = dotenv.get("VERIFY_EMAIL_ENABLED");
 
   private final PlayerRepository playerRepository;
+  private final EmailVerificationService emailVerificationService;
 
   @Autowired
-  public PlayerServiceImpl(PlayerRepository playerRepository) {
+  public PlayerServiceImpl(
+      PlayerRepository playerRepository, EmailVerificationService emailVerificationService) {
     this.playerRepository = playerRepository;
+    this.emailVerificationService = emailVerificationService;
   }
 
   @Override
@@ -29,32 +37,27 @@ public class PlayerServiceImpl implements PlayerService {
     if (request.getUsername() == null) {
       error.setError("Username is required");
       return ResponseEntity.status(400).body(error);
-    }
-    else if (request.getPassword() == null) {
+    } else if (request.getPassword() == null) {
       error.setError("Password is required");
       return ResponseEntity.status(400).body(error);
-    }
-    else if (request.getEmail() == null) {
+    } else if (request.getEmail() == null) {
       error.setError("Email is required");
       return ResponseEntity.status(400).body(error);
-    }
-    else if (playerRepository.existsByUserName(request.getUsername())) {
+    } else if (playerRepository.existsByUserName(request.getUsername())) {
       return ResponseEntity.status(409).body("Username is already taken");
     }
     // extra one:) ->
-    else if (playerRepository.existsByEmail(request.getEmail())) {
+    else if (playerRepository.existsByEmailIgnoreCase(request.getEmail())) {
       return ResponseEntity.status(400).body("Email is already taken");
     }
     // <-
     else if (request.getUsername().length() < 4) {
       error.setError("Username must be at least 4 characters long");
       return ResponseEntity.status(400).body(error);
-    }
-    else if (request.getPassword().length() < 8) {
+    } else if (request.getPassword().length() < 8) {
       error.setError("Password must be at least 8 characters long");
       return ResponseEntity.status(400).body(error);
-    }
-    else if (!validateEmail(request.getEmail())) {
+    } else if (!validateEmail(request.getEmail())) {
       error.setError("Invalid email");
       return ResponseEntity.status(400).body(error);
     }
@@ -66,6 +69,15 @@ public class PlayerServiceImpl implements PlayerService {
       return ResponseEntity.status(400).body(error);
     }
     playerRepository.save(player);
+    if (verifyEmailEnabled.equals("true")) {
+      String token = player.getVerificationToken();
+      emailVerificationService.sendVerificationEmail(token);
+    } else {
+      Date date = new Date(System.currentTimeMillis());
+      player.setVerifiedAt(date);
+      player.setIsVerified(true);
+      playerRepository.save(player);
+    }
     return ResponseEntity.ok("successful creation");
   }
 
@@ -87,6 +99,6 @@ public class PlayerServiceImpl implements PlayerService {
     SecureRandom secureRandom = new SecureRandom();
     byte[] tokenBytes = new byte[32];
     secureRandom.nextBytes(tokenBytes);
-    return Base64.getEncoder().encodeToString(tokenBytes);
+    return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
   }
 }

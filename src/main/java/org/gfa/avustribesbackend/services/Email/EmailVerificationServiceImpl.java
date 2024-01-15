@@ -128,7 +128,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     player.setVerificationToken(newToken);
     player.setVerificationTokenExpiresAt(calculateTokenExpiration());
 
-    String verificationLink = "http://localhost:8080/email/verify/" + newToken;
+    String verificationLink = url + newToken;
     String htmlMessage =
         "<p>Please click <a href=\"" + verificationLink + "\">here</a> to verify your email.</p>";
 
@@ -137,7 +137,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     try {
       helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
       helper.setTo(player.getEmail());
-      helper.setFrom("avustribesbackend@gmail.com");
+      helper.setFrom(sender);
       helper.setSubject("Resend Verification Email");
       helper.setText(htmlMessage, true);
 

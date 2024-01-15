@@ -30,6 +30,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
   private final String url = dotenv.get("VERIFICATION_EMAIL_URL");
   private final String sender = dotenv.get("VERIFICATION_EMAIL_SENDER");
   private final String subject = dotenv.get("VERIFICATION_EMAIL_SUBJECT");
+  private final String subject2 = dotenv.get("VERIFICATION_EMAIL_SUBJECT2");
   private final String templatePath = dotenv.get("VERIFICATION_EMAIL_TEMPLATE_FILEPATH");
 
   @Autowired
@@ -138,7 +139,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
       helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
       helper.setTo(player.getEmail());
       helper.setFrom(sender);
-      helper.setSubject("Resend Verification Email");
+      helper.setSubject(subject2);
       helper.setText(htmlMessage, true);
 
       javaMailSender.send(mimeMessage);

@@ -3,7 +3,6 @@ package org.gfa.avustribesbackend.controllers;
 import org.gfa.avustribesbackend.dtos.EmailRequestDTO;
 import org.gfa.avustribesbackend.dtos.PasswordRequestDTO;
 import org.gfa.avustribesbackend.dtos.TokenRequestDTO;
-import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.gfa.avustribesbackend.services.ResetPassword.ResetPasswordService;

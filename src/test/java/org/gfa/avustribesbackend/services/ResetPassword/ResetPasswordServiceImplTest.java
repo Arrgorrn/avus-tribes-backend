@@ -4,7 +4,6 @@ import org.gfa.avustribesbackend.dtos.EmailRequestDTO;
 import org.gfa.avustribesbackend.dtos.PasswordRequestDTO;
 import org.gfa.avustribesbackend.dtos.TokenRequestDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
-import org.gfa.avustribesbackend.exceptions.ErrorResponse;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
@@ -31,12 +30,11 @@ class ResetPasswordServiceImplTest {
   @Mock
   private PlayerRepository playerRepository;
   @Mock
-  private PlayerService playerService;
-  @Mock
   private JavaMailSender javaMailSender;
+  @Mock
+  private PlayerService playerService;
   private EmailRequestDTO emailRequestDTO;
   private Player player;
-  private ErrorResponse errorResponse;
   private TokenRequestDTO tokenRequestDTO;
   PasswordRequestDTO passwordRequestDTO;
   private Date date;

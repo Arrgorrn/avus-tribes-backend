@@ -114,7 +114,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
   @Override
   public void resendVerificationEmail(String email) {
-    Player player = playerRepository.findByEmail(email);
+    Player player = playerRepository.findByEmailIgnoreCase(email);
 
     if (player == null) {
       throw new CredentialException("Email address not found!");

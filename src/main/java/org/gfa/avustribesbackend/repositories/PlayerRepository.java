@@ -16,6 +16,4 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
   Player findByEmailIgnoreCase(String email);
 
   Player findByForgottenPasswordToken(String token);
-
-  Player findByEmail(String email);
 }

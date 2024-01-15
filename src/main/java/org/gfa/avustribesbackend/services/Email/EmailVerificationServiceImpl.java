@@ -120,7 +120,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
       throw new CredentialException("Email address not found!");
     }
 
-    if (player.getVerifiedAt() != null) { // change this to (player.isVerified)
+    if (player.getIsVerified()) {
       throw new VerificationException("Email already verified!");
     }
 

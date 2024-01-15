@@ -22,11 +22,11 @@ public class Player {
   @Column(name = "password", nullable = false)
   private String password;
 
-  @Column(name = "is_verified")
-  private boolean isVerified;
-
   @Column(name = "verified_at")
   private Date verifiedAt;
+
+  @Column(name = "is_verified")
+  private boolean isVerified;
 
   @Column(name = "verification_token", unique = true, nullable = false)
   private String verificationToken;
@@ -96,20 +96,20 @@ public class Player {
     this.password = password;
   }
 
-  public boolean isVerified() {
-    return isVerified;
-  }
-
-  public void setVerified(boolean verified) {
-    isVerified = verified;
-  }
-
   public Date getVerifiedAt() {
     return verifiedAt;
   }
 
   public void setVerifiedAt(Date verifiedAt) {
     this.verifiedAt = verifiedAt;
+  }
+
+  public boolean getIsVerified() {
+    return isVerified;
+  }
+
+  public void setIsVerified(boolean verified) {
+    isVerified = verified;
   }
 
   public String getVerificationToken() {

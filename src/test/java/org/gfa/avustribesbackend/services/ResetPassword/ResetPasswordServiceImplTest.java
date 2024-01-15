@@ -1,6 +1,6 @@
 package org.gfa.avustribesbackend.services.ResetPassword;
 
-import org.gfa.avustribesbackend.dtos.EmailRequestDTO;
+import org.gfa.avustribesbackend.dtos.EmailDTO;
 import org.gfa.avustribesbackend.dtos.PasswordRequestDTO;
 import org.gfa.avustribesbackend.dtos.TokenRequestDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
@@ -33,7 +33,7 @@ class ResetPasswordServiceImplTest {
   private JavaMailSender javaMailSender;
   @Mock
   private PlayerService playerService;
-  private EmailRequestDTO emailRequestDTO;
+  private EmailDTO emailDTO;
   private Player player;
   private TokenRequestDTO tokenRequestDTO;
   PasswordRequestDTO passwordRequestDTO;
@@ -41,10 +41,10 @@ class ResetPasswordServiceImplTest {
 
   @Test
   void sendResetPasswordEmail_with_no_errors_should_response_with_status_200_and_set_password_token_and_password_expiration_to_player() {
-    emailRequestDTO = new EmailRequestDTO("example@example.com");
+    emailDTO = new EmailDTO("example@example.com");
 
     player = new Player();
-    player.setVerified(true);
+    player.setIsVerified(true);
 
     when(playerService.verificationToken()).thenReturn("token");
 
@@ -52,10 +52,10 @@ class ResetPasswordServiceImplTest {
 
     ResponseEntity<Object> expected = new ResponseEntity<>(HttpStatusCode.valueOf(200));
 
-    when(playerRepository.existsByEmailIgnoreCase(emailRequestDTO.getEmail())).thenReturn(true);
-    when(playerRepository.findByEmailIgnoreCase(emailRequestDTO.getEmail())).thenReturn(player);
+    when(playerRepository.existsByEmailIgnoreCase(emailDTO.getEmail())).thenReturn(true);
+    when(playerRepository.findByEmailIgnoreCase(emailDTO.getEmail())).thenReturn(player);
 
-    ResponseEntity<Object> actual = resetPasswordService.sendResetPasswordEmail(emailRequestDTO);
+    ResponseEntity<Object> actual = resetPasswordService.sendResetPasswordEmail(emailDTO);
 
     String actualToken = player.getForgottenPasswordToken();
 
@@ -67,11 +67,11 @@ class ResetPasswordServiceImplTest {
 
   @Test
   void sendResetPasswordEmail_with_not_existing_email_in_database_should_throw_credential_exception() {
-    emailRequestDTO = new EmailRequestDTO("example@example.com");
+    emailDTO = new EmailDTO("example@example.com");
 
-    when(playerRepository.existsByEmailIgnoreCase(emailRequestDTO.getEmail())).thenReturn(false);
+    when(playerRepository.existsByEmailIgnoreCase(emailDTO.getEmail())).thenReturn(false);
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailRequestDTO));
+    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
 
     String expectedMessage = "Invalid email!";
     String actualMessage = exception.getMessage();
@@ -81,9 +81,9 @@ class ResetPasswordServiceImplTest {
 
   @Test
   void sendResetPasswordEmail_with_null_emailRequestDTO_should_throw_credential_exception() {
-    emailRequestDTO = null;
+    emailDTO = null;
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailRequestDTO));
+    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
 
     String expectedMessage = "Invalid email!";
     String actualMessage = exception.getMessage();
@@ -93,9 +93,9 @@ class ResetPasswordServiceImplTest {
 
   @Test
   void sendResetPasswordEmail_with_empty_email_in_emailRequestDTO_should_throw_credential_exception() {
-    emailRequestDTO = new EmailRequestDTO("");
+    emailDTO = new EmailDTO("");
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailRequestDTO));
+    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
 
     String expectedMessage = "Invalid email!";
     String actualMessage = exception.getMessage();
@@ -105,9 +105,9 @@ class ResetPasswordServiceImplTest {
 
   @Test
   void sendResetPasswordEmail_with_null_email_in_emailRequestDTO_should_throw_credential_exception() {
-    emailRequestDTO = new EmailRequestDTO();
+    emailDTO = new EmailDTO();
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailRequestDTO));
+    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
 
     String expectedMessage = "Invalid email!";
     String actualMessage = exception.getMessage();
@@ -117,14 +117,14 @@ class ResetPasswordServiceImplTest {
 
   @Test
   void sendResetPasswordEmail_with_unverified_player_should_throw_verification_exception() {
-    emailRequestDTO = new EmailRequestDTO("example@example.com");
+    emailDTO = new EmailDTO("example@example.com");
 
     player = new Player();
 
-    when(playerRepository.existsByEmailIgnoreCase(emailRequestDTO.getEmail())).thenReturn(true);
-    when(playerRepository.findByEmailIgnoreCase(emailRequestDTO.getEmail())).thenReturn(player);
+    when(playerRepository.existsByEmailIgnoreCase(emailDTO.getEmail())).thenReturn(true);
+    when(playerRepository.findByEmailIgnoreCase(emailDTO.getEmail())).thenReturn(player);
 
-    Exception exception = assertThrows(VerificationException.class, () -> resetPasswordService.sendResetPasswordEmail(emailRequestDTO));
+    Exception exception = assertThrows(VerificationException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
 
     String expectedMessage = "Unverified email!";
     String actualMessage = exception.getMessage();

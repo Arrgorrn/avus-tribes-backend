@@ -12,13 +12,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.sql.Date;
 import java.util.Base64;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
+  Dotenv dotenv = Dotenv.configure().load();
+  String verifyEmailEnabled = dotenv.get("VERIFY_EMAIL_ENABLED");
 
   private final PlayerRepository playerRepository;
   private final EmailVerificationService emailVerificationService;
@@ -63,9 +67,15 @@ public class PlayerServiceImpl implements PlayerService {
 
     playerRepository.save(player);
 
-    String token = player.getVerificationToken();
-    emailVerificationService.sendVerificationEmail(token);
-
+    if (verifyEmailEnabled.equals("true")) {
+      String token = player.getVerificationToken();
+      emailVerificationService.sendVerificationEmail(token);
+    } else {
+      Date date = new Date(System.currentTimeMillis());
+      player.setVerifiedAt(date);
+      player.setIsVerified(true);
+      playerRepository.save(player);
+    }
     return ResponseEntity.ok("successful creation");
   }
 

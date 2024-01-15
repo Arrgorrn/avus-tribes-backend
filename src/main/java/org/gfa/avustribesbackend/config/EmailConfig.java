@@ -12,9 +12,9 @@ public class EmailConfig {
   public JavaMailSender javaMailSender() {
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
     mailSender.setHost("sandbox.smtp.mailtrap.io");
-    mailSender.setPort(25);
-    mailSender.setUsername("7a747e823a1cea");
-    mailSender.setPassword("3ef05efea69199");
+    mailSender.setPort(587);
+    mailSender.setUsername("9df1100280b9f2");
+    mailSender.setPassword("36f6cbde27134b");
 
     return mailSender;
   }

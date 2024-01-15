@@ -1,19 +1,23 @@
 package org.gfa.avustribesbackend.services.ResetPassword;
 
-import org.gfa.avustribesbackend.dtos.EmailRequestDTO;
+import io.github.cdimascio.dotenv.Dotenv;
+import org.gfa.avustribesbackend.dtos.EmailDTO;
 import org.gfa.avustribesbackend.dtos.PasswordRequestDTO;
 import org.gfa.avustribesbackend.dtos.TokenRequestDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
+import org.gfa.avustribesbackend.exceptions.EmailException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Player.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.Date;
 
 @Service
@@ -22,6 +26,9 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   private final JavaMailSender javaMailSender;
   private final PlayerRepository playerRepository;
   private final PlayerService playerService;
+  private final Dotenv dotenv = Dotenv.configure().load();
+  private final String sender = dotenv.get("VERIFICATION_EMAIL_SENDER");
+  private final String subject = dotenv.get("VERIFICATION_EMAIL_SUBJECT");
 
   @Autowired
   public ResetPasswordServiceImpl(
@@ -34,14 +41,14 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   }
 
   @Override
-  public ResponseEntity<Object> sendResetPasswordEmail(EmailRequestDTO email) {
+  public ResponseEntity<Object> sendResetPasswordEmail(EmailDTO email) {
     if (email == null || email.getEmail() == null || email.getEmail().isEmpty() || !playerRepository.existsByEmailIgnoreCase(email.getEmail())) {
       throw new CredentialException("Invalid email!");
     }
 
     Player player = playerRepository.findByEmailIgnoreCase(email.getEmail());
 
-    if (!player.isVerified()) {
+    if (!player.getIsVerified()) {
       throw new VerificationException("Unverified email!");
     }
 
@@ -50,12 +57,18 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     playerRepository.save(player);
 
-    SimpleMailMessage message = new SimpleMailMessage();
-    message.setTo(player.getEmail());
-    message.setSubject("Password reset");
-    message.setText("Hello " + player.getUserName() + ". If you want to reset your password please click on this link: http://localhost:8080/reset-password/" + player.getForgottenPasswordToken());
+    MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+    try {
+      MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+      helper.setTo(player.getEmail());
+      helper.setFrom(sender);
+      helper.setSubject(subject);
+      helper.setText("Hello " + player.getUserName() + ". If you want to reset your password please click on this link: http://localhost:8080/reset-password/" + player.getForgottenPasswordToken());
 
-    javaMailSender.send(message);
+      javaMailSender.send(mimeMessage);
+    } catch (MessagingException e) {
+      throw new EmailException("Unable to send email, please try again");
+    }
 
     return ResponseEntity.ok().build();
   }

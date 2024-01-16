@@ -1,7 +1,8 @@
 package org.gfa.avustribesbackend.controllers;
 
 import org.gfa.avustribesbackend.dtos.EmailDTO;
-import org.gfa.avustribesbackend.exceptions.CredentialException;
+import org.gfa.avustribesbackend.dtos.PasswordRequestDTO;
+import org.gfa.avustribesbackend.dtos.TokenRequestDTO;
 import org.gfa.avustribesbackend.exceptions.EmailException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
@@ -52,20 +53,14 @@ public class PlayerController {
   }
 
   @PostMapping("/reset-password")
-  public ResponseEntity<Object> sendResetPasswordEmail(
-      @RequestBody(required = false) EmailDTO email) {
-    if (email == null) {
-      throw new CredentialException("Invalid Email!");
-    }
+  public ResponseEntity<Object> sendResetPasswordEmail(@RequestBody EmailDTO email) {
     return resetPasswordService.sendResetPasswordEmail(email);
   }
 
-  @GetMapping("/reset-password/{token}")
-  public ResponseEntity<Object> resetPassword(@PathVariable(required = false) String token) {
-    if (token == null) {
-      throw new VerificationException("Invalid token!");
-    }
-    return resetPasswordService.resetPassword(token);
+  @PostMapping("/reset-password/{token}")
+  public ResponseEntity<Object> resetPassword(@PathVariable TokenRequestDTO token,
+                                              @RequestBody PasswordRequestDTO password) {
+    return resetPasswordService.resetPassword(token, password);
   }
 
   @Transactional(noRollbackFor = VerificationException.class)

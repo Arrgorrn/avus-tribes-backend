@@ -3,6 +3,7 @@ package org.gfa.avustribesbackend.services.Email;
 import org.gfa.avustribesbackend.models.Player;
 
 public interface EmailVerificationService {
+
   boolean verifyEmail(String token);
 
   boolean isVerified(String token);

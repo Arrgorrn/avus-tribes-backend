@@ -10,4 +10,8 @@ public interface EmailVerificationService {
   boolean isVerified(Player player);
 
   void sendVerificationEmail(String email);
+
+  void resendVerificationEmail(String email);
+
+  String verificationToken();
 }

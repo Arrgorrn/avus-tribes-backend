@@ -28,7 +28,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   private final PlayerService playerService;
   private final Dotenv dotenv = Dotenv.configure().load();
   private final String sender = dotenv.get("VERIFICATION_EMAIL_SENDER");
-  private final String subject = dotenv.get("VERIFICATION_EMAIL_SUBJECT3");
+  private final String subject = dotenv.get("RESET_PASSWORD_EMAIL_SUBJECT");
   private final String resetPasswordUrl = dotenv.get("RESET_PASSWORD_URL");
 
   @Autowired

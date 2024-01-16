@@ -30,7 +30,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
   private final String url = dotenv.get("VERIFICATION_EMAIL_URL");
   private final String sender = dotenv.get("VERIFICATION_EMAIL_SENDER");
   private final String subject = dotenv.get("VERIFICATION_EMAIL_SUBJECT");
-  private final String resendVerificationEmailSubject = dotenv.get("VERIFICATION_EMAIL_SUBJECT2");
+  private final String resendVerificationEmailSubject = dotenv.get("RESEND_VERIFICATION_EMAIL_SUBJECT");
   private final String templatePath = dotenv.get("VERIFICATION_EMAIL_TEMPLATE_FILEPATH");
 
   @Autowired

@@ -71,13 +71,7 @@ public class PlayerController {
   @Transactional(noRollbackFor = VerificationException.class)
   @PostMapping("/email/verify/resend")
   public ResponseEntity<Object> resendVerificationEmail(@RequestBody EmailDTO emailDTO) {
-    try {
-      emailVerificationService.resendVerificationEmail(emailDTO.getEmail());
-      return ResponseEntity.ok().body("ok");
-    } catch (CredentialException e) {
-      return ResponseEntity.status(404).body("Email address not found!");
-    } catch (VerificationException e) {
-      return ResponseEntity.status(400).body("Email is already verified!");
-    }
+    emailVerificationService.resendVerificationEmail(emailDTO.getEmail());
+    return ResponseEntity.ok().body("ok");
   }
 }

@@ -1,6 +1,7 @@
 package org.gfa.avustribesbackend.models;
 
 import jakarta.persistence.*;
+import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 
 @Entity
 public class BuildingType {
@@ -10,8 +11,9 @@ public class BuildingType {
   @Column(name = "Id", unique = true, nullable = false)
   private Long id;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "Name", unique = true, nullable = false)
-  private String name;
+  private BuildingTypeValue name;
 
   @OneToOne
   @JoinColumn(name = "resource_type_id", nullable = true)
@@ -19,7 +21,7 @@ public class BuildingType {
 
   public BuildingType() {}
 
-  public BuildingType(String name, ResourceType resourceType) {
+  public BuildingType(BuildingTypeValue name, ResourceType resourceType) {
     this.name = name;
     this.resourceType = resourceType;
   }
@@ -32,11 +34,11 @@ public class BuildingType {
     this.id = id;
   }
 
-  public String getName() {
+  public BuildingTypeValue getName() {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(BuildingTypeValue name) {
     this.name = name;
   }
 

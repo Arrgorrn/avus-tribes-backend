@@ -25,7 +25,7 @@ public class Player {
   private Date verifiedAt;
 
   @Column(name = "is_verified")
-  private boolean isVerified;
+  private Boolean isVerified;
 
   @Column(name = "verification_token", unique = true, nullable = false)
   private String verificationToken;
@@ -99,7 +99,7 @@ public class Player {
     this.verifiedAt = verifiedAt;
   }
 
-  public boolean getIsVerified() {
+  public Boolean getIsVerified() {
     return isVerified;
   }
 

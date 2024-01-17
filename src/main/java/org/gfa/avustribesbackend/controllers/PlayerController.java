@@ -77,7 +77,7 @@ public class PlayerController {
     if (playerService.checkId(id)){
       return new ResponseEntity<>(playerService.findPlayerDTOById(id),HttpStatus.OK);
     } else {
-      return new ResponseEntity<>("Player not found",HttpStatus.BAD_REQUEST);
+      throw new CredentialException("Player not found");
     }
   }
 }

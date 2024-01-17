@@ -48,6 +48,7 @@ public class Player {
 
   public Player() {
     createdAt = new Date(System.currentTimeMillis());
+    this.isVerified = false;
   }
 
   public Player(

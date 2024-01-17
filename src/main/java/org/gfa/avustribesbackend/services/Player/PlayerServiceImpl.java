@@ -1,5 +1,6 @@
 package org.gfa.avustribesbackend.services.Player;
 
+import org.gfa.avustribesbackend.dtos.PlayerInfoDTO;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.exceptions.AlreadyExistsException;
 import org.gfa.avustribesbackend.exceptions.CreationException;
@@ -13,7 +14,11 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
 import javax.mail.internet.AddressException;
@@ -98,5 +103,44 @@ public class PlayerServiceImpl implements PlayerService {
     byte[] tokenBytes = new byte[32];
     secureRandom.nextBytes(tokenBytes);
     return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
+  }
+
+  @Override
+  public PlayerInfoDTO createPlayerInfoDTO(Player player) {
+    PlayerInfoDTO dto = null;
+    if (player.getIsVerified()) {
+      dto = new PlayerInfoDTO(
+              player.getId(), player.getUserName(), player.getIsVerified(), player.getVerifiedAt());
+    } else {
+      dto = new PlayerInfoDTO(player.getId(), player.getUserName(), player.getIsVerified(), null);
+    }
+    return dto;
+   }
+
+  @Override
+  public List<PlayerInfoDTO> listPlayerInfoDTO() {
+    List<Player> allPlayers = playerRepository.findAll();
+    List<PlayerInfoDTO> dtoList = new ArrayList<>();
+    for (Player player : allPlayers){
+        PlayerInfoDTO dto = createPlayerInfoDTO(player);
+        dtoList.add(dto);
+    }
+    return dtoList;
+  }
+
+  @Override
+  public PlayerInfoDTO findPlayerDTOById(Long id) {
+    Optional<Player> playerOptional = playerRepository.findById(id);
+    if (playerOptional.isPresent()){
+      PlayerInfoDTO dto = createPlayerInfoDTO(playerOptional.get());
+      return dto;
+    } else {
+      throw new CredentialException("Player not found");
+    }
+  }
+
+  @Override
+  public boolean checkId(Long id) {
+      return findPlayerDTOById(id) != null;
   }
 }

@@ -1,7 +1,11 @@
 package org.gfa.avustribesbackend.models;
 
 import jakarta.persistence.*;
+
+import java.util.List;
+
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
+
 
 @Entity
 public class BuildingType {
@@ -10,20 +14,22 @@ public class BuildingType {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "Id", unique = true, nullable = false)
   private Long id;
-
   @Enumerated(EnumType.STRING)
   @Column(name = "Name", unique = true, nullable = false)
   private BuildingTypeValue name;
-
   @OneToOne
   @JoinColumn(name = "resource_type_id", nullable = true)
   private ResourceType resourceType;
+  @OneToMany(mappedBy = "buildingType")
+  private List<Building> buildings;
 
-  public BuildingType() {}
+  public BuildingType() {
+  }
 
-  public BuildingType(BuildingTypeValue name, ResourceType resourceType) {
+  public BuildingType(BuildingTypeValue name, ResourceType resourceType, List<Building> buildings) {
     this.name = name;
     this.resourceType = resourceType;
+    this.buildings = buildings;
   }
 
   public Long getId() {
@@ -32,6 +38,14 @@ public class BuildingType {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public List<Building> getBuildings() {
+    return buildings;
+  }
+
+  public void setBuildings(List<Building> buildings) {
+    this.buildings = buildings;
   }
 
   public BuildingTypeValue getName() {
@@ -50,3 +64,4 @@ public class BuildingType {
     this.resourceType = resourceType;
   }
 }
+

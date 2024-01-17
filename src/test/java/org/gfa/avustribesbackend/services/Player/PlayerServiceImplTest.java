@@ -205,7 +205,7 @@ class PlayerServiceImplTest {
             () -> playerController.index(playerId));
 
     // Assert
-    assertEquals("Player not found", exception.getMessage());
+    assertEquals("Player not found", exception.getMessage()); 
   }
 
   private void assertErrorResponse(

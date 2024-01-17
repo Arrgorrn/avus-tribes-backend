@@ -8,8 +8,14 @@ import org.springframework.stereotype.Repository;
 public interface PlayerRepository extends JpaRepository<Player, Long> {
 
   Player findByVerificationToken(String token);
+
   boolean existsByUserName(String name);
+
   boolean existsByEmailIgnoreCase(String email);
+
   Player findByEmailIgnoreCase(String email);
+
   Player findByForgottenPasswordToken(String token);
+
+  boolean existsByForgottenPasswordToken(String token);
 }

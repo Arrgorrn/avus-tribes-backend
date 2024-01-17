@@ -5,13 +5,17 @@ public class PlayerRegistrationBody {
   private String email;
   private String password;
 
-  public PlayerRegistrationBody(String username, String email, String password) {
+  public PlayerRegistrationBody(
+      String username,
+      String email,
+      String password) {
     this.username = username;
     this.email = email;
     this.password = password;
   }
 
-  public PlayerRegistrationBody() {}
+  public PlayerRegistrationBody() {
+  }
 
   public String getUsername() {
     return username;

@@ -31,7 +31,8 @@ public class Kingdom {
   @OneToMany(mappedBy = "kingdom")
   private List<Resource> resources;
 
-  public Kingdom() {}
+  public Kingdom() {
+  }
 
   public Kingdom(String name, Double coordinateX, Double coordinateY, World world) {
     this.name = name;
@@ -39,8 +40,6 @@ public class Kingdom {
     this.coordinateY = coordinateY;
     this.world = world;
   }
-
-  // Getters and setters
 
   public Long getId() {
     return id;

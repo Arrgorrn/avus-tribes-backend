@@ -22,7 +22,9 @@ public class Resource {
     this.amount = 0;
   }
 
-  public Resource(Production production, Kingdom kingdom) {
+  public Resource(
+      Production production,
+      Kingdom kingdom) {
     this.production = production;
     this.kingdom = kingdom;
     this.amount = 0;

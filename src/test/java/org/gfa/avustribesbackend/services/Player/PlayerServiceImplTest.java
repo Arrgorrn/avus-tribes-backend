@@ -38,10 +38,10 @@ class PlayerServiceImplTest {
   @Mock
   private PlayerRepository playerRepository;
 
-  PlayerRegistrationBody playerRegistrationBody;
-  
+  private PlayerRegistrationBody playerRegistrationBody;
+
   @Mock
-  EmailVerificationService emailVerificationService;
+  private EmailVerificationService emailVerificationService;
 
   @BeforeEach
   public void beforeEach() {
@@ -51,7 +51,7 @@ class PlayerServiceImplTest {
 
   @Test
   void test_register_player_username_null() {
-    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    Exception exception = assertThrows(CredentialException.class, () ->playerServiceImpl.registerPlayer(playerRegistrationBody));
     String expectedMessage = "Username is required";
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
@@ -60,7 +60,7 @@ class PlayerServiceImplTest {
   @Test
   void test_register_player_password_null() {
     playerRegistrationBody.setUsername("testUser");
-    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    Exception exception = assertThrows(CredentialException.class, () ->playerServiceImpl.registerPlayer(playerRegistrationBody));
     String expectedMessage = "Password is required";
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
@@ -70,7 +70,7 @@ class PlayerServiceImplTest {
   void test_register_player_email_null() {
     playerRegistrationBody.setUsername("testUser");
     playerRegistrationBody.setPassword("password");
-    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    Exception exception = assertThrows(CredentialException.class, () ->playerServiceImpl.registerPlayer(playerRegistrationBody));
     String expectedMessage = "Email is required";
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
@@ -99,7 +99,7 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setUsername("kak");
     playerRegistrationBody.setEmail("hello@gmail.com");
     playerRegistrationBody.setPassword("password");
-    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    Exception exception = assertThrows(CredentialException.class, () ->playerServiceImpl.registerPlayer(playerRegistrationBody));
     String expectedMessage = "Username must be at least 4 characters long";
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
@@ -110,7 +110,7 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setUsername("Hello");
     playerRegistrationBody.setEmail("hello@gmail.com");
     playerRegistrationBody.setPassword("short");
-    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    Exception exception = assertThrows(CredentialException.class, () ->playerServiceImpl.registerPlayer(playerRegistrationBody));
     String expectedMessage = "Password must be at least 8 characters long";
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
@@ -121,7 +121,7 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setUsername("Hello");
     playerRegistrationBody.setEmail("hellogmail.com");
     playerRegistrationBody.setPassword("password");
-    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    Exception exception = assertThrows(CredentialException.class, () ->playerServiceImpl.registerPlayer(playerRegistrationBody));
     String expectedMessage = "Invalid email";
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
@@ -133,9 +133,9 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setEmail("hello@gmail.com");
     playerRegistrationBody.setPassword("password");
 
-    ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
+    ResponseEntity<Object> responseEntity = playerServiceImpl.registerPlayer(playerRegistrationBody);
     ResponseEntity<Object> responseEntity1 =
-        new ResponseEntity<>("successful creation", HttpStatusCode.valueOf(200));
+            new ResponseEntity<>("successful creation", HttpStatusCode.valueOf(200));
 
     assertEquals(responseEntity, responseEntity1);
   }
@@ -205,11 +205,11 @@ class PlayerServiceImplTest {
             () -> playerController.index(playerId));
 
     // Assert
-    assertEquals("Player not found", exception.getMessage()); 
+    assertEquals("Player not found", exception.getMessage());
   }
 
   private void assertErrorResponse(
-      ResponseEntity<Object> responseEntity, String expectedErrorMessage) {
+          ResponseEntity<Object> responseEntity, String expectedErrorMessage) {
     assertEquals(400, responseEntity.getStatusCodeValue());
     assertTrue(responseEntity.getBody() instanceof ErrorResponse);
     ErrorResponse error = (ErrorResponse) responseEntity.getBody();

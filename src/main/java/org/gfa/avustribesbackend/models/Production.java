@@ -3,6 +3,7 @@ package org.gfa.avustribesbackend.models;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Production {
@@ -15,9 +16,8 @@ public class Production {
   @JoinColumn(name = "kingdom_id", nullable = false)
   private Kingdom kingdom;
 
-  @ManyToOne
-  @JoinColumn(name = "building_id", nullable = false)
-  private Building building;
+  @OneToMany(mappedBy = "production")
+  private List<Building> buildings;
 
   @OneToOne
   @JoinColumn(name = "resource_id", nullable = false)
@@ -40,14 +40,14 @@ public class Production {
 
   public Production(
       Kingdom kingdom,
-      Building building,
+      List<Building> buildings,
       Resource resource,
       int amount,
       boolean collected,
       LocalDateTime startedAt,
       LocalDateTime completedAt) {
     this.kingdom = kingdom;
-    this.building = building;
+    this.buildings = buildings;
     this.resource = resource;
     this.amount = amount;
     this.collected = collected;
@@ -71,12 +71,12 @@ public class Production {
     this.kingdom = kingdom;
   }
 
-  public Building getBuilding() {
-    return building;
+  public List<Building> getBuildings() {
+    return buildings;
   }
 
-  public void setBuilding(Building building) {
-    this.building = building;
+  public void setBuildings(List<Building> buildings) {
+    this.buildings = buildings;
   }
 
   public Resource getResource() {

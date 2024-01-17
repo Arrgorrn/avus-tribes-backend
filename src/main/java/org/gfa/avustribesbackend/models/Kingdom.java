@@ -35,6 +35,8 @@ public class Kingdom {
 
   @OneToMany(mappedBy = "kingdom")
   private List<Resource> resources;
+  @OneToMany(mappedBy = "kingdom")
+  private List<Building> buildings;
 
   public Kingdom() {}
 
@@ -106,5 +108,13 @@ public class Kingdom {
 
   public void setResources(List<Resource> resources) {
     this.resources = resources;
+  }
+
+  public List<Building> getBuildings() {
+    return buildings;
+  }
+
+  public void setBuildings(List<Building> buildings) {
+    this.buildings = buildings;
   }
 }

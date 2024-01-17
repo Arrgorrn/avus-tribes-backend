@@ -3,6 +3,7 @@ package org.gfa.avustribesbackend.services.Player;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.models.RegistrationError;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
+import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,6 +19,7 @@ class PlayerServiceImplTest {
   @InjectMocks private PlayerServiceImpl playerService;
   PlayerRegistrationBody playerRegistrationBody;
   @Mock PlayerRepository playerRepository;
+  @Mock EmailVerificationService emailVerificationService;
 
   @BeforeEach
   public void beforeEach() {

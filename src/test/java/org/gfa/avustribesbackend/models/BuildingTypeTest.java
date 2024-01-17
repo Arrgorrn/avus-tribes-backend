@@ -4,7 +4,12 @@ import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class BuildingTypeTest {
 
@@ -15,8 +20,9 @@ public class BuildingTypeTest {
   public void setup() {
 
     resourceType = new ResourceType();
+    List<Building> buildings = new ArrayList<>();
     resourceType.setId(1L);
-    buildingType = new BuildingType(BuildingTypeValue.TOWNHALL, resourceType);
+    buildingType = new BuildingType(BuildingTypeValue.TOWNHALL, resourceType, buildings);
   }
 
   @Test
@@ -38,5 +44,10 @@ public class BuildingTypeTest {
 
     Long resourceTypeId = buildingType.getResourceType().getId();
     assertEquals(1L, resourceTypeId);
+  }
+
+  @Test
+  public void test_building_list_is_not_null() {
+    assertNotNull(buildingType.getBuildings());
   }
 }

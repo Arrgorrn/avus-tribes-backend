@@ -1,6 +1,7 @@
 package org.gfa.avustribesbackend.models;
 
 import jakarta.persistence.*;
+
 import java.util.Date;
 import java.util.List;
 
@@ -48,15 +49,19 @@ public class Player {
   public Player() {
     createdAt = new Date(System.currentTimeMillis());
   }
-  public Player(String userName, String email, String password,
-                String verificationToken){
+
+  public Player(
+      String userName,
+      String email,
+      String password,
+      String verificationToken) {
     this.userName = userName;
     this.email = email;
     this.password = password;
+    this.isVerified = false;
     this.verificationToken = verificationToken;
     this.verificationTokenExpiresAt = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
     this.createdAt = new Date(System.currentTimeMillis());
-    this.isVerified = false;
   }
 
   public Long getId() {

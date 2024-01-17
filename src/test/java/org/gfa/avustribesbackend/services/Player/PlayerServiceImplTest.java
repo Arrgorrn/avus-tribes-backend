@@ -21,8 +21,6 @@ class PlayerServiceImplTest {
   @Mock private EmailVerificationService emailVerificationService;
   PlayerRegistrationBody playerRegistrationBody;
   @Mock PlayerRepository playerRepository;
-  @Mock
-  EmailVerificationService emailVerificationService;
 
   @BeforeEach
   public void beforeEach() {

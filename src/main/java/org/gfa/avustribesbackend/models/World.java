@@ -35,12 +35,12 @@ public class World {
     Random random = new Random();
 
     String[] StartOfName = {
-      "Al", "Gr", "Han", "Poer", "Greg", "Ion", "Qer", "Sam", "Nup", "Res", "Clar", "Sour", "Wer",
-      "Has", "Kil", "Dus", "Fux", "Jadus", "Taur"
+        "Al", "Gr", "Han", "Poer", "Greg", "Ion", "Qer", "Sam", "Nup", "Res", "Clar", "Sour", "Wer",
+        "Has", "Kil", "Dus", "Fux", "Jadus", "Taur"
     };
 
     String[] EndOfName = {
-      "dor", "ion", "ian", "as", "or", "nor", "er", "ef", "fu", "gu", "vunu", "op", "nin"
+        "dor", "ion", "ian", "as", "or", "nor", "er", "ef", "fu", "gu", "vunu", "op", "nin"
     };
 
     return StartOfName[random.nextInt(StartOfName.length)]

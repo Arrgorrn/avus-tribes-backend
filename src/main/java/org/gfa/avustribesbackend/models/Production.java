@@ -35,7 +35,8 @@ public class Production {
   @Column(name = "completed_at", nullable = false)
   private LocalDateTime completedAt;
 
-  public Production() {}
+  public Production() {
+  }
 
   public Production(
       Kingdom kingdom,

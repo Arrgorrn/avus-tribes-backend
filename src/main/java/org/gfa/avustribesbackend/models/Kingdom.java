@@ -33,15 +33,14 @@ public class Kingdom {
   @OneToMany(mappedBy = "kingdom")
   private List<Building> buildings;
 
-  public Kingdom() {}
+  public Kingdom() {
+  }
 
   public Kingdom(String name, Double coordinateX, Double coordinateY) {
     this.name = name;
     this.coordinateX = coordinateX;
     this.coordinateY = coordinateY;
   }
-
-  // Getters and setters
 
   public Long getId() {
     return id;

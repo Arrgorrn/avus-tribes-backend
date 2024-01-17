@@ -1,7 +1,8 @@
 package org.gfa.avustribesbackend.services.Player;
 
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
-import org.gfa.avustribesbackend.models.RegistrationError;
+import org.gfa.avustribesbackend.exceptions.CredentialException;
+import org.gfa.avustribesbackend.exceptions.ErrorResponse;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,23 +30,29 @@ class PlayerServiceImplTest {
 
   @Test
   void test_register_player_username_null() {
-    ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
-    assertErrorResponse(responseEntity, "Username is required");
+    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    String expectedMessage = "Username is required";
+    String actualMessage = exception.getMessage();
+    assertTrue(actualMessage.contains(expectedMessage));
   }
 
   @Test
   void test_register_player_password_null() {
     playerRegistrationBody.setUsername("testUser");
-    ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
-    assertErrorResponse(responseEntity, "Password is required");
+    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    String expectedMessage = "Password is required";
+    String actualMessage = exception.getMessage();
+    assertTrue(actualMessage.contains(expectedMessage));
   }
 
   @Test
   void test_register_player_email_null() {
     playerRegistrationBody.setUsername("testUser");
     playerRegistrationBody.setPassword("password");
-    ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
-    assertErrorResponse(responseEntity, "Email is required");
+    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    String expectedMessage = "Email is required";
+    String actualMessage = exception.getMessage();
+    assertTrue(actualMessage.contains(expectedMessage));
   }
 
   @Test
@@ -71,10 +78,10 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setUsername("kak");
     playerRegistrationBody.setEmail("hello@gmail.com");
     playerRegistrationBody.setPassword("password");
-
-    ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
-
-    assertErrorResponse(responseEntity, "Username must be at least 4 characters long");
+    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    String expectedMessage = "Username must be at least 4 characters long";
+    String actualMessage = exception.getMessage();
+    assertTrue(actualMessage.contains(expectedMessage));
   }
 
   @Test
@@ -82,10 +89,10 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setUsername("Hello");
     playerRegistrationBody.setEmail("hello@gmail.com");
     playerRegistrationBody.setPassword("short");
-
-    ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
-
-    assertErrorResponse(responseEntity, "Password must be at least 8 characters long");
+    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    String expectedMessage = "Password must be at least 8 characters long";
+    String actualMessage = exception.getMessage();
+    assertTrue(actualMessage.contains(expectedMessage));
   }
 
   @Test
@@ -93,10 +100,10 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setUsername("Hello");
     playerRegistrationBody.setEmail("hellogmail.com");
     playerRegistrationBody.setPassword("password");
-
-    ResponseEntity<Object> responseEntity = playerService.registerPlayer(playerRegistrationBody);
-
-    assertErrorResponse(responseEntity, "Invalid email");
+    Exception exception = assertThrows(CredentialException.class, () ->playerService.registerPlayer(playerRegistrationBody));
+    String expectedMessage = "Invalid email";
+    String actualMessage = exception.getMessage();
+    assertTrue(actualMessage.contains(expectedMessage));
   }
 
   @Test
@@ -115,8 +122,8 @@ class PlayerServiceImplTest {
   private void assertErrorResponse(
       ResponseEntity<Object> responseEntity, String expectedErrorMessage) {
     assertEquals(400, responseEntity.getStatusCodeValue());
-    assertTrue(responseEntity.getBody() instanceof RegistrationError);
-    RegistrationError error = (RegistrationError) responseEntity.getBody();
-    assertEquals(expectedErrorMessage, error.getError());
+    assertTrue(responseEntity.getBody() instanceof ErrorResponse);
+    ErrorResponse error = (ErrorResponse) responseEntity.getBody();
+    assertEquals(expectedErrorMessage, error.getMessage());
   }
 }

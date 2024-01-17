@@ -7,24 +7,24 @@ import org.gfa.avustribesbackend.repositories.KingdomRepository;
 import org.gfa.avustribesbackend.repositories.WorldRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class WorldServiceImplTest {
-  @Autowired private WorldServiceImpl worldService;
-  @Autowired private KingdomRepository kingdomRepository;
-  @Autowired private WorldRepository worldRepository;
+  @InjectMocks private WorldServiceImpl worldService;
+  @Mock private KingdomRepository kingdomRepository;
+  @Mock private WorldRepository worldRepository;
 
   @Test
   void find_one_world() {
@@ -35,19 +35,21 @@ public class WorldServiceImplTest {
     Kingdom kingdom = new Kingdom("Utopia", 40.5, 45.4, world);
     kingdom.setId(1L);
 
-    worldRepository.save(world);
-    kingdomRepository.save(kingdom);
+    List<World> worlds = new ArrayList<>();
+    worlds.add(world);
 
-    // Act
-    WorldResponseDto worldResponseDto = new WorldResponseDto(
+    WorldResponseDto worldResponseDto =
+        new WorldResponseDto(
             world.getId(), world.getName(), kingdomRepository.countAllByWorld_Id(world.getId()));
 
     List<WorldResponseDto> allDTOs = new ArrayList<>();
-
     allDTOs.add(worldResponseDto);
 
-    ResponseEntity<Object> goodResponse = new ResponseEntity<>(allDTOs,
-            HttpStatusCode.valueOf(200));
+    // Act
+    when(kingdomRepository.countAllByWorld_Id(world.getId())).thenReturn(kingdom.getId());
+    when(worldRepository.findAll()).thenReturn(worlds);
+    ResponseEntity<Object> goodResponse =
+        new ResponseEntity<>(allDTOs, HttpStatusCode.valueOf(200));
 
     // Assert
     assertNotNull(worldService.index());

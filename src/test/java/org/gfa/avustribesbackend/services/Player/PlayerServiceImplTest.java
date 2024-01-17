@@ -3,6 +3,7 @@ package org.gfa.avustribesbackend.services.Player;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.models.RegistrationError;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
+import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,6 +17,7 @@ import static org.mockito.Mockito.when;
 
 class PlayerServiceImplTest {
   @InjectMocks private PlayerServiceImpl playerService;
+  @Mock private EmailVerificationService emailVerificationService;
   PlayerRegistrationBody playerRegistrationBody;
   @Mock PlayerRepository playerRepository;
 
@@ -60,7 +62,8 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setUsername("testUser");
     playerRegistrationBody.setPassword("password");
     playerRegistrationBody.setEmail("existing@gmail.com");
-    when(playerRepository.existsByEmailIgnoreCase(playerRegistrationBody.getEmail())).thenReturn(false);
+    when(playerRepository.existsByEmailIgnoreCase(playerRegistrationBody.getEmail()))
+        .thenReturn(false);
     assertFalse(playerRepository.existsByEmailIgnoreCase(playerRegistrationBody.getEmail()));
   }
 

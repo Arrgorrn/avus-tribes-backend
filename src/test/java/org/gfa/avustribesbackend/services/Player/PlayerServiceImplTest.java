@@ -197,15 +197,15 @@ class PlayerServiceImplTest {
 
     // Mocking behavior
     when(playerService.checkId(playerId)).thenReturn(false);
+    when(playerService.findPlayerDTOById(playerId))
+            .thenThrow(new CredentialException("Player not found"));
 
     // Act
-    ResponseEntity<Object> responseEntity = playerController.index(playerId);
+    CredentialException exception = assertThrows(CredentialException.class,
+            () -> playerController.index(playerId));
 
     // Assert
-    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-    assertEquals("Player not found", responseEntity.getBody());
-    verify(playerService, times(1)).checkId(playerId);
-    verify(playerService, never()).findPlayerDTOById(anyLong());
+    assertEquals("Player not found", exception.getMessage());
   }
 
   private void assertErrorResponse(

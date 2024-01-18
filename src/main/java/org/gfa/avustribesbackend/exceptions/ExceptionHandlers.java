@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Date;
 
 @RestControllerAdvice
-public class AllExceptionHandler {
+public class ExceptionHandlers {
 
   @ExceptionHandler({
     CredentialException.class,

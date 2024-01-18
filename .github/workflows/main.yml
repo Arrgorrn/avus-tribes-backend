@@ -42,15 +42,7 @@ jobs:
           echo "DB_USERNAME=${{ secrets.DB_USER }}" >> $GITHUB_ENV
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
           echo "DB_DRIVER=com.mysql.cj.jdbc.Driver" >> $GITHUB_ENV
-          echo "HIBERNATE_DIALECT=" >> $GITHUB_ENV
           echo "DB_DIALECT=${{ secrets.DB_DIALECT }}" >> $GITHUB_ENV
-          echo "JWT_SECRET_KEY=" >> $GITHUB_ENV
-          echo "UNKNOWN_ERROR=" >> $GITHUB_ENV
-          echo "INVALID_EMAIL_ERROR=" >> $GITHUB_ENV
-          echo "BODY_MISSING_ERROR=" >> $GITHUB_ENV
-          echo "USER_EXIST_ERROR=" >> $GITHUB_ENV
-          echo "INVALID_INPUT_ERROR=" >> $GITHUB_ENV
-          echo "UNAUTHORIZED_ERROR=" >> $GITHUB_ENV
           echo "VERIFY_EMAIL_ENABLED=true" >> $GITHUB_ENV
           echo "MAIL_HOST=sandbox.smtp.mailtrap.io" >> $GITHUB_ENV
           echo "MAIL_PORT=587" >> $GITHUB_ENV

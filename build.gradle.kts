@@ -2,6 +2,8 @@ plugins {
     java
     id("org.springframework.boot") version "3.2.0"
     id("io.spring.dependency-management") version "1.1.4"
+    checkstyle
+    id("com.github.sherter.google-java-format") version "0.9"
 }
 
 group = "org.gfa"

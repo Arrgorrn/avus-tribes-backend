@@ -52,7 +52,7 @@ class WorldRestControllerTest {
     mockMvc
         .perform(get("/worlds"))
         .andExpect(status().is(404))
-        .andExpect(content().string("Error! No world!"))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andDo(print());
   }
 }

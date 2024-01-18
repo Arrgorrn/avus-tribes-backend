@@ -1,6 +1,7 @@
 package org.gfa.avustribesbackend.services.World;
 
 import org.gfa.avustribesbackend.dtos.WorldResponseDto;
+import org.gfa.avustribesbackend.exceptions.NotFoundException;
 import org.gfa.avustribesbackend.models.Kingdom;
 import org.gfa.avustribesbackend.models.World;
 import org.gfa.avustribesbackend.repositories.KingdomRepository;
@@ -62,14 +63,13 @@ public class WorldServiceImplTest {
 
   @Test
   void find_no_world() {
-    ResponseEntity<Object> badResponse =
-        new ResponseEntity<>("Error! No world!", HttpStatusCode.valueOf(404));
+    // Arrange
+    when(worldRepository.findAll()).thenReturn(new ArrayList<>());
 
-    assertNotNull(worldService.index());
-    assertEquals(badResponse.getStatusCode(), worldService.index().getStatusCode());
-    assertEquals(badResponse.hasBody(), worldService.index().hasBody());
-    assertEquals(
-        Objects.requireNonNull(badResponse.getBody()).getClass(),
-        Objects.requireNonNull(worldService.index().getBody()).getClass());
+    // Act
+    NotFoundException exception = org.junit.jupiter.api.Assertions
+            .assertThrows(NotFoundException.class, () -> worldService.index());
+    //Assert
+    assertEquals("No World!", exception.getMessage());
   }
 }

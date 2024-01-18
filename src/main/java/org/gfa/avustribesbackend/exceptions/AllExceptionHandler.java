@@ -9,17 +9,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Date;
 
 @RestControllerAdvice
-public class PlayerExceptionHandler {
+public class AllExceptionHandler {
 
   @ExceptionHandler({
-      CredentialException.class,
-      VerificationException.class,
-      CreationException.class,
+    CredentialException.class,
+    VerificationException.class,
+    CreationException.class,
   })
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public ErrorResponse badRequestExceptionHandler(
-      RuntimeException runtimeException,
-      HttpServletRequest httpServletRequest) {
+      RuntimeException runtimeException, HttpServletRequest httpServletRequest) {
     return new ErrorResponse(
         runtimeException.getMessage(),
         httpServletRequest.getRequestURI(),
@@ -29,8 +28,17 @@ public class PlayerExceptionHandler {
   @ExceptionHandler({AlreadyExistsException.class})
   @ResponseStatus(value = HttpStatus.CONFLICT)
   public ErrorResponse conflictExceptionHandler(
-      RuntimeException runtimeException,
-      HttpServletRequest httpServletRequest) {
+      RuntimeException runtimeException, HttpServletRequest httpServletRequest) {
+    return new ErrorResponse(
+        runtimeException.getMessage(),
+        httpServletRequest.getRequestURI(),
+        new Date(System.currentTimeMillis()));
+  }
+
+  @ExceptionHandler({NotFoundException.class})
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
+  public ErrorResponse notFoundExceptionHandler(
+      RuntimeException runtimeException, HttpServletRequest httpServletRequest) {
     return new ErrorResponse(
         runtimeException.getMessage(),
         httpServletRequest.getRequestURI(),

@@ -21,9 +21,9 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew build -x test -x checkstyleMain -x checkstyleTest -x verifyGoogleJavaFormat
+          ./gradlew build -x test -x checkstyleMain -x checkstyleTest
 
-  test:
+  unit_test:
     runs-on: ubuntu-latest
 
     steps:
@@ -41,25 +41,29 @@ jobs:
           echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
           echo "DB_USERNAME=${{ secrets.DB_USER }}" >> $GITHUB_ENV
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          echo "DB_DRIVER=com.mysql.cj.jdbc.Driver" >> $GITHUB_ENV
+          echo "HIBERNATE_DIALECT=" >> $GITHUB_ENV
           echo "DB_DIALECT=${{ secrets.DB_DIALECT }}" >> $GITHUB_ENV
+          echo "JWT_SECRET_KEY=" >> $GITHUB_ENV
+          echo "UNKNOWN_ERROR=" >> $GITHUB_ENV
+          echo "INVALID_EMAIL_ERROR=" >> $GITHUB_ENV
+          echo "BODY_MISSING_ERROR=" >> $GITHUB_ENV
+          echo "USER_EXIST_ERROR=" >> $GITHUB_ENV
+          echo "INVALID_INPUT_ERROR=" >> $GITHUB_ENV
+          echo "UNAUTHORIZED_ERROR=" >> $GITHUB_ENV
+          echo "VERIFY_EMAIL_ENABLED=true" >> $GITHUB_ENV
+          echo "MAIL_HOST=sandbox.smtp.mailtrap.io" >> $GITHUB_ENV
+          echo "MAIL_PORT=587" >> $GITHUB_ENV
+          echo "MAIL_USERNAME=9df1100280b9f2" >> $GITHUB_ENV
+          echo "MAIL_PASSWORD=36f6cbde27134b" >> $GITHUB_ENV
+          echo "RESET_PASSWORD_URL=http://localhost:8080/reset-password/" >> $GITHUB_ENV
+          echo "VERIFICATION_EMAIL_URL=http://localhost:8080/email/verify/" >> $GITHUB_ENV
+          echo "VERIFICATION_EMAIL_SENDER=avustribesbackend@gmail.com" >> $GITHUB_ENV
+          echo "VERIFICATION_EMAIL_SUBJECT=Registration Confirmation" >> $GITHUB_ENV
+          echo "RESEND_VERIFICATION_EMAIL_SUBJECT=Resend Verification Email" >> $GITHUB_ENV
+          echo "RESET_PASSWORD_EMAIL_SUBJECT=Password Reset" >> $GITHUB_ENV
+          echo "VERIFICATION_EMAIL_TEMPLATE_FILEPATH=src/main/resources/mailTemplate.html" >> $GITHUB_ENV
 
-      - name: Run tests
+      - name: Run unit tests
         run: |
           ./gradlew test
-
-  checkstyle:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '17'
-
-      - name: Run Checkstyle
-        run: ./gradlew checkstyleMain checkstyleTest
-#        thanks Dominik for the help

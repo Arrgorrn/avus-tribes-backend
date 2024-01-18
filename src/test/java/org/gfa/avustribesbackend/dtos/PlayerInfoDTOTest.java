@@ -38,18 +38,18 @@ public class PlayerInfoDTOTest {
     assertEquals(player.getVerifiedAt(), dto.getVerifiedAt());
   }
 
-    @Test
-    void create_PlayerInfoDTO_not_verified() {
-        // Arrange
-        Player player = new Player("username", "email@test.com", "password", "token");
-        player.setIsVerified(false);
+  @Test
+  void create_PlayerInfoDTO_not_verified() {
+    // Arrange
+    Player player = new Player("username", "email@test.com", "password", "token");
+    player.setIsVerified(false);
 
-        // Act
-        PlayerInfoDTO dto = playerService.createPlayerInfoDTO(player);
+    // Act
+    PlayerInfoDTO dto = playerService.createPlayerInfoDTO(player);
 
-        // Assert
-        assertEquals(player.getUserName(), dto.getUsername());
-        assertEquals(player.getIsVerified(), dto.getIsVerified());
-        assertEquals(player.getVerifiedAt(), dto.getVerifiedAt());
-    }
+    // Assert
+    assertEquals(player.getUserName(), dto.getUsername());
+    assertEquals(player.getIsVerified(), dto.getIsVerified());
+    assertEquals(player.getVerifiedAt(), dto.getVerifiedAt());
+  }
 }

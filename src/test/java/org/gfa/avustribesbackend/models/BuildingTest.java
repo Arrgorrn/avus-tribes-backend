@@ -13,12 +13,7 @@ class BuildingTest {
 
   @BeforeEach
   void setup() {
-    building = new Building(
-        1L,
-        new BuildingType(),
-        new Kingdom(),
-        new Production(),
-        1);
+    building = new Building(1L, new BuildingType(), new Kingdom(), new Production(), 1);
   }
 
   @Test

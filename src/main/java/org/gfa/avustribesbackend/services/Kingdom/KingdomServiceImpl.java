@@ -1,10 +1,8 @@
 package org.gfa.avustribesbackend.services.Kingdom;
 
 import org.gfa.avustribesbackend.dtos.KingdomResponseDTO;
-import org.gfa.avustribesbackend.dtos.PlayerInfoDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.models.Kingdom;
-import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.KingdomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +26,9 @@ public class KingdomServiceImpl implements KingdomService {
         kingdom.getId(),
         kingdom.getWorld().getId(),
         kingdom.getPlayer().getId(),
-        kingdom.getName());
+        kingdom.getName(),
+        kingdom.getCoordinateX(),
+        kingdom.getCoordinateY());
   }
 
   @Override
@@ -43,11 +43,10 @@ public class KingdomServiceImpl implements KingdomService {
   }
 
   @Override
-  public KingdomResponseDTO findKingdomDTOById(Long id) {
+  public KingdomResponseDTO returnKingdomDTOById(Long id) {
     Optional<Kingdom> kingdomOptional = kingdomRepository.findById(id);
-    if (kingdomOptional.isPresent()){
-      KingdomResponseDTO dto = createKingdomDTO(kingdomOptional.get());
-      return dto;
+    if (kingdomOptional.isPresent()) {
+      return createKingdomDTO(kingdomOptional.get());
     } else {
       throw new CredentialException("Kingdom not found");
     }
@@ -55,6 +54,6 @@ public class KingdomServiceImpl implements KingdomService {
 
   @Override
   public boolean checkId(Long id) {
-    return kingdomRepository.existsById(id) ;
+    return kingdomRepository.existsById(id);
   }
 }

@@ -11,24 +11,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class KingdomController {
-    private final KingdomService kingdomService;
+  private final KingdomService kingdomService;
 
-    @Autowired
-    public KingdomController(KingdomService kingdomService) {
-        this.kingdomService = kingdomService;
-    }
+  @Autowired
+  public KingdomController(KingdomService kingdomService) {
+    this.kingdomService = kingdomService;
+  }
 
-    @GetMapping("/kingdoms")
-    public ResponseEntity<Object> index() {
-        return new ResponseEntity<>(kingdomService.listKingdoms(), HttpStatus.OK);
-    }
+  @GetMapping("/kingdoms")
+  public ResponseEntity<Object> index() {
+    return new ResponseEntity<>(kingdomService.listKingdoms(), HttpStatus.OK);
+  }
 
-    @GetMapping("/kingdoms/{id}")
-    public ResponseEntity<Object> index(@PathVariable Long id) {
-        if (kingdomService.checkId(id)){
-            return new ResponseEntity<>(kingdomService.findKingdomDTOById(id),HttpStatus.OK);
-        } else {
-            throw new CredentialException("Kingdom not found");
-        }
+  @GetMapping("/kingdoms/{id}")
+  public ResponseEntity<Object> index(@PathVariable Long id) {
+    if (kingdomService.checkId(id)) {
+      return new ResponseEntity<>(kingdomService.returnKingdomDTOById(id), HttpStatus.OK);
+    } else {
+      throw new CredentialException("Kingdom not found");
     }
+  }
 }

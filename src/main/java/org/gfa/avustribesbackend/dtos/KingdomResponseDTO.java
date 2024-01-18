@@ -1,33 +1,37 @@
 package org.gfa.avustribesbackend.dtos;
 
-import jakarta.persistence.Column;
-
 public class KingdomResponseDTO {
   private final Long id;
   private final Long world;
   private final Long owner;
   private final String name;
+  private final Double coordinateX;
 
-    public KingdomResponseDTO(Long id, Long world, Long owner, String name) {
-        this.id = id;
-        this.world = world;
-        this.owner = owner;
-        this.name = name;
-    }
+  private final Double coordinateY;
 
-    public Long getId() {
-        return id;
-    }
+  public KingdomResponseDTO(
+      Long id, Long world, Long owner, String name, Double coordinateX, Double coordinateY) {
+    this.id = id;
+    this.world = world;
+    this.owner = owner;
+    this.name = name;
+    this.coordinateX = coordinateX;
+    this.coordinateY = coordinateY;
+  }
 
-    public Long getWorld() {
-        return world;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public Long getOwner() {
-        return owner;
-    }
+  public Long getWorld() {
+    return world;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public Long getOwner() {
+    return owner;
+  }
+
+  public String getName() {
+    return name;
+  }
 }

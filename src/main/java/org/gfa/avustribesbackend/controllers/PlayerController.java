@@ -28,9 +28,9 @@ public class PlayerController {
 
   @Autowired
   public PlayerController(
-          PlayerService playerService,
-          EmailVerificationService emailVerificationService,
-          ResetPasswordService resetPasswordService) {
+      PlayerService playerService,
+      EmailVerificationService emailVerificationService,
+      ResetPasswordService resetPasswordService) {
     this.playerService = playerService;
     this.emailVerificationService = emailVerificationService;
     this.resetPasswordService = resetPasswordService;
@@ -60,8 +60,8 @@ public class PlayerController {
   }
 
   @PostMapping("/reset-password/{token}")
-  public ResponseEntity<Object> resetPassword(@PathVariable TokenRequestDTO token,
-                                              @RequestBody PasswordRequestDTO password) {
+  public ResponseEntity<Object> resetPassword(
+      @PathVariable TokenRequestDTO token, @RequestBody PasswordRequestDTO password) {
     return resetPasswordService.resetPassword(token, password);
   }
 
@@ -79,8 +79,8 @@ public class PlayerController {
 
   @GetMapping("/players/{id}")
   public ResponseEntity<Object> index(@PathVariable Long id) {
-    if (playerService.checkId(id)){
-      return new ResponseEntity<>(playerService.findPlayerDTOById(id),HttpStatus.OK);
+    if (playerService.checkId(id)) {
+      return new ResponseEntity<>(playerService.findPlayerDTOById(id), HttpStatus.OK);
     } else {
       throw new CredentialException("Player not found");
     }

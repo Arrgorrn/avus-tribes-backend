@@ -35,7 +35,7 @@ public class PlayerInfoDTOTest {
     // Assert
     assertEquals(player.getUserName(), dto.getUsername());
     assertEquals(player.getIsVerified(), dto.getIsVerified());
-    assertEquals(player.getVerifiedAt(), dto.getVerified_at());
+    assertEquals(player.getVerifiedAt(), dto.getVerifiedAt());
   }
 
     @Test
@@ -50,6 +50,6 @@ public class PlayerInfoDTOTest {
         // Assert
         assertEquals(player.getUserName(), dto.getUsername());
         assertEquals(player.getIsVerified(), dto.getIsVerified());
-        assertEquals(player.getVerifiedAt(), dto.getVerified_at());
+        assertEquals(player.getVerifiedAt(), dto.getVerifiedAt());
     }
 }

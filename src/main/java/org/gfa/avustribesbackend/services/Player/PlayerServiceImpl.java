@@ -5,7 +5,6 @@ import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.exceptions.AlreadyExistsException;
 import org.gfa.avustribesbackend.exceptions.CreationException;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
-import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
@@ -35,8 +34,7 @@ public class PlayerServiceImpl implements PlayerService {
 
   @Autowired
   public PlayerServiceImpl(
-      PlayerRepository playerRepository,
-      EmailVerificationService emailVerificationService) {
+      PlayerRepository playerRepository, EmailVerificationService emailVerificationService) {
     this.playerRepository = playerRepository;
     this.emailVerificationService = emailVerificationService;
   }
@@ -61,11 +59,9 @@ public class PlayerServiceImpl implements PlayerService {
       throw new CredentialException("Invalid email");
     }
 
-    Player player = new Player(
-        request.getUsername(),
-        request.getEmail(),
-        request.getPassword(),
-        verificationToken());
+    Player player =
+        new Player(
+            request.getUsername(), request.getEmail(), request.getPassword(), verificationToken());
 
     if (player == null) {
       throw new CreationException("Unknown error");
@@ -110,21 +106,22 @@ public class PlayerServiceImpl implements PlayerService {
   public PlayerInfoDTO createPlayerInfoDTO(Player player) {
     PlayerInfoDTO dto = null;
     if (player.getIsVerified()) {
-      dto = new PlayerInfoDTO(
+      dto =
+          new PlayerInfoDTO(
               player.getId(), player.getUserName(), player.getIsVerified(), player.getVerifiedAt());
     } else {
       dto = new PlayerInfoDTO(player.getId(), player.getUserName(), player.getIsVerified(), null);
     }
     return dto;
-   }
+  }
 
   @Override
   public List<PlayerInfoDTO> listPlayerInfoDTO() {
     List<Player> allPlayers = playerRepository.findAll();
     List<PlayerInfoDTO> dtoList = new ArrayList<>();
-    for (Player player : allPlayers){
-        PlayerInfoDTO dto = createPlayerInfoDTO(player);
-        dtoList.add(dto);
+    for (Player player : allPlayers) {
+      PlayerInfoDTO dto = createPlayerInfoDTO(player);
+      dtoList.add(dto);
     }
     return dtoList;
   }
@@ -132,7 +129,7 @@ public class PlayerServiceImpl implements PlayerService {
   @Override
   public PlayerInfoDTO findPlayerDTOById(Long id) {
     Optional<Player> playerOptional = playerRepository.findById(id);
-    if (playerOptional.isPresent()){
+    if (playerOptional.isPresent()) {
       PlayerInfoDTO dto = createPlayerInfoDTO(playerOptional.get());
       return dto;
     } else {
@@ -142,6 +139,6 @@ public class PlayerServiceImpl implements PlayerService {
 
   @Override
   public boolean checkId(Long id) {
-      return findPlayerDTOById(id) != null;
+    return findPlayerDTOById(id) != null;
   }
 }

@@ -35,6 +35,7 @@ public class Kingdom {
 
   @OneToMany(mappedBy = "kingdom")
   private List<Resource> resources;
+
   @OneToMany(mappedBy = "kingdom")
   private List<Building> buildings;
 

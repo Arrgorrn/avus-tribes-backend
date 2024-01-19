@@ -48,5 +48,3 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-
-.run/AvusTribesBackendApplication.run.xml

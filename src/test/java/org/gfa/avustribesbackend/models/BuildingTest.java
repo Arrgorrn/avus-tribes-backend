@@ -3,8 +3,6 @@ package org.gfa.avustribesbackend.models;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class BuildingTest {
@@ -13,12 +11,7 @@ class BuildingTest {
 
   @BeforeEach
   void setup() {
-    building = new Building(
-        1L,
-        new BuildingType(),
-        new Kingdom(),
-        new Production(),
-        1);
+    building = new Building(1L, new BuildingType(), new Kingdom(), new Production(), 1);
   }
 
   @Test

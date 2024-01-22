@@ -5,6 +5,7 @@ import org.gfa.avustribesbackend.dtos.KingdomResponseDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.models.Kingdom;
 import org.gfa.avustribesbackend.models.Player;
+import org.gfa.avustribesbackend.models.World;
 import org.gfa.avustribesbackend.repositories.KingdomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ public class KingdomServiceImplTest {
     kingdom1.setCoordinateX(10.0);
     kingdom1.setCoordinateY(20.0);
 
-    org.gfa.avustribesbackend.models.World world1 = new org.gfa.avustribesbackend.models.World();
+    World world1 = new World();
     world1.setId(1L);
     kingdom1.setWorld(world1);
 
@@ -60,7 +61,7 @@ public class KingdomServiceImplTest {
     kingdom2.setCoordinateX(15.0);
     kingdom2.setCoordinateY(25.0);
 
-    org.gfa.avustribesbackend.models.World world2 = new org.gfa.avustribesbackend.models.World();
+    World world2 = new World();
     world2.setId(2L);
     kingdom2.setWorld(world2);
 

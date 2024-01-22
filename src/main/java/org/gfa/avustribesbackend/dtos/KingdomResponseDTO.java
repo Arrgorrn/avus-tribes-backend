@@ -6,7 +6,6 @@ public class KingdomResponseDTO {
   private final Long owner;
   private final String name;
   private final Double coordinateX;
-
   private final Double coordinateY;
 
   public KingdomResponseDTO(

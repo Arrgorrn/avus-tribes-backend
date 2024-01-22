@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class PlayerServiceImplTest {
-
   @InjectMocks private PlayerController playerController;
 
   @Mock private PlayerService playerService;

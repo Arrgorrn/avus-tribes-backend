@@ -36,25 +36,27 @@ jobs:
           distribution: 'adopt'
           java-version: '17'
 
-      - name: Set up environment variables
+      - name: Create env file
         run: |
-          echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
-          echo "DB_USERNAME=${{ secrets.DB_USER }}" >> $GITHUB_ENV
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
-          echo "DB_DRIVER=com.mysql.cj.jdbc.Driver" >> $GITHUB_ENV
-          echo "DB_DIALECT=${{ secrets.DB_DIALECT }}" >> $GITHUB_ENV
-          echo "VERIFY_EMAIL_ENABLED=true" >> $GITHUB_ENV
-          echo "MAIL_HOST=${{ secrets.MAIL_HOST }}" >> $GITHUB_ENV
-          echo "MAIL_PORT=587" >> $GITHUB_ENV
-          echo "MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> $GITHUB_ENV
-          echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> $GITHUB_ENV
-          echo "RESET_PASSWORD_URL=${{ secrets.RESET_PASSWORD }}" >> $GITHUB_ENV
-          echo "VERIFICATION_EMAIL_URL=${{ secrets.VERIFICATION_EMAIL_URL }}" >> $GITHUB_ENV
-          echo "VERIFICATION_EMAIL_SENDER=${{ secrets.VERIFICATION_EMAIL_SENDER }}" >> $GITHUB_ENV
-          echo "VERIFICATION_EMAIL_SUBJECT=${{ secrets.VERIFICATION_EMAIL_SUBJECT }}" >> $GITHUB_ENV
-          echo "RESEND_VERIFICATION_EMAIL_SUBJECT=${{ secrets.RESEND_VERIFICATION_EMAIL_SUBJECT }}" >> $GITHUB_ENV
-          echo "RESET_PASSWORD_EMAIL_SUBJECT=${{ secrets.RESET_PASSWORD_EMAIL_SUBJECT }}" >> $GITHUB_ENV
-          echo "VERIFICATION_EMAIL_TEMPLATE_FILEPATH=${{ secrets.VERIFICATION_EMAIL_TEMPLATE_FILEPATH }}" >> $GITHUB_ENV
+          touch.env
+          echo DB_URL=${{ secrets.DB_URL }} >> .env
+          echo DB_USERNAME=${{ secrets.DB_USER }} >> .env
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+          echo DB_DRIVER=com.mysql.cj.jdbc.Driver >> .env
+          echo DB_DIALECT=${{ secrets.DB_DIALECT }} >> .env
+          echo VERIFY_EMAIL_ENABLED=true >> .env
+          echo MAIL_HOST=${{ secrets.MAIL_HOST }} >> .env
+          echo MAIL_PORT=587 >> .env
+          echo MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} >> .env
+          echo MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} >> .env
+          echo RESET_PASSWORD_URL=${{ secrets.RESET_PASSWORD }} >> .env
+          echo VERIFICATION_EMAIL_URL=${{ secrets.VERIFICATION_EMAIL_URL }} >> .env
+          echo VERIFICATION_EMAIL_SENDER=${{ secrets.VERIFICATION_EMAIL_SENDER }} >> .env
+          echo VERIFICATION_EMAIL_SUBJECT=${{ secrets.VERIFICATION_EMAIL_SUBJECT }} >> .env
+          echo RESEND_VERIFICATION_EMAIL_SUBJECT=${{ secrets.RESEND_VERIFICATION_EMAIL_SUBJECT }} >> .env
+          echo RESET_PASSWORD_EMAIL_SUBJECT=${{ secrets.RESET_PASSWORD_EMAIL_SUBJECT }} >> .env
+          echo VERIFICATION_EMAIL_TEMPLATE_FILEPATH=${{ secrets.VERIFICATION_EMAIL_TEMPLATE_FILEPATH }} >> .env
+          cat .env
 
       - name: Run tests
         run: |

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface KingdomRepository extends JpaRepository<Kingdom, Long> {
+  long countAllByWorld_Id(long id);
 }

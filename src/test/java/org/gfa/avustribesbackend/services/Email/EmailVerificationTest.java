@@ -54,9 +54,7 @@ class EmailVerificationTest {
     // Assert that the EmailException is thrown
     assertThrows(
         EmailException.class,
-        () -> {
-          playerController.verifyEmail(token);
-        });
+        () -> playerController.verifyEmail(token));
   }
 
   @Test

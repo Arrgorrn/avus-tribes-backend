@@ -60,7 +60,7 @@ jobs:
 
       - name: Run tests
         run: |
-          ./gradlew test -i
+          ./gradlew test 
 
   checkstyle:
     runs-on: ubuntu-latest

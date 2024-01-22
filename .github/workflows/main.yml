@@ -44,21 +44,21 @@ jobs:
           echo "DB_DRIVER=com.mysql.cj.jdbc.Driver" >> $GITHUB_ENV
           echo "DB_DIALECT=${{ secrets.DB_DIALECT }}" >> $GITHUB_ENV
           echo "VERIFY_EMAIL_ENABLED=true" >> $GITHUB_ENV
-          echo "MAIL_HOST=sandbox.smtp.mailtrap.io" >> $GITHUB_ENV
+          echo "MAIL_HOST=${{ secrets.MAIL_HOST }}" >> $GITHUB_ENV
           echo "MAIL_PORT=587" >> $GITHUB_ENV
-          echo "MAIL_USERNAME=9df1100280b9f2" >> $GITHUB_ENV
-          echo "MAIL_PASSWORD=36f6cbde27134b" >> $GITHUB_ENV
-          echo "RESET_PASSWORD_URL=http://localhost:8080/reset-password/" >> $GITHUB_ENV
-          echo "VERIFICATION_EMAIL_URL=http://localhost:8080/email/verify/" >> $GITHUB_ENV
-          echo "VERIFICATION_EMAIL_SENDER=avustribesbackend@gmail.com" >> $GITHUB_ENV
-          echo "VERIFICATION_EMAIL_SUBJECT=Registration Confirmation" >> $GITHUB_ENV
-          echo "RESEND_VERIFICATION_EMAIL_SUBJECT=Resend Verification Email" >> $GITHUB_ENV
-          echo "RESET_PASSWORD_EMAIL_SUBJECT=Password Reset" >> $GITHUB_ENV
-          echo "VERIFICATION_EMAIL_TEMPLATE_FILEPATH=src/main/resources/mailTemplate.html" >> $GITHUB_ENV
+          echo "MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> $GITHUB_ENV
+          echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> $GITHUB_ENV
+          echo "RESET_PASSWORD_URL=${{ secrets.RESET_PASSWORD }}" >> $GITHUB_ENV
+          echo "VERIFICATION_EMAIL_URL=${{ secrets.VERIFICATION_EMAIL_URL }}" >> $GITHUB_ENV
+          echo "VERIFICATION_EMAIL_SENDER=${{ secrets.VERIFICATION_EMAIL_SENDER }}" >> $GITHUB_ENV
+          echo "VERIFICATION_EMAIL_SUBJECT=${{ secrets.VERIFICATION_EMAIL_SUBJECT }}" >> $GITHUB_ENV
+          echo "RESEND_VERIFICATION_EMAIL_SUBJECT=${{ secrets.RESEND_VERIFICATION_EMAIL_SUBJECT }}" >> $GITHUB_ENV
+          echo "RESET_PASSWORD_EMAIL_SUBJECT=${{ secrets.RESET_PASSWORD_EMAIL_SUBJECT }}" >> $GITHUB_ENV
+          echo "VERIFICATION_EMAIL_TEMPLATE_FILEPATH=${{ secrets.VERIFICATION_EMAIL_TEMPLATE_FILEPATH }}" >> $GITHUB_ENV
 
       - name: Run tests
         run: |
-          ./gradlew test
+          ./gradlew test -i
 
   checkstyle:
     runs-on: ubuntu-latest

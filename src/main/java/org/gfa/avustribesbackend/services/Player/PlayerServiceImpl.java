@@ -5,7 +5,6 @@ import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.exceptions.AlreadyExistsException;
 import org.gfa.avustribesbackend.exceptions.CreationException;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
-import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;

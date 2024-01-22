@@ -30,6 +30,8 @@ dependencies {
     implementation ("javax.mail:javax.mail-api:1.5.6")
     implementation ("javax.mail:mail:1.4.7")
     implementation ("io.github.cdimascio:java-dotenv:5.2.0")
+    //H2
+    testImplementation("com.h2database:h2:2.2.220")
 }
 
 tasks.withType<Test> {

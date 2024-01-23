@@ -19,6 +19,6 @@ class WorldResponseDtoTest {
     assertNotNull(worldResponseDto);
     assertEquals(id, worldResponseDto.getId());
     assertEquals(name, worldResponseDto.getName());
-    assertEquals(kingdom_count, worldResponseDto.getKingdom_count());
+    assertEquals(kingdom_count, worldResponseDto.getKingdomCount());
   }
 }

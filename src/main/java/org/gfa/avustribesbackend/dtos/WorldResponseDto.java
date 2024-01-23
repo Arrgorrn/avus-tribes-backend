@@ -6,16 +6,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class WorldResponseDto {
   private long id;
   private String name;
-  private long kingdom_count;
+  private long kingdomCount;
 
   @JsonCreator
   public WorldResponseDto(
       @JsonProperty("id") long id,
       @JsonProperty("name") String name,
-      @JsonProperty("kingdom_count") long kingdom_count) {
+      @JsonProperty("kingdomCount") long kingdomCount) {
     this.id = id;
     this.name = name;
-    this.kingdom_count = kingdom_count;
+    this.kingdomCount = kingdomCount;
   }
 
   public long getId() {
@@ -34,11 +34,11 @@ public class WorldResponseDto {
     this.name = name;
   }
 
-  public long getKingdom_count() {
-    return kingdom_count;
+  public long getKingdomCount() {
+    return kingdomCount;
   }
 
-  public void setKingdom_count(long kingdom_count) {
-    this.kingdom_count = kingdom_count;
+  public void setKingdomCount(long kingdomCount) {
+    this.kingdomCount = kingdomCount;
   }
 }

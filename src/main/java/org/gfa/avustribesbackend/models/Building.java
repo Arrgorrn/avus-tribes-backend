@@ -2,8 +2,6 @@ package org.gfa.avustribesbackend.models;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 public class Building {
 
@@ -11,18 +9,23 @@ public class Building {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", unique = true, nullable = false)
   private Long id;
+
   @ManyToOne
   @JoinColumn(name = "type_id", nullable = false)
   private BuildingType buildingType;
+
   @ManyToOne
   @JoinColumn(name = "kingdom_id", nullable = false)
   private Kingdom kingdom;
+
   @ManyToOne
   @JoinColumn(name = "production_id")
   private Production production;
+
   private Integer level;
 
-  public Building(Long id, BuildingType buildingType, Kingdom kingdom, Production productions, Integer level) {
+  public Building(
+      Long id, BuildingType buildingType, Kingdom kingdom, Production productions, Integer level) {
     this.id = id;
     this.buildingType = buildingType;
     this.kingdom = kingdom;

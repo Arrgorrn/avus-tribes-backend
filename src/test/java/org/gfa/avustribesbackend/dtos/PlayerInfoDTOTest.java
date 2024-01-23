@@ -5,13 +5,16 @@ import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Player.PlayerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ExtendWith(MockitoExtension.class)
 public class PlayerInfoDTOTest {
   @InjectMocks private PlayerServiceImpl playerService;
 
@@ -35,21 +38,21 @@ public class PlayerInfoDTOTest {
     // Assert
     assertEquals(player.getUserName(), dto.getUsername());
     assertEquals(player.getIsVerified(), dto.getIsVerified());
-    assertEquals(player.getVerifiedAt(), dto.getVerified_at());
+    assertEquals(player.getVerifiedAt(), dto.getVerifiedAt());
   }
 
-    @Test
-    void create_PlayerInfoDTO_not_verified() {
-        // Arrange
-        Player player = new Player("username", "email@test.com", "password", "token");
-        player.setIsVerified(false);
+  @Test
+  void create_PlayerInfoDTO_not_verified() {
+    // Arrange
+    Player player = new Player("username", "email@test.com", "password", "token");
+    player.setIsVerified(false);
 
-        // Act
-        PlayerInfoDTO dto = playerService.createPlayerInfoDTO(player);
+    // Act
+    PlayerInfoDTO dto = playerService.createPlayerInfoDTO(player);
 
-        // Assert
-        assertEquals(player.getUserName(), dto.getUsername());
-        assertEquals(player.getIsVerified(), dto.getIsVerified());
-        assertEquals(player.getVerifiedAt(), dto.getVerified_at());
-    }
+    // Assert
+    assertEquals(player.getUserName(), dto.getUsername());
+    assertEquals(player.getIsVerified(), dto.getIsVerified());
+    assertEquals(player.getVerifiedAt(), dto.getVerifiedAt());
+  }
 }

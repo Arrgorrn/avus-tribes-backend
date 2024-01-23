@@ -26,7 +26,8 @@ public class KingdomController {
   @GetMapping("/kingdoms/{id}")
   public ResponseEntity<Object> index(@PathVariable Long id) {
     if (kingdomService.checkId(id)) {
-      return new ResponseEntity<>(kingdomService.returnKingdomDTOById(id), HttpStatusCode.valueOf(200));
+      return new ResponseEntity<>(
+          kingdomService.returnKingdomDTOById(id), HttpStatusCode.valueOf(200));
     } else {
       throw new CredentialException("Kingdom not found");
     }

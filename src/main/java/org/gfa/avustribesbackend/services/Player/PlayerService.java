@@ -14,9 +14,12 @@ public interface PlayerService {
   boolean validateEmail(String email);
 
   String verificationToken();
-  PlayerInfoDTO createPlayerInfoDTO(Player player);
-  List<PlayerInfoDTO> listPlayerInfoDTO();
-  PlayerInfoDTO findPlayerDTOById(Long id);
-  boolean checkId(Long id);
 
+  PlayerInfoDTO createPlayerInfoDTO(Player player);
+
+  List<PlayerInfoDTO> listPlayerInfoDTO();
+
+  PlayerInfoDTO findPlayerDTOById(Long id);
+
+  boolean checkId(Long id);
 }

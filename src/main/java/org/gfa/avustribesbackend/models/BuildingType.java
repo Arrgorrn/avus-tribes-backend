@@ -26,9 +26,8 @@ public class BuildingType {
   public BuildingType() {
   }
 
-  public BuildingType(BuildingTypeValue name, ResourceType resourceType, List<Building> buildings) {
+  public BuildingType(BuildingTypeValue name, List<Building> buildings) {
     this.name = name;
-    this.resourceType = resourceType;
     this.buildings = buildings;
   }
 

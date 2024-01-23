@@ -4,5 +4,5 @@ public enum BuildingTypeValue {
   TOWNHALL,
   FARM,
   MINE,
-  ACADEMY;
+  ACADEMY
 }

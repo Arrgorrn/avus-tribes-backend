@@ -22,7 +22,8 @@ public class BuildingTypeTest {
     resourceType = new ResourceType();
     List<Building> buildings = new ArrayList<>();
     resourceType.setId(1L);
-    buildingType = new BuildingType(BuildingTypeValue.TOWNHALL, resourceType, buildings);
+    buildingType = new BuildingType(BuildingTypeValue.TOWNHALL, buildings);
+    buildingType.setResourceType(resourceType);
   }
 
   @Test

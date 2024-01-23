@@ -12,10 +12,10 @@ public class WorldResponseDto {
   public WorldResponseDto(
       @JsonProperty("id") long id,
       @JsonProperty("name") String name,
-      @JsonProperty("kingdom_count") long kingdom_count) {
+      @JsonProperty("kingdomCount") long kingdomCount) {
     this.id = id;
     this.name = name;
-    this.kingdom_count = kingdom_count;
+    this.kingdom_count = kingdomCount;
   }
 
   public long getId() {

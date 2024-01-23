@@ -3,7 +3,6 @@ package org.gfa.avustribesbackend.controllers;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.services.Kingdom.KingdomService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +26,8 @@ public class KingdomController {
   @GetMapping("/kingdoms/{id}")
   public ResponseEntity<Object> index(@PathVariable Long id) {
     if (kingdomService.checkId(id)) {
-      return new ResponseEntity<>(kingdomService.returnKingdomDTOById(id), HttpStatusCode.valueOf(200));
+      return new ResponseEntity<>(
+          kingdomService.returnKingdomDTOById(id), HttpStatusCode.valueOf(200));
     } else {
       throw new CredentialException("Kingdom not found");
     }

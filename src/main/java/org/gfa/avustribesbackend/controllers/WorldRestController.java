@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/worlds")
 public class WorldRestController {
   private final WorldService worldService;
+
   @Autowired
   public WorldRestController(WorldService worldService) {
     this.worldService = worldService;

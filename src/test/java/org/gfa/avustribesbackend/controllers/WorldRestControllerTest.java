@@ -1,8 +1,10 @@
 package org.gfa.avustribesbackend.controllers;
 
 import org.gfa.avustribesbackend.models.Kingdom;
+import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.models.World;
 import org.gfa.avustribesbackend.repositories.KingdomRepository;
+import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.repositories.WorldRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ class WorldRestControllerTest {
   @Autowired private MockMvc mockMvc;
   @Autowired private WorldRepository worldRepository;
   @Autowired private KingdomRepository kingdomRepository;
+  @Autowired private PlayerRepository playerRepository;
 
   @Test
   void create_and_return_world() throws Exception {
@@ -33,10 +36,14 @@ class WorldRestControllerTest {
     World world = new World();
     world.setId(1L);
 
-    Kingdom kingdom = new Kingdom("Utopia", 40.5, 45.4, world);
+    Player player = new Player("Quest", "hello@gmail.com",
+            "ILovePassword", "Token");
+
+    Kingdom kingdom = new Kingdom("Utopia", 40.5, 45.4, player, world);
     kingdom.setId(1L);
 
     worldRepository.save(world);
+    playerRepository.save(player);
     kingdomRepository.save(kingdom);
 
     // Assert

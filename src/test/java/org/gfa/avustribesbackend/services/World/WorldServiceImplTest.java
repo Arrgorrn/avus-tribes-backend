@@ -33,7 +33,7 @@ public class WorldServiceImplTest {
     World world = new World();
     world.setId(1L);
 
-    Kingdom kingdom = new Kingdom("Utopia", 40.5, 45.4, world);
+    Kingdom kingdom = new Kingdom("Utopia", 40.5, 45.4, null, world);
     kingdom.setId(1L);
 
     List<World> worlds = new ArrayList<>();

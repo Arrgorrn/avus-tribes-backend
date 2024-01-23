@@ -41,10 +41,12 @@ public class Kingdom {
 
   public Kingdom() {}
 
-  public Kingdom(String name, Double coordinateX, Double coordinateY, World world) {
+  public Kingdom(String name, Double coordinateX, Double coordinateY,
+                 Player player, World world) {
     this.name = name;
     this.coordinateX = coordinateX;
     this.coordinateY = coordinateY;
+    this.player = player;
     this.world = world;
   }
 

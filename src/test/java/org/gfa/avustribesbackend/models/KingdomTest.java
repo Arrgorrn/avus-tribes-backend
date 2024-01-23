@@ -14,7 +14,7 @@ class KingdomTest {
     Double coordinateY = 20.0;
 
     // Act
-    Kingdom kingdom = new Kingdom(name, coordinateX, coordinateY);
+    Kingdom kingdom = new Kingdom(name, coordinateX, coordinateY, new World());
 
     // Assert
     assertEquals(name, kingdom.getName());
@@ -29,7 +29,7 @@ class KingdomTest {
     String name = "Test Kingdom";
 
     // Act
-    Kingdom kingdom = new Kingdom(name, null, null);
+    Kingdom kingdom = new Kingdom(name, null, null,null);
 
     // Assert
     assertEquals(name, kingdom.getName());

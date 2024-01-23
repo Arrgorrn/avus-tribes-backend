@@ -139,6 +139,6 @@ public class PlayerServiceImpl implements PlayerService {
 
   @Override
   public boolean checkId(Long id) {
-    return findPlayerDTOById(id) != null;
+    return playerRepository.existsById(id);
   }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "kingdoms")
 public class Kingdom {
 
   @Id
@@ -22,6 +23,10 @@ public class Kingdom {
   private Double coordinateY;
 
   @ManyToOne
+  @JoinColumn(name = "player_id", nullable = false)
+  private Player player;
+
+  @ManyToOne
   @JoinColumn(name = "world_id", nullable = false)
   private World world;
 
@@ -30,16 +35,17 @@ public class Kingdom {
 
   @OneToMany(mappedBy = "kingdom")
   private List<Resource> resources;
+
   @OneToMany(mappedBy = "kingdom")
   private List<Building> buildings;
 
-  public Kingdom() {
-  }
+  public Kingdom() {}
 
-  public Kingdom(String name, Double coordinateX, Double coordinateY) {
+  public Kingdom(String name, Double coordinateX, Double coordinateY, World world) {
     this.name = name;
     this.coordinateX = coordinateX;
     this.coordinateY = coordinateY;
+    this.world = world;
   }
 
   public Long getId() {
@@ -72,6 +78,14 @@ public class Kingdom {
 
   public void setCoordinateY(Double coordinateY) {
     this.coordinateY = coordinateY;
+  }
+
+  public Player getPlayer() {
+    return player;
+  }
+
+  public void setPlayer(Player player) {
+    this.player = player;
   }
 
   public World getWorld() {

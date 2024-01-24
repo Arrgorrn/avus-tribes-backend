@@ -3,7 +3,7 @@ package org.gfa.avustribesbackend.services.ResetPassword;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.gfa.avustribesbackend.dtos.EmailDTO;
 import org.gfa.avustribesbackend.dtos.PasswordRequestDTO;
-import org.gfa.avustribesbackend.dtos.TokenRequestDTO;
+import org.gfa.avustribesbackend.dtos.TokenDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.exceptions.EmailException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
@@ -77,7 +77,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   }
 
   @Override
-  public ResponseEntity<Object> resetPassword(TokenRequestDTO token, PasswordRequestDTO newPassword) {
+  public ResponseEntity<Object> resetPassword(TokenDTO token, PasswordRequestDTO newPassword) {
     if (newPassword == null || newPassword.getPassword() == null || newPassword.getPassword().isEmpty()) {
       throw new CredentialException("Password is required");
     }

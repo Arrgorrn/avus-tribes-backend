@@ -1,15 +1,20 @@
 package org.gfa.avustribesbackend.services.Player;
 
+import org.gfa.avustribesbackend.dtos.AuthenticationRequest;
 import org.gfa.avustribesbackend.dtos.PlayerInfoDTO;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
-import org.gfa.avustribesbackend.exceptions.AlreadyExistsException;
-import org.gfa.avustribesbackend.exceptions.CreationException;
-import org.gfa.avustribesbackend.exceptions.CredentialException;
+import org.gfa.avustribesbackend.dtos.TokenDTO;
+import org.gfa.avustribesbackend.exceptions.*;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
+import org.gfa.avustribesbackend.services.JWT.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -31,12 +36,18 @@ public class PlayerServiceImpl implements PlayerService {
 
   private final PlayerRepository playerRepository;
   private final EmailVerificationService emailVerificationService;
+  private final PasswordEncoder passwordEncoder;
+  private final AuthenticationManager authenticationManager;
+  private final JwtService jwtService;
 
   @Autowired
   public PlayerServiceImpl(
-      PlayerRepository playerRepository, EmailVerificationService emailVerificationService) {
+      PlayerRepository playerRepository, EmailVerificationService emailVerificationService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
     this.playerRepository = playerRepository;
     this.emailVerificationService = emailVerificationService;
+    this.passwordEncoder = passwordEncoder;
+    this.authenticationManager = authenticationManager;
+    this.jwtService = jwtService;
   }
 
   @Override
@@ -61,7 +72,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     Player player =
         new Player(
-            request.getUsername(), request.getEmail(), request.getPassword(), verificationToken());
+            request.getUsername(), request.getEmail(), passwordEncoder.encode(request.getPassword()), verificationToken());
 
     if (player == null) {
       throw new CreationException("Unknown error");
@@ -140,5 +151,20 @@ public class PlayerServiceImpl implements PlayerService {
   @Override
   public boolean checkId(Long id) {
     return playerRepository.existsById(id);
+  }
+
+  @Override
+  public ResponseEntity<Object> login(AuthenticationRequest request) {
+    try {
+      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+    } catch (AuthenticationException e) {
+      throw  new CredentialException("Invalid credentials");
+    }
+    Player player = playerRepository.findByEmailIgnoreCase(request.getEmail());
+    if (player == null) {
+      throw new NotFoundException("Player not found.");
+    }
+    TokenDTO token = new TokenDTO(jwtService.generateToken(player));
+    return ResponseEntity.ok().body(token);
   }
 }

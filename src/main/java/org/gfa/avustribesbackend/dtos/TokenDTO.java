@@ -1,13 +1,13 @@
 package org.gfa.avustribesbackend.dtos;
 
-public class TokenRequestDTO {
+public class TokenDTO {
 
   private String token;
 
-  public TokenRequestDTO() {
+  public TokenDTO() {
   }
 
-  public TokenRequestDTO(String token) {
+  public TokenDTO(String token) {
     this.token = token;
   }
 

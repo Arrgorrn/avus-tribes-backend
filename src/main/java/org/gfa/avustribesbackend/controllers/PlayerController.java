@@ -1,8 +1,6 @@
 package org.gfa.avustribesbackend.controllers;
 
-import org.gfa.avustribesbackend.dtos.EmailDTO;
-import org.gfa.avustribesbackend.dtos.PasswordRequestDTO;
-import org.gfa.avustribesbackend.dtos.TokenRequestDTO;
+import org.gfa.avustribesbackend.dtos.*;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.exceptions.EmailException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
@@ -12,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.services.Player.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +58,7 @@ public class PlayerController {
 
   @PostMapping("/reset-password/{token}")
   public ResponseEntity<Object> resetPassword(
-      @PathVariable TokenRequestDTO token, @RequestBody PasswordRequestDTO password) {
+      @PathVariable TokenDTO token, @RequestBody PasswordRequestDTO password) {
     return resetPasswordService.resetPassword(token, password);
   }
 
@@ -84,5 +81,10 @@ public class PlayerController {
     } else {
       throw new CredentialException("Player not found");
     }
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity<Object> login(@RequestBody AuthenticationRequest request) {
+    return playerService.login(request);
   }
 }

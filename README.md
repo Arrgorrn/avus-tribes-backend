@@ -1,23 +1,5 @@
 # avus-tribes-backend
 
-[//]: # (# &#40;## Game logic parameters &#40;uncomment, if Tribes project&#41; )
-
-[//]: # (|        |Building time   ||Building cost       ||HP     |Effect                                                         |)
-
-[//]: # (|--------|-------|---------|--------|------------|-------|---------------------------------------------------------------|)
-
-[//]: # (|        |Level 1|Level n  |Level 1 |Level n     |Level n|Level n                                                        |)
-
-[//]: # (|Townhall|2:00   |n * 1:00 |200 gold|n * 200 gold|n * 200|can build level n buildings                                    |)
-
-[//]: # (|Farm    |1:00   |n * 1:00 |100 gold|n * 100 gold|n * 100|+&#40;n * 5&#41; + 5 food / minute                                     |)
-
-[//]: # (|Mine    |1:00   |n * 1:00 |100 gold|n * 100 gold|n * 100|+&#40;n * 5&#41; + 5 gold / minute                                     |)
-
-[//]: # (|Academy |1:30   |n * 1:00 |150 gold|n * 100 gold|n * 150|can build level n troops                                       |)
-
-[//]: # (|Troop   |0:30   |n * 0:30 |25 gold |n * 25 gold |n * 20 |-&#40;n * 5&#41; food / minute<br>+&#40;n * 10&#41; attack<br>+&#40;n * 5&#41; defense |)
-
 - [Dependencies](#dependencies)
 - [Development rules](#development-rules)
 - [Processes](#processes)
@@ -117,3 +99,14 @@ See [CONTRIBUTING](CONTRIBUTING.md)
 ## Material Review
 
 See [MATERIALS](MATERIALS.md)
+
+## Game logic parameters
+
+|          | Building time |          | Building cost |              | HP      | Effect                                                         |
+|----------|---------------|----------|---------------|--------------|---------|----------------------------------------------------------------|
+|          | Level 1       | Level n  | Level 1       | Level n      | Level n | Level n                                                        |
+| Townhall | 5:00          | n * 1:00 | 200 gold      | n * 200 gold | n * 200 | can build level n buildings                                    |
+| Farm     | 1:00          | n * 1:00 | 100 gold      | n * 100 gold | n * 100 | +(n * 5) + 5 food / minute                                     |
+| Mine     | 1:00          | n * 1:00 | 100 gold      | n * 100 gold | n * 100 | +(n * 5) + 5 gold / minute                                     |
+| Academy  | 3:00          | n * 1:00 | 150 gold      | n * 100 gold | n * 150 | can build level n troops                                       |
+| Troop    | 0:30          | n * 0:30 | 25 gold       | n * 25 gold  | n * 20  | -(n * 5) food / minute<br>+(n * 10) attack<br>+(n * 5) defense |

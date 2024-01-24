@@ -25,11 +25,17 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    String[] authorizedUrls = {
+        "/register",
+        "/reset-password/**",
+        "/email/**",
+        "/login"
+    };
     http
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             authorizeHttpRequests -> authorizeHttpRequests
-                .requestMatchers("/register", "/reset-password/**", "/email/**", "/login")
+                .requestMatchers(authorizedUrls)
                 .permitAll()
                 .anyRequest()
                 .authenticated())

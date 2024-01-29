@@ -1,6 +1,12 @@
 package org.gfa.avustribesbackend.repositories;
 
 import org.gfa.avustribesbackend.models.Building;
+import org.gfa.avustribesbackend.models.Kingdom;
+import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BuildingRepository extends JpaRepository<Building, Long> {}
+import java.util.List;
+
+public interface BuildingRepository extends JpaRepository<Building, Long> {
+    List<Building> findAllByKingdomAndType(Kingdom kingdom, BuildingTypeValue buildingTypeValue);
+}

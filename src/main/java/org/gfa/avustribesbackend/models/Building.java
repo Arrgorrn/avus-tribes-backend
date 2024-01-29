@@ -67,4 +67,8 @@ public class Building {
       throw new IllegalArgumentException("Level cannot be less than 1");
     }
   }
+
+  public void incrementLevel() {
+    this.level++;
+  }
 }

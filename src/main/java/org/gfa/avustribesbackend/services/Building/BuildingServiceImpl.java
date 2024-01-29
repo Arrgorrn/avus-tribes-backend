@@ -1,6 +1,7 @@
 package org.gfa.avustribesbackend.services.Building;
 
 import org.gfa.avustribesbackend.exceptions.BuildingException;
+import org.gfa.avustribesbackend.models.Building;
 import org.gfa.avustribesbackend.models.Kingdom;
 import org.gfa.avustribesbackend.models.Resource;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
@@ -20,28 +21,34 @@ public class BuildingServiceImpl implements BuildingService {
 
   @Override
   public void upgradeBuilding(Kingdom kingdom, BuildingTypeValue buildingType, Resource gold) {
-
     int currentLevel = buildingRepository.getBuildingLevel(kingdom, buildingType);
     int upgradeCost = calculateUpgradeCost(currentLevel, buildingType);
-    int maxAllowedLevel =
-        Math.min(currentLevel, buildingRepository.getBuildingLevel(kingdom, TOWNHALL));
+    Building building = buildingRepository.findByKingdomAndType(kingdom, buildingType);
 
     if (currentLevel >= 10) {
       throw new BuildingException("Building is already at max level.");
     }
 
-    if (currentLevel >= maxAllowedLevel) {
-      throw new BuildingException("Cannot upgrade the building beyond the Townhall level.");
-    }
-
     if (gold.getAmount() < upgradeCost) {
-      System.out.println("Not enough gold to upgrade the building.");
-      return;
+      throw new BuildingException("Not enough gold to upgrade the building.");
     }
 
-    gold.setAmount(gold.getAmount() - upgradeCost);
+    if (buildingType == BuildingTypeValue.TOWNHALL) {
+      gold.setAmount(gold.getAmount() - upgradeCost);
+      building.incrementLevel();
+    } else {
+      int maxAllowedLevel =
+          Math.min(
+              currentLevel,
+              buildingRepository.getBuildingLevel(kingdom, BuildingTypeValue.TOWNHALL));
 
-    buildingRepository.updateBuildingLevel(kingdom, buildingType, currentLevel + 1);
+      if (currentLevel >= maxAllowedLevel) {
+        throw new BuildingException("Cannot upgrade the building beyond the Townhall level.");
+      }
+
+      gold.setAmount(gold.getAmount() - upgradeCost);
+      building.incrementLevel();
+    }
   }
 
   private int calculateUpgradeCost(int currentLevel, BuildingTypeValue buildingType) {

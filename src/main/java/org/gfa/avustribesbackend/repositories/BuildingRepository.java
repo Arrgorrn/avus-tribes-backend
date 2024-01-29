@@ -12,5 +12,5 @@ public interface BuildingRepository extends JpaRepository<Building, Long> {
 
   int getBuildingLevel(Kingdom kingdom, BuildingTypeValue buildingType);
 
-  void updateBuildingLevel(Kingdom kingdom, BuildingTypeValue buildingType, int i);
+  Building findByKingdomAndType(Kingdom kingdom, BuildingTypeValue buildingTypeValue);
 }

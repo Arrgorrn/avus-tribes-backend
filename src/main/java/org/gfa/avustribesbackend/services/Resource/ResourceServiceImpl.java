@@ -42,7 +42,7 @@ public class ResourceServiceImpl implements ResourceService {
       } else {
         for (Building building :
             buildingRepository.findAllByKingdomAndType(
-                resource.getKingdom(), BuildingTypeValue.MINE)) {
+                resource.getKingdom(), BuildingTypeValue.FARM)) {
           if (building.getLevel() == 1) {
             resource.setAmount(resource.getAmount() + 10);
           } else {

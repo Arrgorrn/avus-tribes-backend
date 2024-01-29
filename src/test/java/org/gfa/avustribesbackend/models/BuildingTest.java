@@ -1,5 +1,6 @@
 package org.gfa.avustribesbackend.models;
 
+import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,18 +12,15 @@ class BuildingTest {
 
   @BeforeEach
   void setup() {
-    building = new Building(1L, new BuildingType(), new Kingdom(), new Production(), 1);
+    building = new Building(BuildingTypeValue.FARM, new Kingdom());
   }
 
   @Test
   void all_values_are_set_correctly() {
-    Long expectedId = 1L;
     int expectedLevel = 1;
 
-    assertEquals(building.getId(), expectedId);
-    assertNotNull(building.getBuildingType());
+    assertNotNull(building.getType());
     assertNotNull(building.getKingdom());
-    assertNotNull(building.getProductions());
     assertEquals(building.getLevel(), expectedLevel);
   }
 

@@ -31,9 +31,6 @@ public class Kingdom {
   private World world;
 
   @OneToMany(mappedBy = "kingdom")
-  private List<Production> productions;
-
-  @OneToMany(mappedBy = "kingdom")
   private List<Resource> resources;
 
   @OneToMany(mappedBy = "kingdom")
@@ -96,14 +93,6 @@ public class Kingdom {
 
   public void setWorld(World world) {
     this.world = world;
-  }
-
-  public List<Production> getProductions() {
-    return productions;
-  }
-
-  public void setProductions(List<Production> productions) {
-    this.productions = productions;
   }
 
   public List<Resource> getResources() {

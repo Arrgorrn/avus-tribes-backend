@@ -58,7 +58,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     playerRepository.save(player);
 
-    String htmlMessage = "<p>Hello " + player.getUserName() + ". If you want to reset your password please click <a href=\"" + resetPasswordUrl + player.getForgottenPasswordToken() + "\">" + resetPasswordUrl + player.getForgottenPasswordToken() + "</a></p>";
+    String htmlMessage = "<p>Hello " + player.getPlayerName() + ". If you want to reset your password please click <a href=\"" + resetPasswordUrl + player.getForgottenPasswordToken() + "\">" + resetPasswordUrl + player.getForgottenPasswordToken() + "</a></p>";
 
     MimeMessage mimeMessage = javaMailSender.createMimeMessage();
     try {

@@ -29,7 +29,7 @@ class EmailVerificationTest {
     String token = "someToken";
     Player player = new Player();
     player.setIsVerified(false);
-    player.setUserName("Username");
+    player.setPlayerName("Username");
     player.setEmail("test@example.com");
     when(playerRepository.findByVerificationToken(token)).thenReturn(player);
 

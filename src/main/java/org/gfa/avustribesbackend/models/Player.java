@@ -19,8 +19,8 @@ public class Player implements UserDetails {
   @Column(name = "Id", unique = true, nullable = false)
   private Long id;
 
-  @Column(name = "username", unique = true, nullable = false)
-  private String userName;
+  @Column(name = "playerName", unique = true, nullable = false)
+  private String playerName;
   @Column(name = "email", unique = true, nullable = false)
   private String email;
 
@@ -60,11 +60,11 @@ public class Player implements UserDetails {
   }
 
   public Player(
-      String userName,
+      String playerName,
       String email,
       String password,
       String verificationToken) {
-    this.userName = userName;
+    this.playerName = playerName;
     this.email = email;
     this.password = password;
     this.isVerified = false;
@@ -112,12 +112,12 @@ public class Player implements UserDetails {
     this.id = id;
   }
 
-  public String getUserName() {
-    return userName;
+  public String getPlayerName() {
+    return playerName;
   }
 
-  public void setUserName(String userName) {
-    this.userName = userName;
+  public void setPlayerName(String userName) {
+    this.playerName = userName;
   }
 
   public String getEmail() {

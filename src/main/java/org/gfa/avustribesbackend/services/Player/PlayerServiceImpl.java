@@ -8,7 +8,7 @@ import org.gfa.avustribesbackend.exceptions.*;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
-import org.gfa.avustribesbackend.services.JWT.JwtService;
+import org.gfa.avustribesbackend.services.JWT.JwtServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,16 +38,16 @@ public class PlayerServiceImpl implements PlayerService {
   private final EmailVerificationService emailVerificationService;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
-  private final JwtService jwtService;
+  private final JwtServiceImpl jwtServiceImpl;
 
   @Autowired
   public PlayerServiceImpl(
-      PlayerRepository playerRepository, EmailVerificationService emailVerificationService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
+      PlayerRepository playerRepository, EmailVerificationService emailVerificationService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtServiceImpl jwtServiceImpl) {
     this.playerRepository = playerRepository;
     this.emailVerificationService = emailVerificationService;
     this.passwordEncoder = passwordEncoder;
     this.authenticationManager = authenticationManager;
-    this.jwtService = jwtService;
+    this.jwtServiceImpl = jwtServiceImpl;
   }
 
   @Override
@@ -119,9 +119,9 @@ public class PlayerServiceImpl implements PlayerService {
     if (player.getIsVerified()) {
       dto =
           new PlayerInfoDTO(
-              player.getId(), player.getUserName(), player.getIsVerified(), player.getVerifiedAt());
+              player.getId(), player.getPlayerName(), player.getIsVerified(), player.getVerifiedAt());
     } else {
-      dto = new PlayerInfoDTO(player.getId(), player.getUserName(), player.getIsVerified(), null);
+      dto = new PlayerInfoDTO(player.getId(), player.getPlayerName(), player.getIsVerified(), null);
     }
     return dto;
   }
@@ -164,7 +164,7 @@ public class PlayerServiceImpl implements PlayerService {
     if (player == null) {
       throw new NotFoundException("Player not found.");
     }
-    TokenDTO token = new TokenDTO(jwtService.generateToken(player));
+    TokenDTO token = new TokenDTO(jwtServiceImpl.generateToken(player));
     return ResponseEntity.ok().body(token);
   }
 }

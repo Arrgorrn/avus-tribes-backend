@@ -38,9 +38,7 @@ public class BuildingServiceImpl implements BuildingService {
       building.incrementLevel();
     } else {
       int maxAllowedLevel =
-          Math.min(
-              currentLevel,
-              buildingRepository.getBuildingLevel(kingdom, BuildingTypeValue.TOWNHALL));
+          buildingRepository.getBuildingLevel(kingdom, BuildingTypeValue.TOWNHALL);
 
       if (currentLevel >= maxAllowedLevel) {
         throw new BuildingException("Cannot upgrade the building beyond the Townhall level.");

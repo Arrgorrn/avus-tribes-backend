@@ -27,7 +27,8 @@ public class Kingdom {
   private Player player;
 
   @ManyToOne
-  @JoinColumn(name = "world_id")  // TODO: connect world to kingdom
+  @JoinColumn(
+      name = "world_id") // TODO: set this to nullable = false after we connect kingdom to world
   private World world;
 
   @OneToMany(mappedBy = "kingdom")
@@ -44,6 +45,11 @@ public class Kingdom {
     this.coordinateY = coordinateY;
     this.player = player;
     this.world = world;
+  }
+
+  public Kingdom(Player player) { // TODO: edit this to include Player and World
+    this.player = player;
+    this.name = player.getUserName() + "'s kingdom";
   }
 
   public Long getId() {

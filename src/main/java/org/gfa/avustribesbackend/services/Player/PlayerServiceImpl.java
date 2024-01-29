@@ -8,6 +8,7 @@ import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
+import org.gfa.avustribesbackend.services.Kingdom.KingdomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,12 +32,16 @@ public class PlayerServiceImpl implements PlayerService {
 
   private final PlayerRepository playerRepository;
   private final EmailVerificationService emailVerificationService;
+  private final KingdomService kingdomService;
 
   @Autowired
   public PlayerServiceImpl(
-      PlayerRepository playerRepository, EmailVerificationService emailVerificationService) {
+      PlayerRepository playerRepository,
+      EmailVerificationService emailVerificationService,
+      KingdomService kingdomService) {
     this.playerRepository = playerRepository;
     this.emailVerificationService = emailVerificationService;
+    this.kingdomService = kingdomService;
   }
 
   @Override
@@ -77,6 +82,7 @@ public class PlayerServiceImpl implements PlayerService {
       player.setVerifiedAt(date);
       player.setIsVerified(true);
       playerRepository.save(player);
+      kingdomService.createStartingKingdom(player);
     }
     return ResponseEntity.ok("successful creation");
   }

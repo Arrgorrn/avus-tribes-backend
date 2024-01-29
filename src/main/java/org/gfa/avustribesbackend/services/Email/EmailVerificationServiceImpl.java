@@ -6,6 +6,7 @@ import org.gfa.avustribesbackend.exceptions.EmailException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
+import org.gfa.avustribesbackend.services.Kingdom.KingdomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -27,18 +28,23 @@ import java.util.Date;
 public class EmailVerificationServiceImpl implements EmailVerificationService {
   private final JavaMailSender javaMailSender;
   private final PlayerRepository playerRepository;
+  private final KingdomService kingdomService;
   private final Dotenv dotenv = Dotenv.configure().load();
   private final String url = dotenv.get("VERIFICATION_EMAIL_URL");
   private final String sender = dotenv.get("VERIFICATION_EMAIL_SENDER");
   private final String subject = dotenv.get("VERIFICATION_EMAIL_SUBJECT");
-  private final String resendVerificationEmailSubject = dotenv.get("RESEND_VERIFICATION_EMAIL_SUBJECT");
+  private final String resendVerificationEmailSubject =
+      dotenv.get("RESEND_VERIFICATION_EMAIL_SUBJECT");
   private final String templatePath = dotenv.get("VERIFICATION_EMAIL_TEMPLATE_FILEPATH");
 
   @Autowired
   public EmailVerificationServiceImpl(
-      JavaMailSender javaMailSender, PlayerRepository playerRepository) {
+      JavaMailSender javaMailSender,
+      PlayerRepository playerRepository,
+      KingdomService kingdomService) {
     this.javaMailSender = javaMailSender;
     this.playerRepository = playerRepository;
+    this.kingdomService = kingdomService;
   }
 
   @Override
@@ -105,6 +111,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         player.setVerifiedAt(currentDate);
         player.setIsVerified(true);
         playerRepository.save(player);
+        kingdomService.createStartingKingdom(player);
         return true;
       } else {
         return false;

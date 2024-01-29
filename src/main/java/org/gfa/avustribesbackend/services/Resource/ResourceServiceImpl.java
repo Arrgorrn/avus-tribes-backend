@@ -18,10 +18,10 @@ public class ResourceServiceImpl implements ResourceService {
   private final BuildingRepository buildingRepository;
 
   @Autowired
-  public ResourceServiceImpl(ResourceRepository resourceRepository,
-                             BuildingRepository buildingRepository) {
+  public ResourceServiceImpl(
+      ResourceRepository resourceRepository, BuildingRepository buildingRepository) {
     this.resourceRepository = resourceRepository;
-      this.buildingRepository = buildingRepository;
+    this.buildingRepository = buildingRepository;
   }
 
   @Override
@@ -29,8 +29,9 @@ public class ResourceServiceImpl implements ResourceService {
   public void gainingResources() {
     List<Resource> resources = resourceRepository.findAll();
     for (Resource resource : resources) {
-      if(resource.getType() == ResourceTypeValue.GOLD){
-        for (Building building : buildingRepository.findAllByKingdomAndType(
+      if (resource.getType() == ResourceTypeValue.GOLD) {
+        for (Building building :
+            buildingRepository.findAllByKingdomAndType(
                 resource.getKingdom(), BuildingTypeValue.MINE)) {
           if (building.getLevel() == 1) {
             resource.setAmount(resource.getAmount() + 10);
@@ -38,8 +39,9 @@ public class ResourceServiceImpl implements ResourceService {
             resource.setAmount(resource.getAmount() + (10 + (5 * building.getLevel())));
           }
         }
-      }else {
-        for (Building building : buildingRepository.findAllByKingdomAndType(
+      } else {
+        for (Building building :
+            buildingRepository.findAllByKingdomAndType(
                 resource.getKingdom(), BuildingTypeValue.MINE)) {
           if (building.getLevel() == 1) {
             resource.setAmount(resource.getAmount() + 10);

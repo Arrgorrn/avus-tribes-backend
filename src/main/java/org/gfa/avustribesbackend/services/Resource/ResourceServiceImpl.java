@@ -23,7 +23,7 @@ public class ResourceServiceImpl implements ResourceService {
   public void gainingResources() {
     List<Resource> resources = resourceRepository.findAll();
     for (Resource resource : resources) {
-      for (Building building : resource.getResourceType().getBuildingType().getBuildings()) {
+      for (Building building : resource.getKingdom().getBuildings()) {
         if (building.getLevel() == 1) {
           resource.setAmount(resource.getAmount() + 10);
         } else {

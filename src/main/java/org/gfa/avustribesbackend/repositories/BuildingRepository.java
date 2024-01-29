@@ -9,4 +9,8 @@ import java.util.List;
 
 public interface BuildingRepository extends JpaRepository<Building, Long> {
   List<Building> findAllByKingdomAndType(Kingdom kingdom, BuildingTypeValue buildingTypeValue);
+
+  int getBuildingLevel(Kingdom kingdom, BuildingTypeValue buildingType);
+
+  void updateBuildingLevel(Kingdom kingdom, BuildingTypeValue buildingType, int i);
 }

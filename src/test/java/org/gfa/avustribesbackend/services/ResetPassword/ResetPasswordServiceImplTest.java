@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
@@ -27,6 +28,8 @@ class ResetPasswordServiceImplTest {
   private ResetPasswordServiceImpl resetPasswordService;
   @Mock
   private PlayerRepository playerRepository;
+  @Mock
+  private PasswordEncoder passwordEncoder;
   private EmailDTO emailDTO;
   private Player player;
   private TokenDTO tokenDTO;
@@ -239,6 +242,7 @@ class ResetPasswordServiceImplTest {
 
     when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken())).thenReturn(true);
     when(playerRepository.findByForgottenPasswordToken(tokenDTO.getToken())).thenReturn(player);
+    when(passwordEncoder.encode(passwordRequestDTO.getPassword())).thenReturn(expectedPassword);
 
     ResponseEntity<Object> expected = new ResponseEntity<>(HttpStatusCode.valueOf(200));
     ResponseEntity<Object> actual = resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO);

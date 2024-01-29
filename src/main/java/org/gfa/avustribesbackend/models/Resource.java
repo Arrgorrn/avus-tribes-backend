@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.gfa.avustribesbackend.models.enums.ResourceTypeValue;
 
 @Entity
+@Table(name = "resources")
 public class Resource {
 
   @Id

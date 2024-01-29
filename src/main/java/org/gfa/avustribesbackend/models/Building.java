@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 
 @Entity
+@Table(name = "buildings")
 public class Building {
 
   @Id
@@ -63,7 +64,7 @@ public class Building {
     if (level > 0) {
       this.level = level;
     } else {
-      this.level = 1;
+      throw new IllegalArgumentException("Level cannot be less than 1");
     }
   }
 }

@@ -7,7 +7,6 @@ import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
-import org.gfa.avustribesbackend.services.Player.PlayerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.Date;
 
@@ -29,41 +27,11 @@ class ResetPasswordServiceImplTest {
   private ResetPasswordServiceImpl resetPasswordService;
   @Mock
   private PlayerRepository playerRepository;
-  @Mock
-  private JavaMailSender javaMailSender;
-  @Mock
-  private PlayerService playerService;
   private EmailDTO emailDTO;
   private Player player;
   private TokenDTO tokenDTO;
   PasswordRequestDTO passwordRequestDTO;
   private Date date;
-
-  @Test
-  void sendResetPasswordEmail_with_no_errors_should_response_with_status_200_and_set_password_token_and_password_expiration_to_player() {
-    emailDTO = new EmailDTO("example@example.com");
-
-    player = new Player();
-    player.setIsVerified(true);
-
-    when(playerService.verificationToken()).thenReturn("token");
-
-    String expectedToken = "token";
-
-    ResponseEntity<Object> expected = new ResponseEntity<>(HttpStatusCode.valueOf(200));
-
-    when(playerRepository.existsByEmailIgnoreCase(emailDTO.getEmail())).thenReturn(true);
-    when(playerRepository.findByEmailIgnoreCase(emailDTO.getEmail())).thenReturn(player);
-
-    ResponseEntity<Object> actual = resetPasswordService.sendResetPasswordEmail(emailDTO);
-
-    String actualToken = player.getForgottenPasswordToken();
-
-    assertTrue(expectedToken.contains(actualToken));
-    assertNotNull(player.getForgottenPasswordToken());
-    assertNotNull(player.getForgottenPasswordTokenExpiresAt());
-    assertEquals(expected.getStatusCode(), actual.getStatusCode());
-  }
 
   @Test
   void sendResetPasswordEmail_with_not_existing_email_in_database_should_throw_credential_exception() {

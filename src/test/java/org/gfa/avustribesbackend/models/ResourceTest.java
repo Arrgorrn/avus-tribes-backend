@@ -1,5 +1,6 @@
 package org.gfa.avustribesbackend.models;
 
+import org.gfa.avustribesbackend.models.enums.ResourceTypeValue;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,18 +23,16 @@ class ResourceTest {
   public void test_constructor_with_parameters() {
 
     Kingdom kingdom = new Kingdom();
-    Production production = new Production();
 
     int amount = 0;
     Long manuallySetId = 666L;
 
-    Resource resource = new Resource(production, kingdom);
+    Resource resource = new Resource(kingdom, ResourceTypeValue.FOOD);
     resource.setId(manuallySetId);
 
     assertNotNull(resource);
     assertEquals(manuallySetId, resource.getId());
     assertEquals(kingdom, resource.getKingdom());
-    assertEquals(production, resource.getProduction());
     assertEquals(amount, resource.getAmount());
   }
 }

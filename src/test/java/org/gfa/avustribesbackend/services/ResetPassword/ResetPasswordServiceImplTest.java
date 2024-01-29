@@ -24,12 +24,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ResetPasswordServiceImplTest {
 
-  @InjectMocks
-  private ResetPasswordServiceImpl resetPasswordService;
-  @Mock
-  private PlayerRepository playerRepository;
   @Mock
   private PasswordEncoder passwordEncoder;
+  @InjectMocks private ResetPasswordServiceImpl resetPasswordService;
+  @Mock private PlayerRepository playerRepository;
   private EmailDTO emailDTO;
   private Player player;
   private TokenDTO tokenDTO;
@@ -37,12 +35,15 @@ class ResetPasswordServiceImplTest {
   private Date date;
 
   @Test
-  void sendResetPasswordEmail_with_not_existing_email_in_database_should_throw_credential_exception() {
+  void
+      sendResetPasswordEmail_with_not_existing_email_in_database_should_throw_credential_exception() {
     emailDTO = new EmailDTO("example@example.com");
 
     when(playerRepository.existsByEmailIgnoreCase(emailDTO.getEmail())).thenReturn(false);
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
+    Exception exception =
+        assertThrows(
+            CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
 
     String expectedMessage = "Invalid email!";
     String actualMessage = exception.getMessage();
@@ -54,7 +55,9 @@ class ResetPasswordServiceImplTest {
   void sendResetPasswordEmail_with_null_emailRequestDTO_should_throw_credential_exception() {
     emailDTO = null;
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
+    Exception exception =
+        assertThrows(
+            CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
 
     String expectedMessage = "Invalid email!";
     String actualMessage = exception.getMessage();
@@ -63,10 +66,13 @@ class ResetPasswordServiceImplTest {
   }
 
   @Test
-  void sendResetPasswordEmail_with_empty_email_in_emailRequestDTO_should_throw_credential_exception() {
+  void
+      sendResetPasswordEmail_with_empty_email_in_emailRequestDTO_should_throw_credential_exception() {
     emailDTO = new EmailDTO("");
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
+    Exception exception =
+        assertThrows(
+            CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
 
     String expectedMessage = "Invalid email!";
     String actualMessage = exception.getMessage();
@@ -75,10 +81,13 @@ class ResetPasswordServiceImplTest {
   }
 
   @Test
-  void sendResetPasswordEmail_with_null_email_in_emailRequestDTO_should_throw_credential_exception() {
+  void
+      sendResetPasswordEmail_with_null_email_in_emailRequestDTO_should_throw_credential_exception() {
     emailDTO = new EmailDTO();
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
+    Exception exception =
+        assertThrows(
+            CredentialException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
 
     String expectedMessage = "Invalid email!";
     String actualMessage = exception.getMessage();
@@ -95,7 +104,10 @@ class ResetPasswordServiceImplTest {
     when(playerRepository.existsByEmailIgnoreCase(emailDTO.getEmail())).thenReturn(true);
     when(playerRepository.findByEmailIgnoreCase(emailDTO.getEmail())).thenReturn(player);
 
-    Exception exception = assertThrows(VerificationException.class, () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
+    Exception exception =
+        assertThrows(
+            VerificationException.class,
+            () -> resetPasswordService.sendResetPasswordEmail(emailDTO));
 
     String expectedMessage = "Unverified email!";
     String actualMessage = exception.getMessage();
@@ -108,7 +120,10 @@ class ResetPasswordServiceImplTest {
     passwordRequestDTO = null;
     tokenDTO = new TokenDTO("token");
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
+    Exception exception =
+        assertThrows(
+            CredentialException.class,
+            () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
 
     String expectedMessage = "Password is required";
     String actualMessage = exception.getMessage();
@@ -121,7 +136,10 @@ class ResetPasswordServiceImplTest {
     passwordRequestDTO = new PasswordRequestDTO();
     tokenDTO = new TokenDTO("token");
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
+    Exception exception =
+        assertThrows(
+            CredentialException.class,
+            () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
 
     String expectedMessage = "Password is required";
     String actualMessage = exception.getMessage();
@@ -134,8 +152,10 @@ class ResetPasswordServiceImplTest {
     passwordRequestDTO = new PasswordRequestDTO("");
     tokenDTO = new TokenDTO("token");
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
-
+    Exception exception =
+        assertThrows(
+            CredentialException.class,
+            () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
     String expectedMessage = "Password is required";
     String actualMessage = exception.getMessage();
 
@@ -147,7 +167,10 @@ class ResetPasswordServiceImplTest {
     passwordRequestDTO = new PasswordRequestDTO("password");
     tokenDTO = null;
 
-    Exception exception = assertThrows(VerificationException.class, () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
+    Exception exception =
+        assertThrows(
+            VerificationException.class,
+            () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
 
     String expectedMessage = "Invalid token";
     String actualMessage = exception.getMessage();
@@ -160,7 +183,10 @@ class ResetPasswordServiceImplTest {
     passwordRequestDTO = new PasswordRequestDTO("password");
     tokenDTO = new TokenDTO();
 
-    Exception exception = assertThrows(VerificationException.class, () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
+    Exception exception =
+        assertThrows(
+            VerificationException.class,
+            () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
 
     String expectedMessage = "Invalid token";
     String actualMessage = exception.getMessage();
@@ -173,7 +199,10 @@ class ResetPasswordServiceImplTest {
     passwordRequestDTO = new PasswordRequestDTO("password");
     tokenDTO = new TokenDTO("");
 
-    Exception exception = assertThrows(VerificationException.class, () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
+    Exception exception =
+        assertThrows(
+            VerificationException.class,
+            () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
 
     String expectedMessage = "Invalid token";
     String actualMessage = exception.getMessage();
@@ -186,9 +215,13 @@ class ResetPasswordServiceImplTest {
     passwordRequestDTO = new PasswordRequestDTO("password");
     tokenDTO = new TokenDTO("token");
 
-    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken())).thenReturn(false);
+    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken()))
+        .thenReturn(false);
 
-    Exception exception = assertThrows(VerificationException.class, () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
+    Exception exception =
+        assertThrows(
+            VerificationException.class,
+            () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
 
     String expectedMessage = "Invalid token";
     String actualMessage = exception.getMessage();
@@ -201,9 +234,13 @@ class ResetPasswordServiceImplTest {
     passwordRequestDTO = new PasswordRequestDTO("passw");
     tokenDTO = new TokenDTO("token");
 
-    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken())).thenReturn(true);
+    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken()))
+        .thenReturn(true);
 
-    Exception exception = assertThrows(CredentialException.class, () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
+    Exception exception =
+        assertThrows(
+            CredentialException.class,
+            () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
 
     String expectedMessage = "Password must be at least 8 characters long";
     String actualMessage = exception.getMessage();
@@ -219,10 +256,15 @@ class ResetPasswordServiceImplTest {
     date = new Date(System.currentTimeMillis() - 1000 * 60 * 60);
     player.setForgottenPasswordTokenExpiresAt(date);
 
-    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken())).thenReturn(true);
-    when(playerRepository.findByForgottenPasswordToken(tokenDTO.getToken())).thenReturn(player);
+    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken()))
+        .thenReturn(true);
+    when(playerRepository.findByForgottenPasswordToken(tokenDTO.getToken()))
+        .thenReturn(player);
 
-    Exception exception = assertThrows(VerificationException.class, () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
+    Exception exception =
+        assertThrows(
+            VerificationException.class,
+            () -> resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO));
 
     String expectedMessage = "Expired token";
     String actualMessage = exception.getMessage();
@@ -231,7 +273,8 @@ class ResetPasswordServiceImplTest {
   }
 
   @Test
-  void resetPassword_with_no_errors_should_respond_with_status_200_and_set_new_password_to_player() {
+  void
+      resetPassword_with_no_errors_should_respond_with_status_200_and_set_new_password_to_player() {
     String expectedPassword = "newPassword";
     passwordRequestDTO = new PasswordRequestDTO(expectedPassword);
     tokenDTO = new TokenDTO("token");
@@ -240,12 +283,16 @@ class ResetPasswordServiceImplTest {
     player.setForgottenPasswordTokenExpiresAt(date);
     player.setPassword("oldPassword");
 
-    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken())).thenReturn(true);
-    when(playerRepository.findByForgottenPasswordToken(tokenDTO.getToken())).thenReturn(player);
-    when(passwordEncoder.encode(passwordRequestDTO.getPassword())).thenReturn(expectedPassword);
+    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken()))
+        .thenReturn(true);
+    when(playerRepository.findByForgottenPasswordToken(tokenDTO.getToken()))
+        .thenReturn(player);
+    when(passwordEncoder.encode(passwordRequestDTO.getPassword()))
+        .thenReturn(expectedPassword);
 
     ResponseEntity<Object> expected = new ResponseEntity<>(HttpStatusCode.valueOf(200));
-    ResponseEntity<Object> actual = resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO);
+    ResponseEntity<Object> actual =
+        resetPasswordService.resetPassword(tokenDTO, passwordRequestDTO);
 
     String actualPassword = player.getPassword();
 

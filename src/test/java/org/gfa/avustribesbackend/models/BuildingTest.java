@@ -1,5 +1,6 @@
 package org.gfa.avustribesbackend.models;
 
+import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,18 +12,15 @@ class BuildingTest {
 
   @BeforeEach
   void setup() {
-    building = new Building(1L, new BuildingType(), new Kingdom(), new Production(), 1);
+    building = new Building(BuildingTypeValue.FARM, new Kingdom());
   }
 
   @Test
   void all_values_are_set_correctly() {
-    Long expectedId = 1L;
     int expectedLevel = 1;
 
-    assertEquals(building.getId(), expectedId);
-    assertNotNull(building.getBuildingType());
+    assertNotNull(building.getType());
     assertNotNull(building.getKingdom());
-    assertNotNull(building.getProductions());
     assertEquals(building.getLevel(), expectedLevel);
   }
 
@@ -36,10 +34,12 @@ class BuildingTest {
   }
 
   @Test
-  void level_is_set_to_1_when_passed_value_is_less_than_1() {
-    building.setLevel(-5);
-    int expectedLevel = 1;
+  void throws_exception_when_level_set_to_negative() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> building.setLevel(-5));
 
-    assertEquals(building.getLevel(), expectedLevel);
+    String expectedMessage = "Level cannot be less than 1";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
   }
 }

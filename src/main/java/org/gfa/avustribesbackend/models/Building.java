@@ -1,8 +1,10 @@
 package org.gfa.avustribesbackend.models;
 
 import jakarta.persistence.*;
+import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 
 @Entity
+@Table(name = "buildings")
 public class Building {
 
   @Id
@@ -10,27 +12,20 @@ public class Building {
   @Column(name = "id", unique = true, nullable = false)
   private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "type_id", nullable = false)
-  private BuildingType buildingType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "type", unique = true, nullable = false)
+  private BuildingTypeValue type;
 
   @ManyToOne
   @JoinColumn(name = "kingdom_id", nullable = false)
   private Kingdom kingdom;
 
-  @ManyToOne
-  @JoinColumn(name = "production_id")
-  private Production production;
-
   private Integer level;
 
-  public Building(
-      Long id, BuildingType buildingType, Kingdom kingdom, Production productions, Integer level) {
-    this.id = id;
-    this.buildingType = buildingType;
+  public Building(BuildingTypeValue type, Kingdom kingdom) {
+    this.type = type;
     this.kingdom = kingdom;
-    this.production = productions;
-    this.level = level;
+    this.level = 1;
   }
 
   public Building() {
@@ -45,12 +40,12 @@ public class Building {
     this.id = id;
   }
 
-  public BuildingType getBuildingType() {
-    return buildingType;
+  public BuildingTypeValue getType() {
+    return type;
   }
 
-  public void setBuildingType(BuildingType buildingType) {
-    this.buildingType = buildingType;
+  public void setType(BuildingTypeValue type) {
+    this.type = type;
   }
 
   public Kingdom getKingdom() {
@@ -61,14 +56,6 @@ public class Building {
     this.kingdom = kingdom;
   }
 
-  public Production getProductions() {
-    return production;
-  }
-
-  public void setProductions(Production productions) {
-    this.production = productions;
-  }
-
   public Integer getLevel() {
     return level;
   }
@@ -77,7 +64,7 @@ public class Building {
     if (level > 0) {
       this.level = level;
     } else {
-      this.level = 1;
+      throw new IllegalArgumentException("Level cannot be less than 1");
     }
   }
 }

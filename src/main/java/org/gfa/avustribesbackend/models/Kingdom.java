@@ -27,11 +27,8 @@ public class Kingdom {
   private Player player;
 
   @ManyToOne
-  @JoinColumn(name = "world_id", nullable = false)
+  @JoinColumn(name = "world_id")  // TODO: connect world to kingdom
   private World world;
-
-  @OneToMany(mappedBy = "kingdom")
-  private List<Production> productions;
 
   @OneToMany(mappedBy = "kingdom")
   private List<Resource> resources;
@@ -41,8 +38,7 @@ public class Kingdom {
 
   public Kingdom() {}
 
-  public Kingdom(String name, Double coordinateX, Double coordinateY,
-                 Player player, World world) {
+  public Kingdom(String name, Double coordinateX, Double coordinateY, Player player, World world) {
     this.name = name;
     this.coordinateX = coordinateX;
     this.coordinateY = coordinateY;
@@ -96,14 +92,6 @@ public class Kingdom {
 
   public void setWorld(World world) {
     this.world = world;
-  }
-
-  public List<Production> getProductions() {
-    return productions;
-  }
-
-  public void setProductions(List<Production> productions) {
-    this.productions = productions;
   }
 
   public List<Resource> getResources() {

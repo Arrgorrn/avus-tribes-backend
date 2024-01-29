@@ -16,15 +16,17 @@ public class Resource {
   @JoinColumn(name = "kingdom_id", nullable = false)
   private Kingdom kingdom;
 
+  @ManyToOne
+  @JoinColumn(name = "type_id", nullable = false)
+  private ResourceType resourceType;
+
   private int amount;
 
   public Resource() {
     this.amount = 0;
   }
 
-  public Resource(
-      Production production,
-      Kingdom kingdom) {
+  public Resource(Production production, Kingdom kingdom) {
     this.production = production;
     this.kingdom = kingdom;
     this.amount = 0;
@@ -63,5 +65,13 @@ public class Resource {
       throw new IllegalArgumentException("Amount cannot be negative");
     }
     this.amount = amount;
+  }
+
+  public ResourceType getResourceType() {
+    return resourceType;
+  }
+
+  public void setResourceType(ResourceType resourceType) {
+    this.resourceType = resourceType;
   }
 }

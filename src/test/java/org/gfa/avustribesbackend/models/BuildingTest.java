@@ -1,5 +1,6 @@
 package org.gfa.avustribesbackend.models;
 
+import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,10 +35,12 @@ class BuildingTest {
   }
 
   @Test
-  void level_is_set_to_1_when_passed_value_is_less_than_1() {
-    building.setLevel(-5);
-    int expectedLevel = 1;
+  void throws_exception_when_level_set_to_negative() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> building.setLevel(-5));
 
-    assertEquals(building.getLevel(), expectedLevel);
+    String expectedMessage = "Level cannot be less than 1";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
   }
 }

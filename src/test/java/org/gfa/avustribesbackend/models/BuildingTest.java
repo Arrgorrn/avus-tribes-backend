@@ -1,6 +1,5 @@
 package org.gfa.avustribesbackend.models;
 
-import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

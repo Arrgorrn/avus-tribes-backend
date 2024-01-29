@@ -6,6 +6,7 @@ import org.gfa.avustribesbackend.models.Kingdom;
 import org.gfa.avustribesbackend.models.Resource;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.gfa.avustribesbackend.repositories.BuildingRepository;
+import org.gfa.avustribesbackend.repositories.ResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import static org.gfa.avustribesbackend.models.enums.BuildingTypeValue.*;
@@ -13,16 +14,20 @@ import static org.gfa.avustribesbackend.models.enums.BuildingTypeValue.*;
 @Service
 public class BuildingServiceImpl implements BuildingService {
   private final BuildingRepository buildingRepository;
+  private final ResourceRepository resourceRepository;
 
   @Autowired
-  public BuildingServiceImpl(BuildingRepository buildingRepository) {
+  public BuildingServiceImpl(
+      BuildingRepository buildingRepository, ResourceRepository resourceRepository) {
     this.buildingRepository = buildingRepository;
+    this.resourceRepository = resourceRepository;
   }
 
   @Override
   public void upgradeBuilding(Kingdom kingdom, BuildingTypeValue buildingType, Resource gold) {
     int currentLevel = buildingRepository.getBuildingLevel(kingdom, buildingType);
     int upgradeCost = calculateUpgradeCost(currentLevel, buildingType);
+    int maxAllowedLevel = buildingRepository.getBuildingLevel(kingdom, BuildingTypeValue.TOWNHALL);
     Building building = buildingRepository.findByKingdomAndType(kingdom, buildingType);
 
     if (currentLevel >= 10) {
@@ -33,20 +38,15 @@ public class BuildingServiceImpl implements BuildingService {
       throw new BuildingException("Not enough gold to upgrade the building.");
     }
 
-    if (buildingType == BuildingTypeValue.TOWNHALL) {
-      gold.setAmount(gold.getAmount() - upgradeCost);
-      building.incrementLevel();
-    } else {
-      int maxAllowedLevel =
-          buildingRepository.getBuildingLevel(kingdom, BuildingTypeValue.TOWNHALL);
-
-      if (currentLevel >= maxAllowedLevel) {
-        throw new BuildingException("Cannot upgrade the building beyond the Townhall level.");
-      }
-
-      gold.setAmount(gold.getAmount() - upgradeCost);
-      building.incrementLevel();
+    if (buildingType != BuildingTypeValue.TOWNHALL && currentLevel >= maxAllowedLevel) {
+      throw new BuildingException("Cannot upgrade the building beyond the Townhall level.");
     }
+
+    gold.setAmount(gold.getAmount() - upgradeCost);
+    building.incrementLevel();
+
+    buildingRepository.save(building);
+    resourceRepository.save(gold);
   }
 
   private int calculateUpgradeCost(int currentLevel, BuildingTypeValue buildingType) {

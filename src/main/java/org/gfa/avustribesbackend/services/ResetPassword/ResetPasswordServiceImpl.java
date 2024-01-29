@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -26,6 +27,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   private final JavaMailSender javaMailSender;
   private final PlayerRepository playerRepository;
   private final PlayerService playerService;
+  private final PasswordEncoder passwordEncoder;
   private final Dotenv dotenv = Dotenv.configure().load();
   private final String sender = dotenv.get("VERIFICATION_EMAIL_SENDER");
   private final String subject = dotenv.get("RESET_PASSWORD_EMAIL_SUBJECT");
@@ -35,10 +37,11 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   public ResetPasswordServiceImpl(
       JavaMailSender javaMailSender,
       PlayerRepository playerRepository,
-      PlayerService playerService) {
+      PlayerService playerService, PasswordEncoder passwordEncoder) {
     this.javaMailSender = javaMailSender;
     this.playerRepository = playerRepository;
     this.playerService = playerService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Override
@@ -94,7 +97,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
       throw new VerificationException("Expired token");
     }
 
-    player.setPassword(newPassword.getPassword());
+    player.setPassword(passwordEncoder.encode(newPassword.getPassword()));
     playerRepository.save(player);
 
     return ResponseEntity.ok().build();

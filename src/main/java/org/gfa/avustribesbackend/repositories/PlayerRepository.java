@@ -9,7 +9,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
 
   Player findByVerificationToken(String token);
 
-  boolean existsByUserName(String name);
+  boolean existsByPlayerName(String name);
 
   boolean existsByEmailIgnoreCase(String email);
 

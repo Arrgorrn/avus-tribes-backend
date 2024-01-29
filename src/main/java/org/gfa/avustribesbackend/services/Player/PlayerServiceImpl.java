@@ -58,7 +58,7 @@ public class PlayerServiceImpl implements PlayerService {
       throw new CredentialException("Password is required");
     } else if (request.getEmail() == null || request.getEmail().isEmpty()) {
       throw new CredentialException("Email is required");
-    } else if (playerRepository.existsByUserName(request.getUsername())) {
+    } else if (playerRepository.existsByPlayerName(request.getUsername())) {
       throw new AlreadyExistsException("Username is already taken");
     } else if (playerRepository.existsByEmailIgnoreCase(request.getEmail())) {
       throw new AlreadyExistsException("Email is already taken");

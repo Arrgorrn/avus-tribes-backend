@@ -22,7 +22,7 @@ public class ApplicationConfig {
 
   @Bean
   public UserDetailsService userDetailsService() {
-    return username -> playerRepository.findByEmailIgnoreCase(username); //OPTIONAL?
+    return username -> playerRepository.findByEmailIgnoreCase(username);
   }
 
   @Bean

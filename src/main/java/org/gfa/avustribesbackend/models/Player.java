@@ -19,7 +19,7 @@ public class Player implements UserDetails {
   @Column(name = "Id", unique = true, nullable = false)
   private Long id;
 
-  @Column(name = "playerName", unique = true, nullable = false)
+  @Column(name = "player_name", unique = true, nullable = false)
   private String playerName;
   @Column(name = "email", unique = true, nullable = false)
   private String email;
@@ -116,8 +116,8 @@ public class Player implements UserDetails {
     return playerName;
   }
 
-  public void setPlayerName(String userName) {
-    this.playerName = userName;
+  public void setPlayerName(String playerName) {
+    this.playerName = playerName;
   }
 
   public String getEmail() {

@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,8 @@ class PlayerServiceImplTest {
   private PlayerRegistrationBody playerRegistrationBody;
 
   @Mock private EmailVerificationService emailVerificationService;
+
+  @Mock private PasswordEncoder passwordEncoder;
 
   @BeforeEach
   public void beforeEach() {
@@ -84,8 +87,8 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setUsername("existingUser");
     playerRegistrationBody.setPassword("password");
     playerRegistrationBody.setEmail("test@gmail.com");
-    when(playerRepository.existsByUserName(playerRegistrationBody.getUsername())).thenReturn(false);
-    assertFalse(playerRepository.existsByUserName(playerRegistrationBody.getUsername()));
+    when(playerRepository.existsByPlayerName(playerRegistrationBody.getUsername())).thenReturn(false);
+    assertFalse(playerRepository.existsByPlayerName(playerRegistrationBody.getUsername()));
   }
 
   @Test
@@ -145,6 +148,8 @@ class PlayerServiceImplTest {
     playerRegistrationBody.setUsername("Hello");
     playerRegistrationBody.setEmail("hello@gmail.com");
     playerRegistrationBody.setPassword("password");
+
+    when(passwordEncoder.encode(playerRegistrationBody.getPassword())).thenReturn("h6eg4sr6he4asdr8jf9y8k4mfyt9jk4ryt");
 
     ResponseEntity<Object> responseEntity =
         playerServiceImpl.registerPlayer(playerRegistrationBody);

@@ -36,7 +36,7 @@ public class PlayerInfoDTOTest {
     PlayerInfoDTO dto = playerService.createPlayerInfoDTO(player);
 
     // Assert
-    assertEquals(player.getUserName(), dto.getUsername());
+    assertEquals(player.getPlayerName(), dto.getUsername());
     assertEquals(player.getIsVerified(), dto.getIsVerified());
     assertEquals(player.getVerifiedAt(), dto.getVerifiedAt());
   }
@@ -51,7 +51,7 @@ public class PlayerInfoDTOTest {
     PlayerInfoDTO dto = playerService.createPlayerInfoDTO(player);
 
     // Assert
-    assertEquals(player.getUserName(), dto.getUsername());
+    assertEquals(player.getPlayerName(), dto.getUsername());
     assertEquals(player.getIsVerified(), dto.getIsVerified());
     assertEquals(player.getVerifiedAt(), dto.getVerifiedAt());
   }

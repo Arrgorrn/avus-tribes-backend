@@ -46,7 +46,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     Player player = playerRepository.findByVerificationToken(token);
 
     if (player != null) {
-      String user = player.getUserName();
+      String user = player.getPlayerName();
       String verificationLink = url + token;
 
       String htmlTemplate = readHtmlTemplateFromFile(templatePath);

@@ -1,6 +1,5 @@
 package org.gfa.avustribesbackend.services.JWT;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -18,9 +17,8 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-  private final Dotenv dotenv = Dotenv.configure().load();
   @Value("${JWT_SECRET_KEY}")
-  private final String JWT_SECRET_KEY = dotenv.get("JWT_SECRET_KEY");
+  private String JWT_SECRET_KEY;
 
   @Override
   public String extractUsername(String token) {
@@ -40,12 +38,14 @@ public class JwtServiceImpl implements JwtService {
 
   @Override
   public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    Date issuedAt = new Date(System.currentTimeMillis());
+    Date expirationDate = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24);
     return Jwts
         .builder()
         .claims(extraClaims)
         .subject(userDetails.getUsername())
-        .issuedAt(new Date(System.currentTimeMillis()))
-        .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+        .issuedAt(issuedAt)
+        .expiration(expirationDate)
         .signWith(getSignInKey())
         .compact();
   }

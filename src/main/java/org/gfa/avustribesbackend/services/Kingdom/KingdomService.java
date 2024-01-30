@@ -2,6 +2,8 @@ package org.gfa.avustribesbackend.services.Kingdom;
 
 import org.gfa.avustribesbackend.dtos.KingdomResponseDTO;
 import org.gfa.avustribesbackend.models.Kingdom;
+import org.gfa.avustribesbackend.models.Player;
+
 import java.util.List;
 
 public interface KingdomService {
@@ -12,4 +14,6 @@ public interface KingdomService {
   KingdomResponseDTO returnKingdomDTOById(Long id);
 
   boolean checkId(Long id);
+
+  void createStartingKingdom(Player player);
 }

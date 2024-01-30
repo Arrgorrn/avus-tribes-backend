@@ -12,7 +12,7 @@ class BuildingTest {
 
   @BeforeEach
   void setup() {
-    building = new Building(BuildingTypeValue.FARM, new Kingdom());
+    building = new Building(new Kingdom(), BuildingTypeValue.FARM);
   }
 
   @Test

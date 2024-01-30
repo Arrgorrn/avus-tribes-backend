@@ -8,6 +8,7 @@ import org.gfa.avustribesbackend.exceptions.*;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
+import org.gfa.avustribesbackend.services.Kingdom.KingdomService;
 import org.gfa.avustribesbackend.services.JWT.JwtServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,18 +37,25 @@ public class PlayerServiceImpl implements PlayerService {
 
   private final PlayerRepository playerRepository;
   private final EmailVerificationService emailVerificationService;
+  private final KingdomService kingdomService;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
   private final JwtServiceImpl jwtServiceImpl;
 
   @Autowired
   public PlayerServiceImpl(
-      PlayerRepository playerRepository, EmailVerificationService emailVerificationService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtServiceImpl jwtServiceImpl) {
+      PlayerRepository playerRepository,
+      EmailVerificationService emailVerificationService,
+      PasswordEncoder passwordEncoder,
+      AuthenticationManager authenticationManager,
+      JwtServiceImpl jwtServiceImpl,
+      KingdomService kingdomService) {
     this.playerRepository = playerRepository;
     this.emailVerificationService = emailVerificationService;
     this.passwordEncoder = passwordEncoder;
     this.authenticationManager = authenticationManager;
     this.jwtServiceImpl = jwtServiceImpl;
+    this.kingdomService = kingdomService;
   }
 
   @Override
@@ -72,7 +80,10 @@ public class PlayerServiceImpl implements PlayerService {
 
     Player player =
         new Player(
-            request.getUsername(), request.getEmail(), passwordEncoder.encode(request.getPassword()), verificationToken());
+            request.getUsername(),
+            request.getEmail(),
+            passwordEncoder.encode(request.getPassword()),
+            verificationToken());
 
     if (player == null) {
       throw new CreationException("Unknown error");
@@ -88,6 +99,7 @@ public class PlayerServiceImpl implements PlayerService {
       player.setVerifiedAt(date);
       player.setIsVerified(true);
       playerRepository.save(player);
+      kingdomService.createStartingKingdom(player);
     }
     return ResponseEntity.ok("successful creation");
   }
@@ -119,7 +131,10 @@ public class PlayerServiceImpl implements PlayerService {
     if (player.getIsVerified()) {
       dto =
           new PlayerInfoDTO(
-              player.getId(), player.getPlayerName(), player.getIsVerified(), player.getVerifiedAt());
+              player.getId(),
+              player.getPlayerName(),
+              player.getIsVerified(),
+              player.getVerifiedAt());
     } else {
       dto = new PlayerInfoDTO(player.getId(), player.getPlayerName(), player.getIsVerified(), null);
     }
@@ -156,9 +171,10 @@ public class PlayerServiceImpl implements PlayerService {
   @Override
   public ResponseEntity<Object> login(AuthenticationRequest request) {
     try {
-      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+      authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
     } catch (AuthenticationException e) {
-      throw  new CredentialException("Invalid credentials");
+      throw new CredentialException("Invalid credentials");
     }
     Player player = playerRepository.findByEmailIgnoreCase(request.getEmail());
     if (player == null) {

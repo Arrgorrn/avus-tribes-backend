@@ -22,9 +22,9 @@ public class Building {
 
   private Integer level;
 
-  public Building(BuildingTypeValue type, Kingdom kingdom) {
-    this.type = type;
+  public Building(Kingdom kingdom, BuildingTypeValue type) {
     this.kingdom = kingdom;
+    this.type = type;
     this.level = 1;
   }
 

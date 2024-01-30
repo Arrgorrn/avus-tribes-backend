@@ -25,6 +25,7 @@ public class BuildingServiceImpl implements BuildingService {
 
   @Override
   public void upgradeBuilding(Kingdom kingdom, BuildingTypeValue buildingType, Resource gold) {
+
     int currentLevel = buildingRepository.getBuildingLevel(kingdom, buildingType);
     int upgradeCost = calculateUpgradeCost(currentLevel, buildingType);
     int maxAllowedLevel = buildingRepository.getBuildingLevel(kingdom, BuildingTypeValue.TOWNHALL);

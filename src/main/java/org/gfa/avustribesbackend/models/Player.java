@@ -1,21 +1,26 @@
 package org.gfa.avustribesbackend.models;
 
 import jakarta.persistence.*;
+import org.gfa.avustribesbackend.models.enums.Role;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "players")
-public class Player {
+public class Player implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "Id", unique = true, nullable = false)
   private Long id;
 
-  @Column(name = "username", unique = true, nullable = false)
-  private String userName;
+  @Column(name = "player_name", unique = true, nullable = false)
+  private String playerName;
   @Column(name = "email", unique = true, nullable = false)
   private String email;
 
@@ -46,23 +51,57 @@ public class Player {
   @ManyToMany(mappedBy = "players")
   private List<World> worlds;
 
+  @Enumerated(EnumType.STRING)
+  private Role role;
+
   public Player() {
     createdAt = new Date(System.currentTimeMillis());
     this.isVerified = false;
   }
 
   public Player(
-      String userName,
+      String playerName,
       String email,
       String password,
       String verificationToken) {
-    this.userName = userName;
+    this.playerName = playerName;
     this.email = email;
     this.password = password;
     this.isVerified = false;
     this.verificationToken = verificationToken;
     this.verificationTokenExpiresAt = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
     this.createdAt = new Date(System.currentTimeMillis());
+    this.role = Role.USER;
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of(new SimpleGrantedAuthority(role.name()));
+  }
+
+  @Override
+  public String getUsername() {
+    return email;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
   }
 
   public Long getId() {
@@ -73,12 +112,12 @@ public class Player {
     this.id = id;
   }
 
-  public String getUserName() {
-    return userName;
+  public String getPlayerName() {
+    return playerName;
   }
 
-  public void setUserName(String userName) {
-    this.userName = userName;
+  public void setPlayerName(String playerName) {
+    this.playerName = playerName;
   }
 
   public String getEmail() {
@@ -159,5 +198,13 @@ public class Player {
 
   public void setWorlds(List<World> worlds) {
     this.worlds = worlds;
+  }
+
+  public Role getRole() {
+    return role;
+  }
+
+  public void setRole(Role role) {
+    this.role = role;
   }
 }

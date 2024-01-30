@@ -1,5 +1,6 @@
 package org.gfa.avustribesbackend.services.Player;
 
+import org.gfa.avustribesbackend.dtos.AuthenticationRequest;
 import org.gfa.avustribesbackend.dtos.PlayerInfoDTO;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.models.Player;
@@ -22,4 +23,6 @@ public interface PlayerService {
   PlayerInfoDTO findPlayerDTOById(Long id);
 
   boolean checkId(Long id);
+
+  ResponseEntity<Object> login(AuthenticationRequest request);
 }

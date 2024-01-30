@@ -3,7 +3,7 @@ package org.gfa.avustribesbackend.services.ResetPassword;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.gfa.avustribesbackend.dtos.EmailDTO;
 import org.gfa.avustribesbackend.dtos.PasswordRequestDTO;
-import org.gfa.avustribesbackend.dtos.TokenRequestDTO;
+import org.gfa.avustribesbackend.dtos.TokenDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.exceptions.EmailException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -26,6 +27,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   private final JavaMailSender javaMailSender;
   private final PlayerRepository playerRepository;
   private final PlayerService playerService;
+  private final PasswordEncoder passwordEncoder;
   private final Dotenv dotenv = Dotenv.configure().load();
   private final String sender = dotenv.get("VERIFICATION_EMAIL_SENDER");
   private final String subject = dotenv.get("RESET_PASSWORD_EMAIL_SUBJECT");
@@ -35,10 +37,11 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   public ResetPasswordServiceImpl(
       JavaMailSender javaMailSender,
       PlayerRepository playerRepository,
-      PlayerService playerService) {
+      PlayerService playerService, PasswordEncoder passwordEncoder) {
     this.javaMailSender = javaMailSender;
     this.playerRepository = playerRepository;
     this.playerService = playerService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Override
@@ -58,7 +61,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     playerRepository.save(player);
 
-    String htmlMessage = "<p>Hello " + player.getUserName() + ". If you want to reset your password please click <a href=\"" + resetPasswordUrl + player.getForgottenPasswordToken() + "\">" + resetPasswordUrl + player.getForgottenPasswordToken() + "</a></p>";
+    String htmlMessage = "<p>Hello " + player.getPlayerName() + ". If you want to reset your password please click <a href=\"" + resetPasswordUrl + player.getForgottenPasswordToken() + "\">" + resetPasswordUrl + player.getForgottenPasswordToken() + "</a></p>";
 
     MimeMessage mimeMessage = javaMailSender.createMimeMessage();
     try {
@@ -77,7 +80,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   }
 
   @Override
-  public ResponseEntity<Object> resetPassword(TokenRequestDTO token, PasswordRequestDTO newPassword) {
+  public ResponseEntity<Object> resetPassword(TokenDTO token, PasswordRequestDTO newPassword) {
     if (newPassword == null || newPassword.getPassword() == null || newPassword.getPassword().isEmpty()) {
       throw new CredentialException("Password is required");
     }
@@ -94,7 +97,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
       throw new VerificationException("Expired token");
     }
 
-    player.setPassword(newPassword.getPassword());
+    player.setPassword(passwordEncoder.encode(newPassword.getPassword()));
     playerRepository.save(player);
 
     return ResponseEntity.ok().build();

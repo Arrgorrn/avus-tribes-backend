@@ -23,7 +23,7 @@ class PlayerTest {
     Date createdAt = player.getCreatedAt();
 
     player.setId(id);
-    player.setUserName(userName);
+    player.setPlayerName(userName);
     player.setEmail(email);
     player.setPassword(password);
     player.setVerifiedAt(verifiedAt);
@@ -34,7 +34,7 @@ class PlayerTest {
 
     assertNotNull(player);
     assertEquals(id, player.getId());
-    assertEquals(userName, player.getUserName());
+    assertEquals(userName, player.getPlayerName());
     assertEquals(email, player.getEmail());
     assertEquals(password, player.getPassword());
     assertEquals(verifiedAt, player.getVerifiedAt());

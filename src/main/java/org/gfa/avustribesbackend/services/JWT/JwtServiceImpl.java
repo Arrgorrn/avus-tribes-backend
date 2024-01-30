@@ -19,6 +19,7 @@ public class JwtServiceImpl implements JwtService {
 
   @Value("${JWT_SECRET_KEY}")
   private String JWT_SECRET_KEY;
+  private final Long tokenExpirationTimeInMillis = 86400000L;
 
   @Override
   public String extractUsername(String token) {
@@ -38,14 +39,12 @@ public class JwtServiceImpl implements JwtService {
 
   @Override
   public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-    Date issuedAt = new Date(System.currentTimeMillis());
-    Date expirationDate = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24);
     return Jwts
         .builder()
         .claims(extraClaims)
         .subject(userDetails.getUsername())
-        .issuedAt(issuedAt)
-        .expiration(expirationDate)
+        .issuedAt(new Date(System.currentTimeMillis()))
+        .expiration(new Date(System.currentTimeMillis() + tokenExpirationTimeInMillis))
         .signWith(getSignInKey())
         .compact();
   }

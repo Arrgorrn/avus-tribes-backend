@@ -49,7 +49,7 @@ public class Kingdom {
 
   public Kingdom(Player player) { // TODO: edit this to include Player and World
     this.player = player;
-    this.name = player.getUserName() + "'s kingdom";
+    this.name = player.getPlayerName() + "'s kingdom";
   }
 
   public Long getId() {

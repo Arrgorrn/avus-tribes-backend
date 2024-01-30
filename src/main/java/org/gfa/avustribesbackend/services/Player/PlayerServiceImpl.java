@@ -1,16 +1,21 @@
 package org.gfa.avustribesbackend.services.Player;
 
+import org.gfa.avustribesbackend.dtos.AuthenticationRequest;
 import org.gfa.avustribesbackend.dtos.PlayerInfoDTO;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
-import org.gfa.avustribesbackend.exceptions.AlreadyExistsException;
-import org.gfa.avustribesbackend.exceptions.CreationException;
-import org.gfa.avustribesbackend.exceptions.CredentialException;
+import org.gfa.avustribesbackend.dtos.TokenDTO;
+import org.gfa.avustribesbackend.exceptions.*;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.gfa.avustribesbackend.services.Kingdom.KingdomService;
+import org.gfa.avustribesbackend.services.JWT.JwtServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -33,14 +38,23 @@ public class PlayerServiceImpl implements PlayerService {
   private final PlayerRepository playerRepository;
   private final EmailVerificationService emailVerificationService;
   private final KingdomService kingdomService;
+  private final PasswordEncoder passwordEncoder;
+  private final AuthenticationManager authenticationManager;
+  private final JwtServiceImpl jwtServiceImpl;
 
   @Autowired
   public PlayerServiceImpl(
       PlayerRepository playerRepository,
       EmailVerificationService emailVerificationService,
+      PasswordEncoder passwordEncoder,
+      AuthenticationManager authenticationManager,
+      JwtServiceImpl jwtServiceImpl,
       KingdomService kingdomService) {
     this.playerRepository = playerRepository;
     this.emailVerificationService = emailVerificationService;
+    this.passwordEncoder = passwordEncoder;
+    this.authenticationManager = authenticationManager;
+    this.jwtServiceImpl = jwtServiceImpl;
     this.kingdomService = kingdomService;
   }
 
@@ -52,7 +66,7 @@ public class PlayerServiceImpl implements PlayerService {
       throw new CredentialException("Password is required");
     } else if (request.getEmail() == null || request.getEmail().isEmpty()) {
       throw new CredentialException("Email is required");
-    } else if (playerRepository.existsByUserName(request.getUsername())) {
+    } else if (playerRepository.existsByPlayerName(request.getUsername())) {
       throw new AlreadyExistsException("Username is already taken");
     } else if (playerRepository.existsByEmailIgnoreCase(request.getEmail())) {
       throw new AlreadyExistsException("Email is already taken");
@@ -66,7 +80,10 @@ public class PlayerServiceImpl implements PlayerService {
 
     Player player =
         new Player(
-            request.getUsername(), request.getEmail(), request.getPassword(), verificationToken());
+            request.getUsername(),
+            request.getEmail(),
+            passwordEncoder.encode(request.getPassword()),
+            verificationToken());
 
     if (player == null) {
       throw new CreationException("Unknown error");
@@ -114,9 +131,12 @@ public class PlayerServiceImpl implements PlayerService {
     if (player.getIsVerified()) {
       dto =
           new PlayerInfoDTO(
-              player.getId(), player.getUserName(), player.getIsVerified(), player.getVerifiedAt());
+              player.getId(),
+              player.getPlayerName(),
+              player.getIsVerified(),
+              player.getVerifiedAt());
     } else {
-      dto = new PlayerInfoDTO(player.getId(), player.getUserName(), player.getIsVerified(), null);
+      dto = new PlayerInfoDTO(player.getId(), player.getPlayerName(), player.getIsVerified(), null);
     }
     return dto;
   }
@@ -146,5 +166,21 @@ public class PlayerServiceImpl implements PlayerService {
   @Override
   public boolean checkId(Long id) {
     return playerRepository.existsById(id);
+  }
+
+  @Override
+  public ResponseEntity<Object> login(AuthenticationRequest request) {
+    try {
+      authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+    } catch (AuthenticationException e) {
+      throw new CredentialException("Invalid credentials");
+    }
+    Player player = playerRepository.findByEmailIgnoreCase(request.getEmail());
+    if (player == null) {
+      throw new NotFoundException("Player not found.");
+    }
+    TokenDTO token = new TokenDTO(jwtServiceImpl.generateToken(player));
+    return ResponseEntity.ok().body(token);
   }
 }

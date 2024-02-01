@@ -1,0 +1,102 @@
+package org.gfa.avustribesbackend.services.Building;
+
+import org.gfa.avustribesbackend.dtos.BuildNewBuildingDTO;
+import org.gfa.avustribesbackend.exceptions.BuildingException;
+import org.gfa.avustribesbackend.models.Building;
+import org.gfa.avustribesbackend.models.Kingdom;
+import org.gfa.avustribesbackend.models.Resource;
+import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
+import org.gfa.avustribesbackend.models.enums.ResourceTypeValue;
+import org.gfa.avustribesbackend.repositories.BuildingRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import java.util.ArrayList;
+import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+
+public class BuildingServiceImplTest {
+  @Mock private BuildingService buildingService;
+  @InjectMocks private BuildingServiceImpl buildingServiceImpl;
+  @Mock BuildingRepository buildingRepository;
+
+  @BeforeEach
+  public void beforeEach() {
+    MockitoAnnotations.openMocks(this);
+  }
+
+  @Test
+  void building_without_townhall_throws_exception() {
+    // Arrange
+    Kingdom kingdom = new Kingdom();
+    List<Resource> resources = new ArrayList<>();
+    resources.add(new Resource(kingdom, ResourceTypeValue.GOLD, 1000));
+    kingdom.setResources(resources);
+    BuildNewBuildingDTO dto = new BuildNewBuildingDTO(kingdom, BuildingTypeValue.FARM);
+    when(buildingService.buildNewBuilding(any())).thenReturn(true);
+
+    // Act
+    Exception exception =
+        assertThrows(BuildingException.class, () -> buildingServiceImpl.buildNewBuilding(dto));
+
+    String expectedMessage = "You need to build a townhall first!";
+    String actualMessage = exception.getMessage();
+
+    // Assert
+    assertTrue(expectedMessage.contains(actualMessage));
+  }
+
+  @Test
+  void building_without_money_throws_exception() {
+    // Arrange
+    Kingdom kingdom = new Kingdom();
+
+    when(buildingRepository.findByKingdomAndType(any(), eq(BuildingTypeValue.TOWNHALL)))
+        .thenReturn(new Building(kingdom, BuildingTypeValue.TOWNHALL));
+
+    List<Resource> resources = new ArrayList<>();
+    resources.add(new Resource(kingdom, ResourceTypeValue.GOLD, 50)); // Assuming not enough gold
+    kingdom.setResources(resources);
+
+    BuildNewBuildingDTO dto = new BuildNewBuildingDTO(kingdom, BuildingTypeValue.FARM);
+    when(buildingService.buildNewBuilding(any())).thenReturn(true);
+
+    // Act
+    Exception exception =
+        assertThrows(BuildingException.class, () -> buildingServiceImpl.buildNewBuilding(dto));
+
+    String expectedMessage = "You don't have enough gold!";
+    String actualMessage = exception.getMessage();
+
+    // Assert
+    assertTrue(expectedMessage.contains(actualMessage));
+  }
+
+  @Test
+  void building_successful_returns_true() {
+    // Arrange
+    Kingdom kingdom = new Kingdom();
+
+    when(buildingRepository.findByKingdomAndType(any(), eq(BuildingTypeValue.TOWNHALL)))
+        .thenReturn(new Building(kingdom, BuildingTypeValue.TOWNHALL));
+
+    List<Resource> resources = new ArrayList<>();
+    resources.add(new Resource(kingdom, ResourceTypeValue.GOLD, 1000)); // Enough gold
+    kingdom.setResources(resources);
+
+    BuildNewBuildingDTO dto = new BuildNewBuildingDTO(kingdom, BuildingTypeValue.FARM);
+    when(buildingService.buildNewBuilding(any())).thenReturn(true);
+
+    // Act
+    boolean buildingResult = buildingServiceImpl.buildNewBuilding(dto);
+
+    // Assert
+    assertTrue(buildingResult);
+  }
+}

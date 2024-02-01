@@ -28,29 +28,34 @@ public class BuildingController {
   @PatchMapping("/kingdoms/upgrade")
   public CompletableFuture<ResponseEntity<Object>> upgradeBuildingAsync(
       @RequestBody UpgradeBuildingDTO dto) {
-    return CompletableFuture.supplyAsync(
+    CompletableFuture<ResponseEntity<Object>> future = new CompletableFuture<>();
+
+    CompletableFuture.runAsync(
         () -> {
           try {
             Kingdom kingdom = dto.getKingdom();
             BuildingTypeValue buildingType = dto.getBuildingType();
             int upgradeTime = buildingService.getBuildingLevel(kingdom, buildingType);
 
-            buildingService.upgradeBuilding(kingdom, buildingType);
+            future.complete(
+                ResponseEntity.ok(
+                    "Building upgrade started for "
+                        + dto.getBuildingType()
+                        + ". Time required: "
+                        + upgradeTime
+                        + " minutes."));
 
             Thread.sleep(upgradeTime * 60 * 1000);
-
-            return ResponseEntity.ok(
-                "Building upgrade started for "
-                    + dto.getBuildingType()
-                    + ". Time required: "
-                    + upgradeTime
-                    + " minutes.");
+            buildingService.upgradeBuilding(kingdom, buildingType);
           } catch (BuildingException be) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(be.getMessage());
+            future.complete(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(be.getMessage()));
           } catch (InterruptedException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error during building upgrade");
+            future.complete(
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error during building upgrade"));
           }
         });
+
+    return future;
   }
 }

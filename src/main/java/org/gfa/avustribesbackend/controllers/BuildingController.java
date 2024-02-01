@@ -47,6 +47,7 @@ public class BuildingController {
 
             Thread.sleep(upgradeTime * 60 * 1000);
             buildingService.upgradeBuilding(kingdom, buildingType);
+
           } catch (BuildingException be) {
             future.complete(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(be.getMessage()));
           } catch (InterruptedException e) {
@@ -55,7 +56,6 @@ public class BuildingController {
                     .body("Error during building upgrade"));
           }
         });
-
     return future;
   }
 }

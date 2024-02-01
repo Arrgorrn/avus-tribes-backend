@@ -1,6 +1,5 @@
 package org.gfa.avustribesbackend.dtos;
 
-import org.gfa.avustribesbackend.models.Kingdom;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 
 public class BuildNewBuildingDTO {

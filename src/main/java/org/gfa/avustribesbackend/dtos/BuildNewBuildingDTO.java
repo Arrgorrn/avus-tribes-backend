@@ -4,16 +4,16 @@ import org.gfa.avustribesbackend.models.Kingdom;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 
 public class BuildNewBuildingDTO {
-  private final Kingdom kingdom;
+  private final Long kingdomId;
   private final BuildingTypeValue type;
 
-  public BuildNewBuildingDTO(Kingdom kingdom, BuildingTypeValue type) {
-    this.kingdom = kingdom;
+  public BuildNewBuildingDTO(Long kingdomId, BuildingTypeValue type) {
+    this.kingdomId = kingdomId;
     this.type = type;
   }
 
-  public Kingdom getKingdom() {
-    return kingdom;
+  public Long getKingdomId() {
+    return kingdomId;
   }
 
   public BuildingTypeValue getType() {

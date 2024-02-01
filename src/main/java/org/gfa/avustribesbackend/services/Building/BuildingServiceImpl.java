@@ -8,16 +8,19 @@ import org.gfa.avustribesbackend.models.Resource;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.gfa.avustribesbackend.models.enums.ResourceTypeValue;
 import org.gfa.avustribesbackend.repositories.BuildingRepository;
+import org.gfa.avustribesbackend.repositories.KingdomRepository;
 import org.gfa.avustribesbackend.repositories.ResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.gfa.avustribesbackend.models.enums.BuildingTypeValue.*;
 
 @Service
 public class BuildingServiceImpl implements BuildingService {
+  private final KingdomRepository kingdomRepository;
   private final BuildingRepository buildingRepository;
   private final ResourceRepository resourceRepository;
   private static final int townhallCost = 200;
@@ -27,7 +30,10 @@ public class BuildingServiceImpl implements BuildingService {
 
   @Autowired
   public BuildingServiceImpl(
-      BuildingRepository buildingRepository, ResourceRepository resourceRepository) {
+      KingdomRepository kingdomRepository,
+      BuildingRepository buildingRepository,
+      ResourceRepository resourceRepository) {
+    this.kingdomRepository = kingdomRepository;
     this.buildingRepository = buildingRepository;
     this.resourceRepository = resourceRepository;
   }
@@ -61,8 +67,10 @@ public class BuildingServiceImpl implements BuildingService {
 
   @Override
   public boolean buildNewBuilding(BuildNewBuildingDTO dto) {
+    Optional<Kingdom> kingdomOptional = kingdomRepository.findById(dto.getKingdomId());
+    Kingdom kingdom = kingdomOptional.orElseThrow(() -> new RuntimeException("Kingdom not found"));
     if (isBuildingPossible(dto)) {
-      Building building = new Building(dto.getKingdom(), dto.getType());
+      Building building = new Building(kingdom, dto.getType());
       buildingRepository.save(building);
       return true;
     } else {
@@ -81,7 +89,8 @@ public class BuildingServiceImpl implements BuildingService {
   }
 
   private boolean isBuildingPossible(BuildNewBuildingDTO dto) {
-    Kingdom kingdom = dto.getKingdom();
+    Optional<Kingdom> kingdomOptional = kingdomRepository.findById(dto.getKingdomId());
+    Kingdom kingdom = kingdomOptional.orElseThrow(() -> new RuntimeException("Kingdom not found"));
     int gold = getGoldAmount(kingdom);
     BuildingTypeValue type = dto.getType();
     int buildingCost = getBuildingCost(type);

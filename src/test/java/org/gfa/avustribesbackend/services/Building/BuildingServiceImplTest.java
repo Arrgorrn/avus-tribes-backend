@@ -8,6 +8,7 @@ import org.gfa.avustribesbackend.models.Resource;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.gfa.avustribesbackend.models.enums.ResourceTypeValue;
 import org.gfa.avustribesbackend.repositories.BuildingRepository;
+import org.gfa.avustribesbackend.repositories.KingdomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,6 +28,7 @@ public class BuildingServiceImplTest {
   @Mock private BuildingService buildingService;
   @InjectMocks private BuildingServiceImpl buildingServiceImpl;
   @Mock BuildingRepository buildingRepository;
+  @Mock KingdomRepository kingdomRepository;
 
   @BeforeEach
   public void beforeEach() {
@@ -35,10 +39,11 @@ public class BuildingServiceImplTest {
   void building_without_townhall_throws_exception() {
     // Arrange
     Kingdom kingdom = new Kingdom();
+    when(kingdomRepository.findById(any())).thenReturn(Optional.of(kingdom));
     List<Resource> resources = new ArrayList<>();
     resources.add(new Resource(kingdom, ResourceTypeValue.GOLD, 1000));
     kingdom.setResources(resources);
-    BuildNewBuildingDTO dto = new BuildNewBuildingDTO(kingdom, BuildingTypeValue.FARM);
+    BuildNewBuildingDTO dto = new BuildNewBuildingDTO(1L, BuildingTypeValue.FARM);
     when(buildingService.buildNewBuilding(any())).thenReturn(true);
 
     // Act
@@ -56,7 +61,7 @@ public class BuildingServiceImplTest {
   void building_without_money_throws_exception() {
     // Arrange
     Kingdom kingdom = new Kingdom();
-
+    when(kingdomRepository.findById(any())).thenReturn(Optional.of(kingdom));
     when(buildingRepository.findByKingdomAndType(any(), eq(BuildingTypeValue.TOWNHALL)))
         .thenReturn(new Building(kingdom, BuildingTypeValue.TOWNHALL));
 
@@ -64,7 +69,7 @@ public class BuildingServiceImplTest {
     resources.add(new Resource(kingdom, ResourceTypeValue.GOLD, 50)); // Assuming not enough gold
     kingdom.setResources(resources);
 
-    BuildNewBuildingDTO dto = new BuildNewBuildingDTO(kingdom, BuildingTypeValue.FARM);
+    BuildNewBuildingDTO dto = new BuildNewBuildingDTO(1L, BuildingTypeValue.FARM);
     when(buildingService.buildNewBuilding(any())).thenReturn(true);
 
     // Act
@@ -82,7 +87,7 @@ public class BuildingServiceImplTest {
   void building_successful_returns_true() {
     // Arrange
     Kingdom kingdom = new Kingdom();
-
+    when(kingdomRepository.findById(any())).thenReturn(Optional.of(kingdom));
     when(buildingRepository.findByKingdomAndType(any(), eq(BuildingTypeValue.TOWNHALL)))
         .thenReturn(new Building(kingdom, BuildingTypeValue.TOWNHALL));
 
@@ -90,7 +95,7 @@ public class BuildingServiceImplTest {
     resources.add(new Resource(kingdom, ResourceTypeValue.GOLD, 1000)); // Enough gold
     kingdom.setResources(resources);
 
-    BuildNewBuildingDTO dto = new BuildNewBuildingDTO(kingdom, BuildingTypeValue.FARM);
+    BuildNewBuildingDTO dto = new BuildNewBuildingDTO(1L, BuildingTypeValue.FARM);
     when(buildingService.buildNewBuilding(any())).thenReturn(true);
 
     // Act

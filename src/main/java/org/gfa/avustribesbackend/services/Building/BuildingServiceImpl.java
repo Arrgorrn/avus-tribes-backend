@@ -5,10 +5,14 @@ import org.gfa.avustribesbackend.models.Building;
 import org.gfa.avustribesbackend.models.Kingdom;
 import org.gfa.avustribesbackend.models.Resource;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
+import org.gfa.avustribesbackend.models.enums.ResourceTypeValue;
 import org.gfa.avustribesbackend.repositories.BuildingRepository;
 import org.gfa.avustribesbackend.repositories.ResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 import static org.gfa.avustribesbackend.models.enums.BuildingTypeValue.*;
 
 @Service
@@ -24,18 +28,19 @@ public class BuildingServiceImpl implements BuildingService {
   }
 
   @Override
-  public void upgradeBuilding(Kingdom kingdom, BuildingTypeValue buildingType, Resource gold) {
+  public void upgradeBuilding(Kingdom kingdom, BuildingTypeValue buildingType) {
 
     int currentLevel = buildingRepository.getBuildingLevel(kingdom, buildingType);
     int upgradeCost = calculateUpgradeCost(currentLevel, buildingType);
     int maxAllowedLevel = buildingRepository.getBuildingLevel(kingdom, BuildingTypeValue.TOWNHALL);
     Building building = buildingRepository.findByKingdomAndType(kingdom, buildingType);
+    int gold = getGoldAmount(kingdom);
 
     if (currentLevel >= 10) {
       throw new BuildingException("Building is already at max level.");
     }
 
-    if (gold.getAmount() < upgradeCost) {
+    if (gold < upgradeCost) {
       throw new BuildingException("Not enough gold to upgrade the building.");
     }
 
@@ -43,11 +48,18 @@ public class BuildingServiceImpl implements BuildingService {
       throw new BuildingException("Cannot upgrade the building beyond the Townhall level.");
     }
 
-    gold.setAmount(gold.getAmount() - upgradeCost);
+    gold -= upgradeCost;
+
     building.incrementLevel();
 
     buildingRepository.save(building);
-    resourceRepository.save(gold);
+
+    updateGoldAmountInRepository(kingdom, gold);
+  }
+
+  @Override
+  public int getBuildingLevel(Kingdom kingdom, BuildingTypeValue buildingType) {
+    return buildingRepository.getBuildingLevel(kingdom, buildingType);
   }
 
   private int calculateUpgradeCost(int currentLevel, BuildingTypeValue buildingType) {
@@ -58,5 +70,26 @@ public class BuildingServiceImpl implements BuildingService {
       baseCost = 100;
     }
     return baseCost * currentLevel;
+  }
+
+  private int getGoldAmount(Kingdom kingdom) {
+    List<Resource> resources = kingdom.getResources();
+    for (Resource resource : resources) {
+      if (ResourceTypeValue.GOLD.equals(resource.getType())) {
+        return resource.getAmount();
+      }
+    }
+    return 0;
+  }
+
+  private void updateGoldAmountInRepository(Kingdom kingdom, int goldAmount) {
+    List<Resource> resources = kingdom.getResources();
+    for (Resource resource : resources) {
+      if (ResourceTypeValue.GOLD.equals(resource.getType())) {
+        resource.setAmount(goldAmount);
+        resourceRepository.save(resource);
+        return;
+      }
+    }
   }
 }

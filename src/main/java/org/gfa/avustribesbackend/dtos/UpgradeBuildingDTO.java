@@ -8,14 +8,12 @@ public class UpgradeBuildingDTO {
 
   private Kingdom kingdom;
   private BuildingTypeValue buildingType;
-  private Resource gold;
 
   public UpgradeBuildingDTO() {}
 
   public UpgradeBuildingDTO(Kingdom kingdom, BuildingTypeValue buildingType, Resource gold) {
     this.kingdom = kingdom;
     this.buildingType = buildingType;
-    this.gold = gold;
   }
 
   public Kingdom getKingdom() {
@@ -32,13 +30,5 @@ public class UpgradeBuildingDTO {
 
   public void setBuildingType(BuildingTypeValue buildingType) {
     this.buildingType = buildingType;
-  }
-
-  public Resource getGold() {
-    return gold;
-  }
-
-  public void setGold(Resource gold) {
-    this.gold = gold;
   }
 }

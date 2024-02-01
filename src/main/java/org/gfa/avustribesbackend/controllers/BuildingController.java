@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 public class BuildingController {
 
@@ -24,21 +26,31 @@ public class BuildingController {
   }
 
   @PatchMapping("/kingdoms/upgrade")
-  public ResponseEntity<Object> upgradeBuilding(
-      @RequestBody UpgradeBuildingDTO upgradeBuildingDTO) {
-    try {
-      Kingdom kingdom = upgradeBuildingDTO.getKingdom();
-      BuildingTypeValue buildingType = upgradeBuildingDTO.getBuildingType();
+  public CompletableFuture<ResponseEntity<Object>> upgradeBuildingAsync(
+      @RequestBody UpgradeBuildingDTO dto) {
+    return CompletableFuture.supplyAsync(
+        () -> {
+          try {
+            Kingdom kingdom = dto.getKingdom();
+            BuildingTypeValue buildingType = dto.getBuildingType();
+            int upgradeTime = buildingService.getBuildingLevel(kingdom, buildingType);
 
-      buildingService.upgradeBuilding(kingdom, buildingType);
+            buildingService.upgradeBuilding(kingdom, buildingType);
 
-      int upgradeTime = buildingService.getBuildingLevel(kingdom, buildingType);
-      //add logic here to delay with upgradeTime minutes
+            Thread.sleep(upgradeTime * 60 * 1000);
 
-      return ResponseEntity.ok(
-          "Building upgrade started. Time required: " + upgradeTime + " minutes.");
-    } catch (BuildingException be) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(be.getMessage());
-    }
+            return ResponseEntity.ok(
+                "Building upgrade started for "
+                    + dto.getBuildingType()
+                    + ". Time required: "
+                    + upgradeTime
+                    + " minutes.");
+          } catch (BuildingException be) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(be.getMessage());
+          } catch (InterruptedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error during building upgrade");
+          }
+        });
   }
 }

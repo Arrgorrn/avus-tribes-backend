@@ -2,7 +2,6 @@ package org.gfa.avustribesbackend.services.Kingdom;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.gfa.avustribesbackend.dtos.KingdomResponseDTO;
-import org.gfa.avustribesbackend.dtos.KingdomsListDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.exceptions.NotFoundException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
@@ -53,7 +52,9 @@ public class KingdomServiceImpl implements KingdomService {
         kingdom.getPlayer().getId(),
         kingdom.getName(),
         kingdom.getCoordinateX(),
-        kingdom.getCoordinateY());
+        kingdom.getCoordinateY(),
+        kingdom.getResources(),
+        kingdom.getBuildings());
   }
 
   @Override
@@ -77,8 +78,13 @@ public class KingdomServiceImpl implements KingdomService {
       if (player == null) {
         throw new NotFoundException("Player not found.");
       }
-      KingdomsListDTO kingdomsListDTO = new KingdomsListDTO(kingdomRepository.findKingdomsByPlayer(player));
-      return ResponseEntity.ok(kingdomsListDTO);
+      List<KingdomResponseDTO> dtoList = new ArrayList<>();
+      List<Kingdom> kingdoms = kingdomRepository.findKingdomsByPlayer(player);
+      for (Kingdom kingdom : kingdoms) {
+        KingdomResponseDTO dto = createKingdomDTO(kingdom);
+        dtoList.add(dto);
+      }
+      return ResponseEntity.ok(dtoList);
     }
     throw new VerificationException("Incorrect authorization header");
   }

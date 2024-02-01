@@ -13,7 +13,7 @@ public class Building {
   private Long id;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "type", unique = true, nullable = false)
+  @Column(name = "type", nullable = false)
   private BuildingTypeValue type;
 
   @ManyToOne

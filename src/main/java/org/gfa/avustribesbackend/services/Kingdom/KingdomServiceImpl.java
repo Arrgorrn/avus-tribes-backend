@@ -78,10 +78,12 @@ public class KingdomServiceImpl implements KingdomService {
     Kingdom kingdom;
     if (databeseWorld == null) {
       World world = new World();
-      kingdom = new Kingdom(player, world);
+      worldRepository.save(world);
 
-      List<Kingdom> kingdoms = world.getKingdoms();
+      kingdom = new Kingdom(player, world);
+      List<Kingdom> kingdoms = new ArrayList<>();
       kingdoms.add(kingdom);
+
       world.setKingdoms(kingdoms);
 
       worldRepository.save(world);

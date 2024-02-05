@@ -5,14 +5,15 @@ import org.gfa.avustribesbackend.dtos.KingdomResponseDTO;
 import org.gfa.avustribesbackend.dtos.PlayerKingdomResponseDTO;
 import org.gfa.avustribesbackend.models.Kingdom;
 import org.gfa.avustribesbackend.models.Player;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface KingdomService {
+
   KingdomResponseDTO createKingdomDTO(Kingdom kingdom);
 
   List<KingdomResponseDTO> listKingdoms();
+
   List<PlayerKingdomResponseDTO> listPlayerKingdoms(HttpServletRequest request);
 
   PlayerKingdomResponseDTO getPlayerKingdomResponseDTO(Kingdom kingdom);

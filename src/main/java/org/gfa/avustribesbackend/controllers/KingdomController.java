@@ -24,11 +24,6 @@ public class KingdomController {
     return new ResponseEntity<>(kingdomService.listKingdoms(), HttpStatusCode.valueOf(200));
   }
 
-  @GetMapping("/kingdoms/player")
-  public ResponseEntity<Object> playerIndex(HttpServletRequest request) {
-    return ResponseEntity.ok(kingdomService.listPlayerKingdoms(request));
-  }
-
   @GetMapping("/kingdoms/{id}")
   public ResponseEntity<Object> index(@PathVariable Long id) {
     if (kingdomService.checkId(id)) {
@@ -37,5 +32,10 @@ public class KingdomController {
     } else {
       throw new CredentialException("Kingdom not found");
     }
+  }
+
+  @GetMapping("/kingdoms/player")
+  public ResponseEntity<Object> playerIndex(HttpServletRequest request) {
+    return ResponseEntity.ok(kingdomService.listPlayerKingdoms(request));
   }
 }

@@ -18,5 +18,6 @@ public interface JwtService {
   String generateToken(Map<String, Object> extraClaims, UserDetails userDetails);
 
   boolean isTokenValid(String token, UserDetails userDetails);
+
   String extractEmailFromToken(HttpServletRequest request);
 }

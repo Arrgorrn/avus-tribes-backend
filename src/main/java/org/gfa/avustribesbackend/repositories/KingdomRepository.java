@@ -9,7 +9,10 @@ import java.util.List;
 
 @Repository
 public interface KingdomRepository extends JpaRepository<Kingdom, Long> {
+
   long countAllByWorld_Id(long id);
+
   List<Kingdom> findKingdomsByPlayer(Player player);
+
   boolean existsKingdomByCoordinateXAndCoordinateY(double x, double y);
 }

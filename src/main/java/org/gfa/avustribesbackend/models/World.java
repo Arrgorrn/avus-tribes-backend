@@ -23,6 +23,9 @@ public class World {
       inverseJoinColumns = @JoinColumn(name = "player_id"))
   private List<Player> players;
 
+  @OneToMany(mappedBy = "world")
+  private List<Kingdom> kingdoms;
+
   public World(String name) {
     this.name = name;
   }
@@ -45,6 +48,14 @@ public class World {
 
     return StartOfName[random.nextInt(StartOfName.length)]
         + EndOfName[random.nextInt(EndOfName.length)];
+  }
+
+  public List<Kingdom> getKingdoms() {
+    return kingdoms;
+  }
+
+  public void setKingdoms(List<Kingdom> kingdoms) {
+    this.kingdoms = kingdoms;
   }
 
   public Long getId() {

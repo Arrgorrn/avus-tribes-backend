@@ -26,7 +26,7 @@ public class KingdomController {
 
   @GetMapping("/kingdoms/player")
   public ResponseEntity<Object> playerIndex(HttpServletRequest request) {
-    return kingdomService.listPlayerKingdoms(request);
+    return ResponseEntity.ok(kingdomService.listPlayerKingdoms(request));
   }
 
   @GetMapping("/kingdoms/{id}")

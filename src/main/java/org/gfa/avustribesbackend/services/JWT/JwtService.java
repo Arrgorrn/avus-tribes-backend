@@ -1,6 +1,7 @@
 package org.gfa.avustribesbackend.services.JWT;
 
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Map;
@@ -17,4 +18,5 @@ public interface JwtService {
   String generateToken(Map<String, Object> extraClaims, UserDetails userDetails);
 
   boolean isTokenValid(String token, UserDetails userDetails);
+  String extractEmailFromToken(HttpServletRequest request);
 }

@@ -16,7 +16,7 @@ public class Resource {
   private Kingdom kingdom;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "type", unique = true, nullable = false)
+  @Column(name = "type", nullable = false)
   private ResourceTypeValue type;
 
   private int amount;

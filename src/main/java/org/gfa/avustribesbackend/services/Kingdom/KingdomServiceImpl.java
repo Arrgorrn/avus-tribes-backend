@@ -2,9 +2,8 @@ package org.gfa.avustribesbackend.services.Kingdom;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.gfa.avustribesbackend.dtos.KingdomResponseDTO;
+import org.gfa.avustribesbackend.dtos.PlayerKingdomResponseDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
-import org.gfa.avustribesbackend.exceptions.NotFoundException;
-import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.models.Building;
 import org.gfa.avustribesbackend.models.Kingdom;
 import org.gfa.avustribesbackend.models.Player;
@@ -18,13 +17,12 @@ import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.repositories.ResourceRepository;
 import org.gfa.avustribesbackend.services.JWT.JwtService;
 import org.gfa.avustribesbackend.repositories.WorldRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class KingdomServiceImpl implements KingdomService {
@@ -52,9 +50,7 @@ public class KingdomServiceImpl implements KingdomService {
         kingdom.getPlayer().getId(),
         kingdom.getName(),
         kingdom.getCoordinateX(),
-        kingdom.getCoordinateY(),
-        kingdom.getResources(),
-        kingdom.getBuildings());
+        kingdom.getCoordinateY());
   }
 
   @Override
@@ -69,24 +65,34 @@ public class KingdomServiceImpl implements KingdomService {
   }
 
   @Override
-  public ResponseEntity<Object> listPlayerKingdoms(HttpServletRequest request) {
-    String authHeader = request.getHeader("Authorization");
-    if (authHeader != null && authHeader.startsWith("Bearer")) {
-      String token = authHeader.substring(7);
-      String email = jwtService.extractUsername(token);
-      Player player = playerRepository.findByEmailIgnoreCase(email);
-      if (player == null) {
-        throw new NotFoundException("Player not found.");
-      }
-      List<KingdomResponseDTO> dtoList = new ArrayList<>();
-      List<Kingdom> kingdoms = kingdomRepository.findKingdomsByPlayer(player);
-      for (Kingdom kingdom : kingdoms) {
-        KingdomResponseDTO dto = createKingdomDTO(kingdom);
-        dtoList.add(dto);
-      }
-      return ResponseEntity.ok(dtoList);
+  public List<PlayerKingdomResponseDTO> listPlayerKingdoms(HttpServletRequest request) {
+    List<PlayerKingdomResponseDTO> dtoList = new ArrayList<>();
+    String email = jwtService.extractEmailFromToken(request);
+    Player player = playerRepository.findByEmailIgnoreCase(email);
+    List<Kingdom> kingdoms = kingdomRepository.findKingdomsByPlayer(player);
+    for (Kingdom kingdom : kingdoms) {
+      PlayerKingdomResponseDTO dto = getPlayerKingdomResponseDTO(kingdom);
+      dtoList.add(dto);
     }
-    throw new VerificationException("Incorrect authorization header");
+    return dtoList;
+  }
+
+  @Override
+  public PlayerKingdomResponseDTO getPlayerKingdomResponseDTO(Kingdom kingdom) {
+    return new PlayerKingdomResponseDTO(
+        kingdom.getId(),
+        kingdom.getName(),
+        kingdom.getWorld().getId(),
+        kingdom.getWorld().getName(),
+        kingdom.getCoordinateX(),
+        kingdom.getCoordinateY(),
+        kingdom.getResources().get(0).getAmount(),
+        kingdom.getResources().get(1).getAmount(),
+        kingdom.getBuildings().get(0).getLevel(),
+        kingdom.getBuildings().get(1).getLevel(),
+        kingdom.getBuildings().get(2).getLevel(),
+        kingdom.getBuildings().get(3).getLevel()
+    );
   }
 
   @Override
@@ -106,13 +112,14 @@ public class KingdomServiceImpl implements KingdomService {
 
   @Override
   public void createStartingKingdom(Player player) {
-    World databeseWorld = worldRepository.findWorldWithLessThan5Kingdoms();
+    World databaseWorld = worldRepository.findWorldWithLessThan5Kingdoms();
     Kingdom kingdom;
-    if (databeseWorld == null) {
+    double[] coordinates = generateCoordinates();
+    if (databaseWorld == null) {
       World world = new World();
       worldRepository.save(world);
 
-      kingdom = new Kingdom(player, world);
+      kingdom = new Kingdom(coordinates[0], coordinates[1], player, world);
       List<Kingdom> kingdoms = new ArrayList<>();
       kingdoms.add(kingdom);
 
@@ -121,13 +128,13 @@ public class KingdomServiceImpl implements KingdomService {
       worldRepository.save(world);
       kingdomRepository.save(kingdom);
     } else {
-      kingdom = new Kingdom(player, databeseWorld);
+      kingdom = new Kingdom(coordinates[0], coordinates[1], player, databaseWorld);
 
-      List<Kingdom> kingdoms = databeseWorld.getKingdoms();
+      List<Kingdom> kingdoms = databaseWorld.getKingdoms();
       kingdoms.add(kingdom);
-      databeseWorld.setKingdoms(kingdoms);
+      databaseWorld.setKingdoms(kingdoms);
 
-      worldRepository.save(databeseWorld);
+      worldRepository.save(databaseWorld);
       kingdomRepository.save(kingdom);
     }
     for (BuildingTypeValue buildingType : BuildingTypeValue.values()) {
@@ -138,5 +145,24 @@ public class KingdomServiceImpl implements KingdomService {
       Resource resource = new Resource(kingdom, resourceType, 100);
       resourceRepository.save(resource);
     }
+  }
+
+  @Override
+  public double[] generateCoordinates() {
+    Random random = new Random();
+    double coordinateX = 0;
+    double coordinateY = 0;
+    boolean coordinatesExists = true;
+    double[] coordinates = new double[2];
+    while (coordinatesExists) {
+      coordinateX = random.nextInt(100) + 1;
+      coordinateY = random.nextInt(100) + 1;
+      if (!kingdomRepository.existsKingdomByCoordinateXAndCoordinateY(coordinateX, coordinateY)) {
+        coordinatesExists = false;
+        coordinates[0] = coordinateX;
+        coordinates[1] = coordinateY;
+      }
+    }
+    return coordinates;
   }
 }

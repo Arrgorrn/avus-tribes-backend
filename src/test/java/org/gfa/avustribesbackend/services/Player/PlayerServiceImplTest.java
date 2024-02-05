@@ -7,6 +7,7 @@ import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
+import org.gfa.avustribesbackend.services.Kingdom.KingdomService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -39,6 +40,7 @@ class PlayerServiceImplTest {
   @Mock private EmailVerificationService emailVerificationService;
 
   @Mock private PasswordEncoder passwordEncoder;
+  @Mock private KingdomService kingdomService;
 
   @BeforeEach
   public void beforeEach() {

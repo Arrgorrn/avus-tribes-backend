@@ -9,6 +9,7 @@ import org.gfa.avustribesbackend.models.Building;
 import org.gfa.avustribesbackend.models.Kingdom;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.models.Resource;
+import org.gfa.avustribesbackend.models.*;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.gfa.avustribesbackend.models.enums.ResourceTypeValue;
 import org.gfa.avustribesbackend.repositories.BuildingRepository;
@@ -16,6 +17,7 @@ import org.gfa.avustribesbackend.repositories.KingdomRepository;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.repositories.ResourceRepository;
 import org.gfa.avustribesbackend.services.JWT.JwtService;
+import org.gfa.avustribesbackend.repositories.WorldRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,17 +33,15 @@ public class KingdomServiceImpl implements KingdomService {
   private final ResourceRepository resourceRepository;
   private final JwtService jwtService;
   private final PlayerRepository playerRepository;
+  private final WorldRepository worldRepository;
 
-  @Autowired
-  public KingdomServiceImpl(
-      KingdomRepository kingdomRepository,
-      BuildingRepository buildingRepository,
-      ResourceRepository resourceRepository, JwtService jwtService, PlayerRepository playerRepository) {
+  public KingdomServiceImpl(KingdomRepository kingdomRepository, BuildingRepository buildingRepository, ResourceRepository resourceRepository, JwtService jwtService, PlayerRepository playerRepository, WorldRepository worldRepository) {
     this.kingdomRepository = kingdomRepository;
     this.buildingRepository = buildingRepository;
     this.resourceRepository = resourceRepository;
     this.jwtService = jwtService;
     this.playerRepository = playerRepository;
+    this.worldRepository = worldRepository;
   }
 
   @Override
@@ -106,8 +106,30 @@ public class KingdomServiceImpl implements KingdomService {
 
   @Override
   public void createStartingKingdom(Player player) {
-    Kingdom kingdom = new Kingdom(player); // TODO: set up a world here !
-    kingdomRepository.save(kingdom);
+    World databeseWorld = worldRepository.findWorldWithLessThan5Kingdoms();
+    Kingdom kingdom;
+    if (databeseWorld == null) {
+      World world = new World();
+      worldRepository.save(world);
+
+      kingdom = new Kingdom(player, world);
+      List<Kingdom> kingdoms = new ArrayList<>();
+      kingdoms.add(kingdom);
+
+      world.setKingdoms(kingdoms);
+
+      worldRepository.save(world);
+      kingdomRepository.save(kingdom);
+    } else {
+      kingdom = new Kingdom(player, databeseWorld);
+
+      List<Kingdom> kingdoms = databeseWorld.getKingdoms();
+      kingdoms.add(kingdom);
+      databeseWorld.setKingdoms(kingdoms);
+
+      worldRepository.save(databeseWorld);
+      kingdomRepository.save(kingdom);
+    }
     for (BuildingTypeValue buildingType : BuildingTypeValue.values()) {
       Building building = new Building(kingdom, buildingType);
       buildingRepository.save(building);

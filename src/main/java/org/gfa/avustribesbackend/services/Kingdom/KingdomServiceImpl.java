@@ -17,6 +17,7 @@ import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.repositories.ResourceRepository;
 import org.gfa.avustribesbackend.services.JWT.JwtService;
 import org.gfa.avustribesbackend.repositories.WorldRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class KingdomServiceImpl implements KingdomService {
   private final PlayerRepository playerRepository;
   private final WorldRepository worldRepository;
 
+  @Autowired
   public KingdomServiceImpl(KingdomRepository kingdomRepository, BuildingRepository buildingRepository, ResourceRepository resourceRepository, JwtService jwtService, PlayerRepository playerRepository, WorldRepository worldRepository) {
     this.kingdomRepository = kingdomRepository;
     this.buildingRepository = buildingRepository;

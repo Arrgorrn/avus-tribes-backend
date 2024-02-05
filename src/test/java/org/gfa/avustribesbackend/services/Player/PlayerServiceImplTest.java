@@ -40,6 +40,7 @@ class PlayerServiceImplTest {
   @Mock private EmailVerificationService emailVerificationService;
 
   @Mock private PasswordEncoder passwordEncoder;
+
   @Mock private KingdomService kingdomService;
 
   @BeforeEach

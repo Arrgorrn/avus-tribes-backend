@@ -25,17 +25,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class KingdomServiceImplTest {
-  @InjectMocks
-  private KingdomController kingdomController;
+  @InjectMocks private KingdomController kingdomController;
 
-  @Mock
-  private KingdomService kingdomService;
+  @Mock private KingdomService kingdomService;
 
-  @InjectMocks
-  private KingdomServiceImpl kingdomServiceImpl;
+  @InjectMocks private KingdomServiceImpl kingdomServiceImpl;
 
-  @Mock
-  private KingdomRepository kingdomRepository;
+  @Mock private KingdomRepository kingdomRepository;
 
   @Mock JwtServiceImpl jwtService;
 

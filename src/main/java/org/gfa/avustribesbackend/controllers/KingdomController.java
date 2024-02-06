@@ -2,6 +2,7 @@ package org.gfa.avustribesbackend.controllers;
 
 import org.gfa.avustribesbackend.dtos.BuildNewBuildingDTO;
 import org.gfa.avustribesbackend.exceptions.BuildingException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.services.Building.BuildingService;
 import org.gfa.avustribesbackend.services.Kingdom.KingdomService;
@@ -44,5 +45,10 @@ public class KingdomController {
     } else {
       throw new BuildingException("Building not built");
     }
+  }
+
+  @GetMapping("/kingdoms/player")
+  public ResponseEntity<Object> playerIndex(HttpServletRequest request) {
+    return ResponseEntity.ok(kingdomService.listPlayerKingdoms(request));
   }
 }

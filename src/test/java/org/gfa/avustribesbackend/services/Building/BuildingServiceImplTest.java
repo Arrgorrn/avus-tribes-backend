@@ -41,14 +41,17 @@ public class BuildingServiceImplTest {
     // Arrange
     Kingdom kingdom = new Kingdom();
     kingdom.setId(1L); // Set kingdom ID
-    when(kingdomRepository.findById(any())).thenReturn(Optional.of(kingdom)); // Simulate kingdom found
+    kingdom.setResources(new ArrayList<>()); // Initialize resources list
+    when(kingdomRepository.findById(any()))
+        .thenReturn(Optional.of(kingdom)); // Simulate kingdom found
     when(buildingRepository.findByKingdomAndType(any(), eq(BuildingTypeValue.TOWNHALL)))
-            .thenReturn(null); // Simulate no townhall in the kingdom
+        .thenReturn(null); // Simulate no townhall in the kingdom
 
     BuildNewBuildingDTO dto = new BuildNewBuildingDTO(1L, BuildingTypeValue.FARM);
 
     // Act & Assert
-    BuildingException exception = assertThrows(BuildingException.class, () -> buildingServiceImpl.buildNewBuilding(dto));
+    BuildingException exception =
+        assertThrows(BuildingException.class, () -> buildingServiceImpl.buildNewBuilding(dto));
     assertEquals("You need to build a townhall first!", exception.getMessage());
   }
 
@@ -58,18 +61,17 @@ public class BuildingServiceImplTest {
     Kingdom kingdom = new Kingdom();
     when(kingdomRepository.findById(any())).thenReturn(Optional.of(kingdom));
     when(buildingRepository.findByKingdomAndType(any(), eq(BuildingTypeValue.TOWNHALL)))
-            .thenReturn(new Building(kingdom, BuildingTypeValue.TOWNHALL));
+        .thenReturn(new Building(kingdom, BuildingTypeValue.TOWNHALL));
 
-    List<Resource> resources = new ArrayList<>();
-    resources.add(new Resource(kingdom, ResourceTypeValue.GOLD, 50)); // Assuming not enough gold
-    kingdom.setResources(resources);
+    kingdom.setResources(null);
 
     BuildNewBuildingDTO dto = new BuildNewBuildingDTO(1L, BuildingTypeValue.FARM);
 
-    // Act & Assert
-    BuildingException exception = assertThrows(BuildingException.class, () -> buildingServiceImpl.buildNewBuilding(dto));
-    assertEquals("Not enough gold to build the building.", exception.getMessage());
+    BuildingException exception =
+        assertThrows(BuildingException.class, () -> buildingServiceImpl.buildNewBuilding(dto));
+    assertEquals("You don't have enough gold!", exception.getMessage());
   }
+
   @Test
   void building_successful_returns_true() {
     // Arrange

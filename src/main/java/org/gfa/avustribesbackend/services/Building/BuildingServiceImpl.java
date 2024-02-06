@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.gfa.avustribesbackend.models.enums.BuildingTypeValue.*;
 
@@ -142,6 +139,11 @@ public class BuildingServiceImpl implements BuildingService {
   private boolean isBuildingPossible(BuildNewBuildingDTO dto) {
     Optional<Kingdom> kingdomOptional = kingdomRepository.findById(dto.getKingdomId());
     Kingdom kingdom = kingdomOptional.orElseThrow(() -> new RuntimeException("Kingdom not found"));
+
+    if (kingdom.getResources() == null) {
+      kingdom.setResources(new ArrayList<>());
+    }
+
     int gold = getGoldAmount(kingdom);
     BuildingTypeValue type = dto.getType();
     int buildingCost = getBuildingCost(type);

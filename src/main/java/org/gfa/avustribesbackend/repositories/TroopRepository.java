@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface TroopRepository extends JpaRepository<Troop, Long> {
-    Troop findFirstByOrderByLevelDesc();
-    List<Troop> findAllByKingdom(Kingdom kingdom);
+  Troop findFirstByOrderByLevelDesc();
+  List<Troop> findAllByKingdom(Kingdom kingdom);
 }

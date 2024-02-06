@@ -3,6 +3,8 @@ package org.gfa.avustribesbackend.models;
 import jakarta.persistence.*;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "buildings")
 public class Building {
@@ -21,6 +23,9 @@ public class Building {
   private Kingdom kingdom;
 
   private Integer level;
+
+  @Column(name = "construction_start_time")
+  private LocalDateTime constructionStartTime;
 
   public Building(Kingdom kingdom, BuildingTypeValue type) {
     this.kingdom = kingdom;
@@ -70,5 +75,13 @@ public class Building {
 
   public void incrementLevel() {
     this.level++;
+  }
+
+  public LocalDateTime getConstructionStartTime() {
+    return constructionStartTime;
+  }
+
+  public void setConstructionStartTime(LocalDateTime constructionStartTime) {
+    this.constructionStartTime = constructionStartTime;
   }
 }

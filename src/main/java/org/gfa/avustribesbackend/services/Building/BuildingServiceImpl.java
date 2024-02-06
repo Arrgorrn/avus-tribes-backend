@@ -11,9 +11,14 @@ import org.gfa.avustribesbackend.repositories.BuildingRepository;
 import org.gfa.avustribesbackend.repositories.KingdomRepository;
 import org.gfa.avustribesbackend.repositories.ResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.gfa.avustribesbackend.models.enums.BuildingTypeValue.*;
@@ -23,10 +28,20 @@ public class BuildingServiceImpl implements BuildingService {
   private final KingdomRepository kingdomRepository;
   private final BuildingRepository buildingRepository;
   private final ResourceRepository resourceRepository;
-  private static final int townhallCost = 200;
-  private static final int farmCost = 100;
-  private static final int mineCost = 100;
-  private static final int academyCost = 150;
+  public static final Map<BuildingTypeValue, Integer> buildingConstructionTimes = new HashMap<>();
+  public static final Map<BuildingTypeValue, Integer> buildingCosts = new HashMap<>();
+
+  static {
+    buildingConstructionTimes.put(TOWNHALL, 300); // in minutes
+    buildingConstructionTimes.put(FARM, 60);
+    buildingConstructionTimes.put(MINE, 60);
+    buildingConstructionTimes.put(ACADEMY, 180);
+
+    buildingCosts.put(TOWNHALL, 200);
+    buildingCosts.put(FARM, 100);
+    buildingCosts.put(MINE, 100);
+    buildingCosts.put(ACADEMY, 150);
+  }
 
   @Autowired
   public BuildingServiceImpl(
@@ -67,14 +82,38 @@ public class BuildingServiceImpl implements BuildingService {
 
   @Override
   public boolean buildNewBuilding(BuildNewBuildingDTO dto) {
+    if (!isBuildingPossible(dto)) {
+      return false;
+    }
+
     Optional<Kingdom> kingdomOptional = kingdomRepository.findById(dto.getKingdomId());
     Kingdom kingdom = kingdomOptional.orElseThrow(() -> new RuntimeException("Kingdom not found"));
-    if (isBuildingPossible(dto)) {
-      Building building = new Building(kingdom, dto.getType());
-      buildingRepository.save(building);
-      return true;
-    } else {
-      throw new BuildingException("Building not built");
+
+    int goldCost = getBuildingCost(dto.getType());
+    List<Resource> resources = kingdom.getResources();
+    Resource goldResource =
+        resources.stream()
+            .filter(resource -> resource.getType() == ResourceTypeValue.GOLD)
+            .findFirst()
+            .orElseThrow(() -> new BuildingException("Gold resource not found in the kingdom."));
+
+    goldResource.setAmount(goldResource.getAmount() - goldCost);
+    Building building = new Building(kingdom, dto.getType());
+    building.setConstructionStartTime(LocalDateTime.now());
+    buildingRepository.save(building);
+    resourceRepository.save(goldResource);
+    return true;
+  }
+
+  @Scheduled(fixedRate = 60000)
+  public void checkConstructionStatus() {
+    List<Building> buildingsUnderConstruction =
+        buildingRepository.findByConstructionStartTimeIsNotNull();
+    for (Building building : buildingsUnderConstruction) {
+      if (isConstructionComplete(building)) {
+        building.setConstructionStartTime(null);
+        buildingRepository.save(building);
+      }
     }
   }
 
@@ -86,6 +125,18 @@ public class BuildingServiceImpl implements BuildingService {
       baseCost = 100;
     }
     return baseCost * currentLevel;
+  }
+
+  private boolean isConstructionComplete(Building building) {
+    BuildingTypeValue type = building.getType();
+    int constructionTime = buildingConstructionTimes.get(type);
+    LocalDateTime startTime = building.getConstructionStartTime();
+    if (startTime == null) {
+      return false;
+    }
+    LocalDateTime currentTime = LocalDateTime.now();
+    Duration duration = Duration.between(startTime, currentTime);
+    return duration.compareTo(Duration.ofMinutes(constructionTime)) >= 0;
   }
 
   private boolean isBuildingPossible(BuildNewBuildingDTO dto) {
@@ -110,20 +161,7 @@ public class BuildingServiceImpl implements BuildingService {
   }
 
   private int getBuildingCost(BuildingTypeValue type) {
-    if (type.equals(TOWNHALL)) {
-      return townhallCost;
-    }
-    if (type.equals(FARM)) {
-      return farmCost;
-    }
-    if (type.equals(MINE)) {
-      return mineCost;
-    }
-    if (type.equals(ACADEMY)) {
-      return academyCost;
-    } else {
-      throw new BuildingException("Building not found");
-    }
+    return buildingCosts.get(type);
   }
 
   private int getGoldAmount(Kingdom kingdom) {

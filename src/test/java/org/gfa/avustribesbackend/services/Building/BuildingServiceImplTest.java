@@ -9,6 +9,7 @@ import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.gfa.avustribesbackend.models.enums.ResourceTypeValue;
 import org.gfa.avustribesbackend.repositories.BuildingRepository;
 import org.gfa.avustribesbackend.repositories.KingdomRepository;
+import org.gfa.avustribesbackend.repositories.ResourceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,17 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class BuildingServiceImplTest {
   @Mock private BuildingService buildingService;
-  @InjectMocks private BuildingServiceImpl buildingServiceImpl;
   @Mock BuildingRepository buildingRepository;
   @Mock KingdomRepository kingdomRepository;
+  @Mock ResourceRepository resourceRepository;
+  @InjectMocks private BuildingServiceImpl buildingServiceImpl;
 
   @BeforeEach
   public void beforeEach() {
@@ -39,22 +40,16 @@ public class BuildingServiceImplTest {
   void building_without_townhall_throws_exception() {
     // Arrange
     Kingdom kingdom = new Kingdom();
-    when(kingdomRepository.findById(any())).thenReturn(Optional.of(kingdom));
-    List<Resource> resources = new ArrayList<>();
-    resources.add(new Resource(kingdom, ResourceTypeValue.GOLD, 1000));
-    kingdom.setResources(resources);
+    kingdom.setId(1L); // Set kingdom ID
+    when(kingdomRepository.findById(any())).thenReturn(Optional.of(kingdom)); // Simulate kingdom found
+    when(buildingRepository.findByKingdomAndType(any(), eq(BuildingTypeValue.TOWNHALL)))
+            .thenReturn(null); // Simulate no townhall in the kingdom
+
     BuildNewBuildingDTO dto = new BuildNewBuildingDTO(1L, BuildingTypeValue.FARM);
-    when(buildingService.buildNewBuilding(any())).thenReturn(true);
 
-    // Act
-    Exception exception =
-        assertThrows(BuildingException.class, () -> buildingServiceImpl.buildNewBuilding(dto));
-
-    String expectedMessage = "You need to build a townhall first!";
-    String actualMessage = exception.getMessage();
-
-    // Assert
-    assertTrue(expectedMessage.contains(actualMessage));
+    // Act & Assert
+    BuildingException exception = assertThrows(BuildingException.class, () -> buildingServiceImpl.buildNewBuilding(dto));
+    assertEquals("You need to build a townhall first!", exception.getMessage());
   }
 
   @Test
@@ -63,26 +58,18 @@ public class BuildingServiceImplTest {
     Kingdom kingdom = new Kingdom();
     when(kingdomRepository.findById(any())).thenReturn(Optional.of(kingdom));
     when(buildingRepository.findByKingdomAndType(any(), eq(BuildingTypeValue.TOWNHALL)))
-        .thenReturn(new Building(kingdom, BuildingTypeValue.TOWNHALL));
+            .thenReturn(new Building(kingdom, BuildingTypeValue.TOWNHALL));
 
     List<Resource> resources = new ArrayList<>();
     resources.add(new Resource(kingdom, ResourceTypeValue.GOLD, 50)); // Assuming not enough gold
     kingdom.setResources(resources);
 
     BuildNewBuildingDTO dto = new BuildNewBuildingDTO(1L, BuildingTypeValue.FARM);
-    when(buildingService.buildNewBuilding(any())).thenReturn(true);
 
-    // Act
-    Exception exception =
-        assertThrows(BuildingException.class, () -> buildingServiceImpl.buildNewBuilding(dto));
-
-    String expectedMessage = "You don't have enough gold!";
-    String actualMessage = exception.getMessage();
-
-    // Assert
-    assertTrue(expectedMessage.contains(actualMessage));
+    // Act & Assert
+    BuildingException exception = assertThrows(BuildingException.class, () -> buildingServiceImpl.buildNewBuilding(dto));
+    assertEquals("Not enough gold to build the building.", exception.getMessage());
   }
-
   @Test
   void building_successful_returns_true() {
     // Arrange

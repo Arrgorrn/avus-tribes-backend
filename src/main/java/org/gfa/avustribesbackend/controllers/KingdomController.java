@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static org.gfa.avustribesbackend.services.Building.BuildingServiceImpl.buildingConstructionTimes;
+
 @RestController
 public class KingdomController {
   private final KingdomService kingdomService;
@@ -41,7 +43,12 @@ public class KingdomController {
   public ResponseEntity<Object> buildNewBuilding(@RequestBody BuildNewBuildingDTO dto) {
     if (buildingService.buildNewBuilding(dto)) {
       return new ResponseEntity<>(
-          "New " + dto.getType() + " successfully built!", HttpStatusCode.valueOf(200));
+          "New "
+              + dto.getType()
+              + " building started! Come back in "
+              + buildingConstructionTimes.get(dto.getType())
+              + " minutes.",
+          HttpStatusCode.valueOf(200));
     } else {
       throw new BuildingException("Building not built");
     }

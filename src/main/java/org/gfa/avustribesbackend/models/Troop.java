@@ -18,8 +18,8 @@ public class Troop {
     @JoinColumn(name = "kingdom_id")
     private Kingdom kingdom;
 
-    public Troop(Kingdom kingdom, long startedAt, long finishedAt) {
-        this.level = 1;
+    public Troop(int level, Kingdom kingdom, long startedAt, long finishedAt) {
+        this.level = level;
         this.hp = 20;
         this.attack = 10;
         this.defense = 5;

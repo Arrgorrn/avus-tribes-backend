@@ -29,10 +29,10 @@ public class BuildingServiceImpl implements BuildingService {
   public static final Map<BuildingTypeValue, Integer> buildingCosts = new HashMap<>();
 
   static {
-    buildingConstructionTimes.put(TOWNHALL, 300); // in minutes
-    buildingConstructionTimes.put(FARM, 60);
-    buildingConstructionTimes.put(MINE, 60);
-    buildingConstructionTimes.put(ACADEMY, 180);
+    buildingConstructionTimes.put(TOWNHALL, 5); // in minutes
+    buildingConstructionTimes.put(FARM, 1);
+    buildingConstructionTimes.put(MINE, 1);
+    buildingConstructionTimes.put(ACADEMY, 3);
 
     buildingCosts.put(TOWNHALL, 200);
     buildingCosts.put(FARM, 100);

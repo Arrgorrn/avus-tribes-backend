@@ -47,7 +47,7 @@ public class KingdomController {
               + dto.getType()
               + " building started! Come back in "
               + buildingConstructionTimes.get(dto.getType())
-              + " minutes.",
+              + " minute(s).",
           HttpStatusCode.valueOf(200));
     } else {
       throw new BuildingException("Building not built");

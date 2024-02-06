@@ -1,5 +1,6 @@
 package org.gfa.avustribesbackend.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.services.Kingdom.KingdomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,10 @@ public class KingdomController {
     } else {
       throw new CredentialException("Kingdom not found");
     }
+  }
+
+  @GetMapping("/kingdoms/player")
+  public ResponseEntity<Object> playerIndex(HttpServletRequest request) {
+    return ResponseEntity.ok(kingdomService.listPlayerKingdoms(request));
   }
 }

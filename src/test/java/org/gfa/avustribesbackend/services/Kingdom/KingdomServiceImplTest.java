@@ -2,11 +2,13 @@ package org.gfa.avustribesbackend.services.Kingdom;
 
 import org.gfa.avustribesbackend.controllers.KingdomController;
 import org.gfa.avustribesbackend.dtos.KingdomResponseDTO;
+import org.gfa.avustribesbackend.dtos.PlayerKingdomResponseDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
-import org.gfa.avustribesbackend.models.Kingdom;
-import org.gfa.avustribesbackend.models.Player;
-import org.gfa.avustribesbackend.models.World;
+import org.gfa.avustribesbackend.models.*;
 import org.gfa.avustribesbackend.repositories.KingdomRepository;
+import org.gfa.avustribesbackend.repositories.PlayerRepository;
+import org.gfa.avustribesbackend.services.JWT.JwtServiceImpl;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,8 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class KingdomServiceImplTest {
@@ -31,6 +32,10 @@ public class KingdomServiceImplTest {
   @InjectMocks private KingdomServiceImpl kingdomServiceImpl;
 
   @Mock private KingdomRepository kingdomRepository;
+
+  @Mock JwtServiceImpl jwtService;
+
+  @Mock PlayerRepository playerRepository;
 
   @BeforeEach
   public void beforeEach() {
@@ -123,5 +128,96 @@ public class KingdomServiceImplTest {
 
     // Assert
     assertEquals("Kingdom not found", exception.getMessage());
+  }
+
+  @Test
+  void listPlayerKingdoms_should_return_list() {
+    List<PlayerKingdomResponseDTO> expected = new ArrayList<>();
+
+    List<Kingdom> kingdoms = getKingdoms();
+
+    for (Kingdom kingdom : kingdoms) {
+      PlayerKingdomResponseDTO dto = kingdomServiceImpl.getPlayerKingdomResponseDTO(kingdom);
+      expected.add(dto);
+    }
+
+    when(kingdomRepository.findKingdomsByPlayer(any())).thenReturn(kingdoms);
+
+    List<PlayerKingdomResponseDTO> actual = kingdomServiceImpl.listPlayerKingdoms(any());
+
+    assertNotNull(actual);
+    assertEquals(expected.size(), actual.size());
+    assertEquals(expected.get(0).getKingdomId(), actual.get(0).getKingdomId());
+  }
+
+  @NotNull
+  private static List<Kingdom> getKingdoms() {
+    World world = new World();
+    world.setId(1L);
+    world.setName("World");
+
+    Resource resourceGold1 = new Resource();
+    resourceGold1.setAmount(100);
+
+    Resource resourceFood1 = new Resource();
+    resourceFood1.setAmount(150);
+
+    List<Resource> resourceList1 = new ArrayList<>(Arrays.asList(resourceGold1, resourceFood1));
+
+    Resource resourceGold2 = new Resource();
+    resourceGold2.setAmount(200);
+
+    Resource resourceFood2 = new Resource();
+    resourceFood2.setAmount(250);
+
+    List<Resource> resourceList2 = new ArrayList<>(Arrays.asList(resourceGold2, resourceFood2));
+
+    Building townHall1 = new Building();
+    townHall1.setLevel(4);
+
+    Building farm1 = new Building();
+    farm1.setLevel(3);
+
+    Building mine1 = new Building();
+    mine1.setLevel(2);
+
+    Building academy1 = new Building();
+    academy1.setLevel(1);
+
+    List<Building> buildingsList1 = new ArrayList<>(Arrays.asList(townHall1, farm1, mine1, academy1));
+
+    Building townHall2 = new Building();
+    townHall2.setLevel(8);
+
+    Building farm2 = new Building();
+    farm2.setLevel(7);
+
+    Building mine2 = new Building();
+    mine2.setLevel(6);
+
+    Building academy2 = new Building();
+    academy2.setLevel(5);
+
+    List<Building> buildingsList2 = new ArrayList<>(Arrays.asList(townHall2, farm2, mine2, academy2));
+
+    Kingdom kingdom1 = new Kingdom();
+    kingdom1.setId(1L);
+    kingdom1.setName("Kingdom1");
+    kingdom1.setCoordinateX(10.0);
+    kingdom1.setCoordinateY(20.0);
+    kingdom1.setBuildings(buildingsList1);
+    kingdom1.setResources(resourceList1);
+    kingdom1.setWorld(world);
+
+    Kingdom kingdom2 = new Kingdom();
+    kingdom2.setId(2L);
+    kingdom2.setName("Kingdom2");
+    kingdom2.setCoordinateX(15.0);
+    kingdom2.setCoordinateY(25.0);
+    kingdom2.setBuildings(buildingsList2);
+    kingdom2.setResources(resourceList2);
+    kingdom2.setWorld(world);
+
+    return new ArrayList<>(Arrays.asList(kingdom1, kingdom2));
   }
 }

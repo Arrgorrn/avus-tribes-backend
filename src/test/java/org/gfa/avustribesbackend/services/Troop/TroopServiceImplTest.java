@@ -37,7 +37,7 @@ class TroopServiceImplTest {
   public void beforeEach() {
     World world = new World();
     Player player = new Player();
-    kingdom = new Kingdom(player, world);
+    kingdom = new Kingdom(10.0, 10.0, player, world);
   }
 
   @Test

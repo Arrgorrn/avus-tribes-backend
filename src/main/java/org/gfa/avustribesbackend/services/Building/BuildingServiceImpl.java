@@ -54,12 +54,15 @@ public class BuildingServiceImpl implements BuildingService {
   public void upgradeBuilding(UpgradeBuildingDTO dto) {
 
     int currentLevel =
-        buildingRepository.getBuildingLevel(dto.getKingdomId(), dto.getBuildingType());
+        buildingRepository.getBuildingLevel(
+            dto.getKingdomId(), dto.getBuildingType(), dto.getBuildingId());
     int upgradeCost = calculateUpgradeCost(currentLevel, dto.getBuildingType());
     int maxAllowedLevel =
-        buildingRepository.getBuildingLevel(dto.getKingdomId(), BuildingTypeValue.TOWNHALL);
+        buildingRepository.getBuildingLevel(
+            dto.getKingdomId(), BuildingTypeValue.TOWNHALL, dto.getBuildingId());
     Building building =
-        buildingRepository.findByKingdomIdAndType(dto.getKingdomId(), dto.getBuildingType());
+        buildingRepository.findByKingdomIdAndTypeAndId(
+            dto.getKingdomId(), dto.getBuildingType(), dto.getBuildingId());
     int gold = getGoldAmount(dto);
 
     if (currentLevel >= 10) {
@@ -75,17 +78,18 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     gold -= upgradeCost;
-
+    building.setConstructionStartTime(LocalDateTime.now());
+    // building.setBuildingFinished(false);
+    checkConstructionStatus();
     building.incrementLevel();
-
     buildingRepository.save(building);
-
     updateGoldAmountInRepository(dto, gold);
   }
 
   @Override
   public int getBuildingLevel(UpgradeBuildingDTO dto) {
-    return buildingRepository.getBuildingLevel(dto.getKingdomId(), dto.getBuildingType());
+    return buildingRepository.getBuildingLevel(
+        dto.getKingdomId(), dto.getBuildingType(), dto.getBuildingId());
   }
 
   @Override

@@ -5,6 +5,7 @@ import org.gfa.avustribesbackend.dtos.PlayerInfoDTO;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.dtos.TokenDTO;
 import org.gfa.avustribesbackend.exceptions.*;
+import org.gfa.avustribesbackend.models.EmailVerification;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
@@ -78,12 +79,15 @@ public class PlayerServiceImpl implements PlayerService {
       throw new CredentialException("Invalid email");
     }
 
+    EmailVerification emailVerification =
+        new EmailVerification(verificationToken());
+
     Player player =
         new Player(
             request.getUsername(),
             request.getEmail(),
             passwordEncoder.encode(request.getPassword()),
-            verificationToken());
+            emailVerification);
 
     if (player == null) {
       throw new CreationException("Unknown error");
@@ -92,7 +96,7 @@ public class PlayerServiceImpl implements PlayerService {
     playerRepository.save(player);
 
     if (verifyEmailEnabled.equals("true")) {
-      String token = player.getVerificationToken();
+      String token = player.getEmailVerification().getToken();
       emailVerificationService.sendVerificationEmail(token);
     } else {
       Date date = new Date(System.currentTimeMillis());

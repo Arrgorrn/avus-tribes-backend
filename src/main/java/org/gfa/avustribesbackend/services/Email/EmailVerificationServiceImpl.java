@@ -100,7 +100,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
       // check if token valid
       boolean tokenValid = false;
-      Date expirationDate = player.getVerificationTokenExpiresAt();
+      Date expirationDate = player.getEmailVerification().getExpiresAt();
       Date currentDate = new Date(System.currentTimeMillis());
       if (currentDate.before(expirationDate)) {
         tokenValid = true;
@@ -134,8 +134,8 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     }
 
     String newToken = verificationToken();
-    player.setVerificationToken(newToken);
-    player.setVerificationTokenExpiresAt(calculateTokenExpiration());
+    player.getEmailVerification().setToken(newToken);
+    player.getEmailVerification().setExpiresAt(calculateTokenExpiration());
 
     String verificationLink = url + newToken;
     String htmlMessage =

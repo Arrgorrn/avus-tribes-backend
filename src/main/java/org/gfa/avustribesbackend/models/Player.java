@@ -33,18 +33,6 @@ public class Player implements UserDetails {
   @Column(name = "is_verified")
   private Boolean isVerified;
 
-  @Column(name = "verification_token", unique = true, nullable = false)
-  private String verificationToken;
-
-  @Column(name = "verification_token_expires_at", nullable = false)
-  private Date verificationTokenExpiresAt;
-
-  @Column(name = "forgotten_password_token", unique = true)
-  private String forgottenPasswordToken;
-
-  @Column(name = "forgotten_password_token_expires_at")
-  private Date forgottenPasswordTokenExpiresAt;
-
   @Column(name = "created_at", nullable = false)
   private Date createdAt;
 
@@ -53,6 +41,12 @@ public class Player implements UserDetails {
 
   @Enumerated(EnumType.STRING)
   private Role role;
+
+  @OneToOne(mappedBy = "player")
+  private EmailVerification emailVerification;
+
+  @OneToOne(mappedBy = "player")
+  private PasswordReset passwordReset;
 
   public Player() {
     createdAt = new Date(System.currentTimeMillis());
@@ -63,13 +57,12 @@ public class Player implements UserDetails {
       String playerName,
       String email,
       String password,
-      String verificationToken) {
+      EmailVerification emailVerification) {
     this.playerName = playerName;
     this.email = email;
     this.password = password;
+    this.emailVerification = emailVerification;
     this.isVerified = false;
-    this.verificationToken = verificationToken;
-    this.verificationTokenExpiresAt = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
     this.createdAt = new Date(System.currentTimeMillis());
     this.role = Role.USER;
   }
@@ -152,38 +145,6 @@ public class Player implements UserDetails {
     isVerified = verified;
   }
 
-  public String getVerificationToken() {
-    return verificationToken;
-  }
-
-  public void setVerificationToken(String verificationToken) {
-    this.verificationToken = verificationToken;
-  }
-
-  public Date getVerificationTokenExpiresAt() {
-    return verificationTokenExpiresAt;
-  }
-
-  public void setVerificationTokenExpiresAt(Date verificationTokenExpiresAt) {
-    this.verificationTokenExpiresAt = verificationTokenExpiresAt;
-  }
-
-  public String getForgottenPasswordToken() {
-    return forgottenPasswordToken;
-  }
-
-  public void setForgottenPasswordToken(String forgottenPasswordToken) {
-    this.forgottenPasswordToken = forgottenPasswordToken;
-  }
-
-  public Date getForgottenPasswordTokenExpiresAt() {
-    return forgottenPasswordTokenExpiresAt;
-  }
-
-  public void setForgottenPasswordTokenExpiresAt(Date forgottenPasswordTokenExpiresAt) {
-    this.forgottenPasswordTokenExpiresAt = forgottenPasswordTokenExpiresAt;
-  }
-
   public Date getCreatedAt() {
     return createdAt;
   }
@@ -206,5 +167,29 @@ public class Player implements UserDetails {
 
   public void setRole(Role role) {
     this.role = role;
+  }
+
+  public Boolean getVerified() {
+    return isVerified;
+  }
+
+  public void setVerified(Boolean verified) {
+    isVerified = verified;
+  }
+
+  public EmailVerification getEmailVerification() {
+    return emailVerification;
+  }
+
+  public void setEmailVerification(EmailVerification emailVerification) {
+    this.emailVerification = emailVerification;
+  }
+
+  public PasswordReset getPasswordReset() {
+    return passwordReset;
+  }
+
+  public void setPasswordReset(PasswordReset passwordReset) {
+    this.passwordReset = passwordReset;
   }
 }

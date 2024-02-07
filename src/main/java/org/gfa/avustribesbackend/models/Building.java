@@ -3,6 +3,8 @@ package org.gfa.avustribesbackend.models;
 import jakarta.persistence.*;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "buildings")
 public class Building {
@@ -22,14 +24,29 @@ public class Building {
 
   private Integer level;
 
+  @Column(name = "construction_start_time")
+  private LocalDateTime constructionStartTime;
+
+  @Column(name = "building_finished")
+  private Boolean buildingFinished;
+
   public Building(Kingdom kingdom, BuildingTypeValue type) {
     this.kingdom = kingdom;
     this.type = type;
     this.level = 1;
+    this.buildingFinished = false;
+  }
+
+  public Building(Kingdom kingdom, BuildingTypeValue type, Boolean buildingFinished) {
+    this.kingdom = kingdom;
+    this.type = type;
+    this.level = 1;
+    this.buildingFinished = buildingFinished;
   }
 
   public Building() {
     this.level = 1;
+    this.buildingFinished = false;
   }
 
   public Long getId() {
@@ -70,5 +87,21 @@ public class Building {
 
   public void incrementLevel() {
     this.level++;
+  }
+
+  public LocalDateTime getConstructionStartTime() {
+    return constructionStartTime;
+  }
+
+  public void setConstructionStartTime(LocalDateTime constructionStartTime) {
+    this.constructionStartTime = constructionStartTime;
+  }
+
+  public Boolean getBuildingFinished() {
+    return buildingFinished;
+  }
+
+  public void setBuildingFinished(Boolean buildingFinished) {
+    this.buildingFinished = buildingFinished;
   }
 }

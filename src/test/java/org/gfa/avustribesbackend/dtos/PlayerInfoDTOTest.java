@@ -3,12 +3,10 @@ package org.gfa.avustribesbackend.dtos;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Player.PlayerServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;

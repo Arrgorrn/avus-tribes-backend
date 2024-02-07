@@ -27,14 +27,26 @@ public class Building {
   @Column(name = "construction_start_time")
   private LocalDateTime constructionStartTime;
 
+  @Column(name = "building_finished")
+  private Boolean buildingFinished;
+
   public Building(Kingdom kingdom, BuildingTypeValue type) {
     this.kingdom = kingdom;
     this.type = type;
     this.level = 1;
+    this.buildingFinished = false;
+  }
+
+  public Building(Kingdom kingdom, BuildingTypeValue type, Boolean buildingFinished) {
+    this.kingdom = kingdom;
+    this.type = type;
+    this.level = 1;
+    this.buildingFinished = buildingFinished;
   }
 
   public Building() {
     this.level = 1;
+    this.buildingFinished = false;
   }
 
   public Long getId() {
@@ -83,5 +95,13 @@ public class Building {
 
   public void setConstructionStartTime(LocalDateTime constructionStartTime) {
     this.constructionStartTime = constructionStartTime;
+  }
+
+  public Boolean getBuildingFinished() {
+    return buildingFinished;
+  }
+
+  public void setBuildingFinished(Boolean buildingFinished) {
+    this.buildingFinished = buildingFinished;
   }
 }

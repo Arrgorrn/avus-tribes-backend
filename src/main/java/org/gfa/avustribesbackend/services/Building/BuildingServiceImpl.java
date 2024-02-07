@@ -97,6 +97,7 @@ public class BuildingServiceImpl implements BuildingService {
     goldResource.setAmount(goldResource.getAmount() - goldCost);
     Building building = new Building(kingdom, dto.getType());
     building.setConstructionStartTime(LocalDateTime.now());
+    buildingRepository.save(building);
     resourceRepository.save(goldResource);
     return true;
   }
@@ -108,6 +109,7 @@ public class BuildingServiceImpl implements BuildingService {
     for (Building building : buildingsUnderConstruction) {
       if (isConstructionComplete(building)) {
         building.setConstructionStartTime(null);
+        building.setBuildingFinished(true);
         buildingRepository.save(building);
       }
     }

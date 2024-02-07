@@ -29,7 +29,8 @@ public class SecurityConfig {
         "/register",
         "/reset-password/**",
         "/email/**",
-        "/login"
+        "/login",
+            "/kingdoms/**"
     };
     http
         .csrf(AbstractHttpConfigurer::disable)

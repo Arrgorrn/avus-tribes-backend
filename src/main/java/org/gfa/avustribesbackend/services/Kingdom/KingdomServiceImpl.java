@@ -35,7 +35,13 @@ public class KingdomServiceImpl implements KingdomService {
   private final WorldRepository worldRepository;
 
   @Autowired
-  public KingdomServiceImpl(KingdomRepository kingdomRepository, BuildingRepository buildingRepository, ResourceRepository resourceRepository, JwtService jwtService, PlayerRepository playerRepository, WorldRepository worldRepository) {
+  public KingdomServiceImpl(
+      KingdomRepository kingdomRepository,
+      BuildingRepository buildingRepository,
+      ResourceRepository resourceRepository,
+      JwtService jwtService,
+      PlayerRepository playerRepository,
+      WorldRepository worldRepository) {
     this.kingdomRepository = kingdomRepository;
     this.buildingRepository = buildingRepository;
     this.resourceRepository = resourceRepository;
@@ -93,8 +99,7 @@ public class KingdomServiceImpl implements KingdomService {
         kingdom.getBuildings().get(0).getLevel(),
         kingdom.getBuildings().get(1).getLevel(),
         kingdom.getBuildings().get(2).getLevel(),
-        kingdom.getBuildings().get(3).getLevel()
-    );
+        kingdom.getBuildings().get(3).getLevel());
   }
 
   @Override
@@ -140,7 +145,7 @@ public class KingdomServiceImpl implements KingdomService {
       kingdomRepository.save(kingdom);
     }
     for (BuildingTypeValue buildingType : BuildingTypeValue.values()) {
-      Building building = new Building(kingdom, buildingType);
+      Building building = new Building(kingdom, buildingType, true);
       buildingRepository.save(building);
     }
     for (ResourceTypeValue resourceType : ResourceTypeValue.values()) {

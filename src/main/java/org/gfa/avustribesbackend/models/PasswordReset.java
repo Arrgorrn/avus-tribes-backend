@@ -22,10 +22,6 @@ public class PasswordReset {
   private Date createdAt;
   @Column(name = "expires_at", nullable = false)
   private Date expiresAt;
-  @Transient
-  @Value("${TOKEN_EXPIRATION_TIME}")
-  private Long expirationTime;
-
 
   public PasswordReset() {
   }
@@ -33,7 +29,7 @@ public class PasswordReset {
   public PasswordReset(String token) {
     this.token = token;
     this.createdAt = new Date(System.currentTimeMillis());
-    this.expiresAt = new Date(System.currentTimeMillis() + expirationTime);
+    this.expiresAt = new Date(System.currentTimeMillis() + 3600000);
   }
 
   public Long getId() {
@@ -74,13 +70,5 @@ public class PasswordReset {
 
   public void setExpiresAt(Date expiresAt) {
     this.expiresAt = expiresAt;
-  }
-
-  public Long getExpirationTime() {
-    return expirationTime;
-  }
-
-  public void setExpirationTime(Long expirationTime) {
-    this.expirationTime = expirationTime;
   }
 }

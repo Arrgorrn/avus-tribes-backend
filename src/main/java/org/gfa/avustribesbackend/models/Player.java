@@ -56,12 +56,10 @@ public class Player implements UserDetails {
   public Player(
       String playerName,
       String email,
-      String password,
-      EmailVerification emailVerification) {
+      String password) {
     this.playerName = playerName;
     this.email = email;
     this.password = password;
-    this.emailVerification = emailVerification;
     this.isVerified = false;
     this.createdAt = new Date(System.currentTimeMillis());
     this.role = Role.USER;

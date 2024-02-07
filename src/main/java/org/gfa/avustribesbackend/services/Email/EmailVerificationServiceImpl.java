@@ -49,7 +49,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
   @Override
   public void sendVerificationEmail(String token) {
-    Player player = playerRepository.findByVerificationToken(token);
+    Player player = playerRepository.findByEmailVerificationToken(token);
 
     if (player != null) {
       String user = player.getPlayerName();
@@ -81,7 +81,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
   @Override
   public boolean isVerified(String token) {
-    Player player = playerRepository.findByVerificationToken(token);
+    Player player = playerRepository.findByEmailVerificationToken(token);
     if (player == null) {
       throw new EmailException("Player not found");
     }
@@ -90,7 +90,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
   @Override
   public boolean verifyEmail(String token) {
-    Player player = playerRepository.findByVerificationToken(token);
+    Player player = playerRepository.findByEmailVerificationToken(token);
 
     if (player == null) {
       return false;
@@ -135,7 +135,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     String newToken = verificationToken();
     player.getEmailVerification().setToken(newToken);
-    player.getEmailVerification().setExpiresAt(calculateTokenExpiration());
+    player.getEmailVerification().setExpiresAt(calculateTokenExpiration()); //tu zmenit
 
     String verificationLink = url + newToken;
     String htmlMessage =

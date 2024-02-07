@@ -22,18 +22,18 @@ public class EmailVerification {
   private Date createdAt;
   @Column(name = "expires_at", nullable = false)
   private Date expiresAt;
-  @Transient
-  @Value("${TOKEN_EXPIRATION_TIME}")
-  private Long expirationTime;
+  @Value("${VERIFICATION_EXPIRATION_TIME}")
+  private String VERIFICATION_EXPIRATION_TIME;
 
 
   public EmailVerification() {
   }
 
-  public EmailVerification(String token) {
+  public EmailVerification(String token, Player player) {
+    this.player = player;
     this.token = token;
     this.createdAt = new Date(System.currentTimeMillis());
-    this.expiresAt = new Date(System.currentTimeMillis() + expirationTime);
+    this.expiresAt = new Date(System.currentTimeMillis() + Long.parseLong(VERIFICATION_EXPIRATION_TIME));
   }
 
   public Long getId() {
@@ -74,13 +74,5 @@ public class EmailVerification {
 
   public void setExpiresAt(Date expiresAt) {
     this.expiresAt = expiresAt;
-  }
-
-  public Long getExpirationTime() {
-    return expirationTime;
-  }
-
-  public void setExpirationTime(Long expirationTime) {
-    this.expirationTime = expirationTime;
   }
 }

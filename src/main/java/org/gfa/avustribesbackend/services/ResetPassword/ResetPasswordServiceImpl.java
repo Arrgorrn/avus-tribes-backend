@@ -7,6 +7,7 @@ import org.gfa.avustribesbackend.dtos.TokenDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.exceptions.EmailException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
+import org.gfa.avustribesbackend.models.PasswordReset;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Player.PlayerService;
@@ -56,12 +57,13 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
       throw new VerificationException("Unverified email!");
     }
 
-    player.setForgottenPasswordToken(playerService.verificationToken());
-    player.setForgottenPasswordTokenExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60));
+    PasswordReset passwordReset = new PasswordReset(playerService.verificationToken());
+
+    player.setPasswordReset(passwordReset);
 
     playerRepository.save(player);
 
-    String htmlMessage = "<p>Hello " + player.getPlayerName() + ". If you want to reset your password please click <a href=\"" + resetPasswordUrl + player.getForgottenPasswordToken() + "\">" + resetPasswordUrl + player.getForgottenPasswordToken() + "</a></p>";
+    String htmlMessage = "<p>Hello " + player.getPlayerName() + ". If you want to reset your password please click <a href=\"" + resetPasswordUrl + player.getPasswordReset().getToken() + "\">" + resetPasswordUrl + player.getPasswordReset().getToken() + "</a></p>";
 
     MimeMessage mimeMessage = javaMailSender.createMimeMessage();
     try {
@@ -84,16 +86,16 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     if (newPassword == null || newPassword.getPassword() == null || newPassword.getPassword().isEmpty()) {
       throw new CredentialException("Password is required");
     }
-    if (token == null || token.getToken() == null || token.getToken().isEmpty() || !playerRepository.existsByForgottenPasswordToken(token.getToken())) {
+    if (token == null || token.getToken() == null || token.getToken().isEmpty() || !playerRepository.existsByPasswordResetToken(token.getToken())) {
       throw new VerificationException("Invalid token");
     }
     if (newPassword.getPassword().length() < 8) {
       throw new CredentialException("Password must be at least 8 characters long");
     }
 
-    Player player = playerRepository.findByForgottenPasswordToken(token.getToken());
+    Player player = playerRepository.findByPasswordResetToken(token.getToken());
 
-    if (player.getForgottenPasswordTokenExpiresAt().before(new Date(System.currentTimeMillis()))) {
+    if (player.getPasswordReset().getExpiresAt().before(new Date(System.currentTimeMillis()))) {
       throw new VerificationException("Expired token");
     }
 

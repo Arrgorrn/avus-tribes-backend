@@ -95,10 +95,9 @@ public class PlayerServiceImpl implements PlayerService {
     EmailVerification emailVerification =
         new EmailVerification(verificationToken(), player);
 
-    emailVerificationRepository.save(emailVerification);
-
     player.setEmailVerification(emailVerification);
 
+    emailVerificationRepository.save(emailVerification);
     playerRepository.save(player);
 
     if (verifyEmailEnabled.equals("true")) {

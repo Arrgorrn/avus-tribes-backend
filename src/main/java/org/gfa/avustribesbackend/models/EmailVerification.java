@@ -1,7 +1,6 @@
 package org.gfa.avustribesbackend.models;
 
 import jakarta.persistence.*;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 
@@ -22,9 +21,6 @@ public class EmailVerification {
   private Date createdAt;
   @Column(name = "expires_at", nullable = false)
   private Date expiresAt;
-//  @Transient
-//  @Value("${VERIFICATION_EXPIRATION_TIME}")
-//  private String VERIFICATION_EXPIRATION_TIME;
 
   public EmailVerification() {
   }
@@ -33,7 +29,7 @@ public class EmailVerification {
     this.player = player;
     this.token = token;
     this.createdAt = new Date(System.currentTimeMillis());
-    this.expiresAt = new Date(System.currentTimeMillis() + 3600000 /*Long.parseLong(VERIFICATION_EXPIRATION_TIME)*/);
+    this.expiresAt = new Date(System.currentTimeMillis() + 3600000);
   }
 
   public Long getId() {

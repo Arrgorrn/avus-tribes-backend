@@ -124,7 +124,7 @@ public class KingdomServiceImpl implements KingdomService {
     double[] coordinates = generateCoordinates();
     if (databaseWorld == null) {
       World world = new World();
-      worldRepository.save(world);
+      world.getPlayers().add(player);
 
       kingdom = new Kingdom(coordinates[0], coordinates[1], player, world);
       List<Kingdom> kingdoms = new ArrayList<>();
@@ -140,6 +140,7 @@ public class KingdomServiceImpl implements KingdomService {
       List<Kingdom> kingdoms = databaseWorld.getKingdoms();
       kingdoms.add(kingdom);
       databaseWorld.setKingdoms(kingdoms);
+      databaseWorld.getPlayers().add(player);
 
       worldRepository.save(databaseWorld);
       kingdomRepository.save(kingdom);

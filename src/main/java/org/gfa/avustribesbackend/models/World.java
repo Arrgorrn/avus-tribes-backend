@@ -2,6 +2,7 @@ package org.gfa.avustribesbackend.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -28,10 +29,14 @@ public class World {
 
   public World(String name) {
     this.name = name;
+    this.players = new ArrayList<>();
+    this.kingdoms = new ArrayList<>();
   }
 
   public World() {
     this.name = generatorOfName();
+    this.players = new ArrayList<>();
+    this.kingdoms = new ArrayList<>();
   }
 
   public String generatorOfName() {

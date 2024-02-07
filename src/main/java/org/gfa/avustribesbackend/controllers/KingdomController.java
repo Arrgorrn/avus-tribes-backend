@@ -1,15 +1,20 @@
 package org.gfa.avustribesbackend.controllers;
 
 import org.gfa.avustribesbackend.dtos.BuildNewBuildingDTO;
+import org.gfa.avustribesbackend.dtos.UpgradeBuildingDTO;
 import org.gfa.avustribesbackend.exceptions.BuildingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
+import org.gfa.avustribesbackend.models.Kingdom;
+import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.gfa.avustribesbackend.services.Building.BuildingService;
 import org.gfa.avustribesbackend.services.Kingdom.KingdomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 import static org.gfa.avustribesbackend.services.Building.BuildingServiceImpl.buildingConstructionTimes;
 
@@ -52,6 +57,20 @@ public class KingdomController {
     } else {
       throw new BuildingException("Building not built");
     }
+  }
+
+  @PatchMapping("/kingdoms/upgrade")
+  public ResponseEntity<Object> upgradeBuilding(@RequestBody UpgradeBuildingDTO dto) {
+
+    int upgradeTime = buildingService.getBuildingLevel(dto);
+    buildingService.upgradeBuilding(dto);
+
+    return ResponseEntity.ok(
+            "Building upgrade started for "
+                    + dto.getBuildingType()
+                    + ". Time required: "
+                    + upgradeTime
+                    + " minutes.");
   }
 
   @GetMapping("/kingdoms/player")

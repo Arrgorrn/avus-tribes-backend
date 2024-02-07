@@ -6,29 +6,19 @@ import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 
 public class UpgradeBuildingDTO {
 
-  private Kingdom kingdom;
-  private BuildingTypeValue buildingType;
+  private final Long kingdomId;
+  private final BuildingTypeValue buildingType;
 
-  public UpgradeBuildingDTO() {}
-
-  public UpgradeBuildingDTO(Kingdom kingdom, BuildingTypeValue buildingType, Resource gold) {
-    this.kingdom = kingdom;
+  public UpgradeBuildingDTO(Long kingdomId, BuildingTypeValue buildingType) {
+    this.kingdomId = kingdomId;
     this.buildingType = buildingType;
   }
 
-  public Kingdom getKingdom() {
-    return kingdom;
-  }
-
-  public void setKingdom(Kingdom kingdom) {
-    this.kingdom = kingdom;
+  public Long getKingdomId() {
+    return kingdomId;
   }
 
   public BuildingTypeValue getBuildingType() {
     return buildingType;
-  }
-
-  public void setBuildingType(BuildingTypeValue buildingType) {
-    this.buildingType = buildingType;
   }
 }

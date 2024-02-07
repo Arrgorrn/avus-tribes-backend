@@ -5,6 +5,7 @@ import org.gfa.avustribesbackend.dtos.PlayerInfoDTO;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
+import org.gfa.avustribesbackend.repositories.EmailVerificationRepository;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.gfa.avustribesbackend.services.Kingdom.KingdomService;
@@ -42,6 +43,8 @@ class PlayerServiceImplTest {
   @Mock private PasswordEncoder passwordEncoder;
 
   @Mock private KingdomService kingdomService;
+
+  @Mock private EmailVerificationRepository emailVerificationRepository;
 
   @BeforeEach
   public void beforeEach() {
@@ -154,6 +157,7 @@ class PlayerServiceImplTest {
 
     when(passwordEncoder.encode(playerRegistrationBody.getPassword())).thenReturn("h6eg4sr6he4asdr8jf9y8k4mfyt9jk4ryt");
 
+
     ResponseEntity<Object> responseEntity =
         playerServiceImpl.registerPlayer(playerRegistrationBody);
     ResponseEntity<Object> responseEntity1 =
@@ -164,11 +168,11 @@ class PlayerServiceImplTest {
 
   @Test
   void list_all_players() {
-    Player player1 = new Player("username", "email@test.com", "password", "token");
+    Player player1 = new Player("username", "email@test.com", "password");
     player1.setIsVerified(true);
     player1.setVerifiedAt(new Date(System.currentTimeMillis()));
 
-    Player player2 = new Player("usernameee", "eeemail@test.com", "password", "tokeeen");
+    Player player2 = new Player("usernameee", "eeemail@test.com", "password");
     player2.setIsVerified(true);
     player2.setVerifiedAt(new Date(System.currentTimeMillis()));
 

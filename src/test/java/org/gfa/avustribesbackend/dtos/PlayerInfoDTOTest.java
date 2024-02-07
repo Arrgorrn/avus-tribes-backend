@@ -20,15 +20,10 @@ public class PlayerInfoDTOTest {
 
   @Mock private PlayerRepository playerRepository;
 
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.initMocks(this);
-  }
-
   @Test
   void create_PlayerInfoDTO_verified() {
     // Arrange
-    Player player = new Player("username", "email@test.com", "password", "token");
+    Player player = new Player("username", "email@test.com", "password");
     player.setIsVerified(true);
     player.setVerifiedAt(new Date(System.currentTimeMillis()));
 
@@ -44,7 +39,7 @@ public class PlayerInfoDTOTest {
   @Test
   void create_PlayerInfoDTO_not_verified() {
     // Arrange
-    Player player = new Player("username", "email@test.com", "password", "token");
+    Player player = new Player("username", "email@test.com", "password");
     player.setIsVerified(false);
 
     // Act

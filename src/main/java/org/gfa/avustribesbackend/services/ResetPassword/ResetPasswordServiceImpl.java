@@ -9,6 +9,7 @@ import org.gfa.avustribesbackend.exceptions.EmailException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
 import org.gfa.avustribesbackend.models.PasswordReset;
 import org.gfa.avustribesbackend.models.Player;
+import org.gfa.avustribesbackend.repositories.PasswordResetRepository;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Player.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class ResetPasswordServiceImpl implements ResetPasswordService {
@@ -29,6 +31,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   private final PlayerRepository playerRepository;
   private final PlayerService playerService;
   private final PasswordEncoder passwordEncoder;
+  private final PasswordResetRepository passwordResetRepository;
   private final Dotenv dotenv = Dotenv.configure().load();
   private final String sender = dotenv.get("VERIFICATION_EMAIL_SENDER");
   private final String subject = dotenv.get("RESET_PASSWORD_EMAIL_SUBJECT");
@@ -38,11 +41,12 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
   public ResetPasswordServiceImpl(
       JavaMailSender javaMailSender,
       PlayerRepository playerRepository,
-      PlayerService playerService, PasswordEncoder passwordEncoder) {
+      PlayerService playerService, PasswordEncoder passwordEncoder, PasswordResetRepository passwordResetRepository) {
     this.javaMailSender = javaMailSender;
     this.playerRepository = playerRepository;
     this.playerService = playerService;
     this.passwordEncoder = passwordEncoder;
+    this.passwordResetRepository = passwordResetRepository;
   }
 
   @Override
@@ -57,11 +61,20 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
       throw new VerificationException("Unverified email!");
     }
 
-    PasswordReset passwordReset = new PasswordReset(playerService.verificationToken());
+    Optional<PasswordReset> optionalPasswordReset = passwordResetRepository.findFirstByPlayer(player);
 
-    player.setPasswordReset(passwordReset);
-
-    playerRepository.save(player);
+    if (optionalPasswordReset.isEmpty()) {
+      PasswordReset newPasswordReset = new PasswordReset(playerService.verificationToken(), player);
+      passwordResetRepository.save(newPasswordReset);
+      player.setPasswordReset(newPasswordReset);
+      playerRepository.save(player);
+    } else {
+      PasswordReset passwordReset = optionalPasswordReset.get();
+      passwordReset.setToken(playerService.verificationToken());
+      passwordReset.setCreatedAt(new Date(System.currentTimeMillis()));
+      passwordReset.setExpiresAt(new Date(System.currentTimeMillis() + 3600000));
+      passwordResetRepository.save(passwordReset);
+    }
 
     String htmlMessage = "<p>Hello " + player.getPlayerName() + ". If you want to reset your password please click <a href=\"" + resetPasswordUrl + player.getPasswordReset().getToken() + "\">" + resetPasswordUrl + player.getPasswordReset().getToken() + "</a></p>";
 

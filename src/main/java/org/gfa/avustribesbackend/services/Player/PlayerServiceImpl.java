@@ -88,14 +88,16 @@ public class PlayerServiceImpl implements PlayerService {
             request.getEmail(),
             passwordEncoder.encode(request.getPassword()));
 
+    if (player == null) {
+      throw new CreationException("Unknown error");
+    }
+
     EmailVerification emailVerification =
         new EmailVerification(verificationToken(), player);
 
     emailVerificationRepository.save(emailVerification);
 
-    if (player == null) {
-      throw new CreationException("Unknown error");
-    }
+    player.setEmailVerification(emailVerification);
 
     playerRepository.save(player);
 

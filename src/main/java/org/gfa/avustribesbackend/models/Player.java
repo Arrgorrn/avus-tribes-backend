@@ -49,8 +49,9 @@ public class Player implements UserDetails {
   private PasswordReset passwordReset;
 
   public Player() {
-    createdAt = new Date(System.currentTimeMillis());
+    this.createdAt = new Date(System.currentTimeMillis());
     this.isVerified = false;
+    this.role = Role.USER;
   }
 
   public Player(

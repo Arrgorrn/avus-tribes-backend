@@ -1,7 +1,6 @@
 package org.gfa.avustribesbackend.models;
 
 import jakarta.persistence.*;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 
@@ -26,7 +25,8 @@ public class PasswordReset {
   public PasswordReset() {
   }
 
-  public PasswordReset(String token) {
+  public PasswordReset(String token, Player player) {
+    this.player = player;
     this.token = token;
     this.createdAt = new Date(System.currentTimeMillis());
     this.expiresAt = new Date(System.currentTimeMillis() + 3600000);

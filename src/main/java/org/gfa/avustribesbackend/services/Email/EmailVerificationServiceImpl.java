@@ -86,6 +86,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
       throw new EmailException("Player not found");
     }
     return player.getIsVerified();
+
   }
 
   @Override
@@ -135,6 +136,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     String newToken = verificationToken();
     player.getEmailVerification().setToken(newToken);
+    player.getEmailVerification().setCreatedAt(new Date(System.currentTimeMillis()));
     player.getEmailVerification().setExpiresAt(calculateTokenExpiration()); //tu zmenit
 
     String verificationLink = url + newToken;

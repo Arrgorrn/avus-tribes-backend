@@ -37,7 +37,7 @@ class WorldRestControllerTest {
     world.setId(1L);
 
     Player player = new Player("Quest", "hello@gmail.com",
-            "ILovePassword", "Token");
+            "ILovePassword");
 
     Kingdom kingdom = new Kingdom("Utopia", 40.5, 45.4, player, world);
     kingdom.setId(1L);

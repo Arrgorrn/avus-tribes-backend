@@ -68,14 +68,14 @@ public class TroopServiceImpl implements TroopService {
     Resource gold = resourceRepository.findByKingdomAndType(kingdom, ResourceTypeValue.GOLD);
     gold.setAmount(gold.getAmount() - 25);
     resourceRepository.save(gold);
-    Troop databeseTroop = troopRepository.findFirstByOrderByLevelDesc();
+    Troop databaseTroop = troopRepository.findFirstByKingdomOrderByLevelDesc(kingdom);
     Troop troop;
-    if (databeseTroop == null) {
+    if (databaseTroop == null) {
       troop = new Troop(1, kingdom, System.currentTimeMillis(), System.currentTimeMillis() + 30);
     } else {
       troop =
           new Troop(
-              databeseTroop.getLevel(),
+              databaseTroop.getLevel(),
               kingdom,
               System.currentTimeMillis(),
               System.currentTimeMillis() + 30);

@@ -18,33 +18,28 @@ public class SecurityConfig {
   private final JwtAuthenticationFilter jwtAuthFilter;
   private final AuthenticationProvider authenticationProvider;
 
-  public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, AuthenticationProvider authenticationProvider) {
+  public SecurityConfig(
+      JwtAuthenticationFilter jwtAuthFilter, AuthenticationProvider authenticationProvider) {
     this.jwtAuthFilter = jwtAuthFilter;
     this.authenticationProvider = authenticationProvider;
   }
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    String[] authorizedUrls = {
-        "/register",
-        "/reset-password/**",
-        "/email/**",
-        "/login"
-    };
-    http
-        .csrf(AbstractHttpConfigurer::disable)
+    String[] authorizedUrls = {"/register", "/reset-password/**", "/email/**", "/login"};
+    http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
-            authorizeHttpRequests -> authorizeHttpRequests
-                .requestMatchers(authorizedUrls)
-                .permitAll()
-                .anyRequest()
-                .authenticated())
+            authorizeHttpRequests ->
+                authorizeHttpRequests
+                    .requestMatchers(authorizedUrls)
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .sessionManagement(
-            sessionManagement -> sessionManagement
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider)
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 }
-

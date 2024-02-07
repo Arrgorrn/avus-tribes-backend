@@ -39,6 +39,9 @@ public class ExceptionHandlers {
   @ResponseStatus(value = HttpStatus.CONFLICT)
   public ErrorResponse conflictExceptionHandler(
       RuntimeException runtimeException, HttpServletRequest httpServletRequest) {
+    LOGGER.error("ERROR: " + runtimeException.getMessage());
+    LOGGER.error("Status code: {}", HttpStatus.CONFLICT);
+    LOGGER.info("<=======================================================Response end========================================================>");
     return new ErrorResponse(
         runtimeException.getMessage(),
         httpServletRequest.getRequestURI(),
@@ -50,9 +53,8 @@ public class ExceptionHandlers {
   public ErrorResponse notFoundExceptionHandler(
       RuntimeException runtimeException, HttpServletRequest httpServletRequest) {
     LOGGER.error("ERROR: " + runtimeException.getMessage());
-    LOGGER.error("Status code: {}", HttpStatus.CONFLICT);
+    LOGGER.error("Status code: {}", HttpStatus.NOT_FOUND);
     LOGGER.info("<=======================================================Response end========================================================>");
-
     return new ErrorResponse(
         runtimeException.getMessage(),
         httpServletRequest.getRequestURI(),

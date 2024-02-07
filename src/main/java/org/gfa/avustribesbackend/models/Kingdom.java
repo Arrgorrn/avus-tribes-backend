@@ -46,8 +46,10 @@ public class Kingdom {
     this.world = world;
   }
 
-  public Kingdom(Player player, World world) {
+  public Kingdom(Double coordinateX, Double coordinateY, Player player, World world) {
     this.name = player.getPlayerName() + "'s kingdom";
+    this.coordinateX = coordinateX;
+    this.coordinateY = coordinateY;
     this.player = player;
     this.world = world;
   }

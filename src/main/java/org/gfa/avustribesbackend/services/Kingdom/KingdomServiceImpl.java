@@ -1,13 +1,21 @@
 package org.gfa.avustribesbackend.services.Kingdom;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.gfa.avustribesbackend.dtos.KingdomResponseDTO;
+import org.gfa.avustribesbackend.dtos.PlayerKingdomResponseDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
+import org.gfa.avustribesbackend.models.Building;
+import org.gfa.avustribesbackend.models.Kingdom;
+import org.gfa.avustribesbackend.models.Player;
+import org.gfa.avustribesbackend.models.Resource;
 import org.gfa.avustribesbackend.models.*;
 import org.gfa.avustribesbackend.models.enums.BuildingTypeValue;
 import org.gfa.avustribesbackend.models.enums.ResourceTypeValue;
 import org.gfa.avustribesbackend.repositories.BuildingRepository;
 import org.gfa.avustribesbackend.repositories.KingdomRepository;
+import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.repositories.ResourceRepository;
+import org.gfa.avustribesbackend.services.JWT.JwtService;
 import org.gfa.avustribesbackend.repositories.WorldRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +23,15 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class KingdomServiceImpl implements KingdomService {
   private final KingdomRepository kingdomRepository;
   private final BuildingRepository buildingRepository;
   private final ResourceRepository resourceRepository;
+  private final JwtService jwtService;
+  private final PlayerRepository playerRepository;
   private final WorldRepository worldRepository;
 
   @Autowired
@@ -28,10 +39,14 @@ public class KingdomServiceImpl implements KingdomService {
       KingdomRepository kingdomRepository,
       BuildingRepository buildingRepository,
       ResourceRepository resourceRepository,
+      JwtService jwtService,
+      PlayerRepository playerRepository,
       WorldRepository worldRepository) {
     this.kingdomRepository = kingdomRepository;
     this.buildingRepository = buildingRepository;
     this.resourceRepository = resourceRepository;
+    this.jwtService = jwtService;
+    this.playerRepository = playerRepository;
     this.worldRepository = worldRepository;
   }
 
@@ -58,6 +73,36 @@ public class KingdomServiceImpl implements KingdomService {
   }
 
   @Override
+  public List<PlayerKingdomResponseDTO> listPlayerKingdoms(HttpServletRequest request) {
+    List<PlayerKingdomResponseDTO> dtoList = new ArrayList<>();
+    String email = jwtService.extractEmailFromToken(request);
+    Player player = playerRepository.findByEmailIgnoreCase(email);
+    List<Kingdom> kingdoms = kingdomRepository.findKingdomsByPlayer(player);
+    for (Kingdom kingdom : kingdoms) {
+      PlayerKingdomResponseDTO dto = getPlayerKingdomResponseDTO(kingdom);
+      dtoList.add(dto);
+    }
+    return dtoList;
+  }
+
+  @Override
+  public PlayerKingdomResponseDTO getPlayerKingdomResponseDTO(Kingdom kingdom) {
+    return new PlayerKingdomResponseDTO(
+        kingdom.getId(),
+        kingdom.getName(),
+        kingdom.getWorld().getId(),
+        kingdom.getWorld().getName(),
+        kingdom.getCoordinateX(),
+        kingdom.getCoordinateY(),
+        kingdom.getResources().get(0).getAmount(),
+        kingdom.getResources().get(1).getAmount(),
+        kingdom.getBuildings().get(0).getLevel(),
+        kingdom.getBuildings().get(1).getLevel(),
+        kingdom.getBuildings().get(2).getLevel(),
+        kingdom.getBuildings().get(3).getLevel());
+  }
+
+  @Override
   public KingdomResponseDTO returnKingdomDTOById(Long id) {
     Optional<Kingdom> kingdomOptional = kingdomRepository.findById(id);
     if (kingdomOptional.isPresent()) {
@@ -74,13 +119,14 @@ public class KingdomServiceImpl implements KingdomService {
 
   @Override
   public void createStartingKingdom(Player player) {
-    World databeseWorld = worldRepository.findWorldWithLessThan5Kingdoms();
+    World databaseWorld = worldRepository.findWorldWithLessThan5Kingdoms();
     Kingdom kingdom;
-    if (databeseWorld == null) {
+    double[] coordinates = generateCoordinates();
+    if (databaseWorld == null) {
       World world = new World();
       worldRepository.save(world);
 
-      kingdom = new Kingdom(player, world);
+      kingdom = new Kingdom(coordinates[0], coordinates[1], player, world);
       List<Kingdom> kingdoms = new ArrayList<>();
       kingdoms.add(kingdom);
 
@@ -89,22 +135,41 @@ public class KingdomServiceImpl implements KingdomService {
       worldRepository.save(world);
       kingdomRepository.save(kingdom);
     } else {
-      kingdom = new Kingdom(player, databeseWorld);
+      kingdom = new Kingdom(coordinates[0], coordinates[1], player, databaseWorld);
 
-      List<Kingdom> kingdoms = databeseWorld.getKingdoms();
+      List<Kingdom> kingdoms = databaseWorld.getKingdoms();
       kingdoms.add(kingdom);
-      databeseWorld.setKingdoms(kingdoms);
+      databaseWorld.setKingdoms(kingdoms);
 
-      worldRepository.save(databeseWorld);
+      worldRepository.save(databaseWorld);
       kingdomRepository.save(kingdom);
     }
     for (BuildingTypeValue buildingType : BuildingTypeValue.values()) {
-      Building building = new Building(kingdom, buildingType);
+      Building building = new Building(kingdom, buildingType, true);
       buildingRepository.save(building);
     }
     for (ResourceTypeValue resourceType : ResourceTypeValue.values()) {
       Resource resource = new Resource(kingdom, resourceType, 100);
       resourceRepository.save(resource);
     }
+  }
+
+  @Override
+  public double[] generateCoordinates() {
+    Random random = new Random();
+    double coordinateX = 0;
+    double coordinateY = 0;
+    boolean coordinatesExists = true;
+    double[] coordinates = new double[2];
+    while (coordinatesExists) {
+      coordinateX = random.nextInt(100) + 1;
+      coordinateY = random.nextInt(100) + 1;
+      if (!kingdomRepository.existsKingdomByCoordinateXAndCoordinateY(coordinateX, coordinateY)) {
+        coordinatesExists = false;
+        coordinates[0] = coordinateX;
+        coordinates[1] = coordinateY;
+      }
+    }
+    return coordinates;
   }
 }

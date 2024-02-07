@@ -11,6 +11,9 @@ import java.util.List;
 public interface BuildingRepository extends JpaRepository<Building, Long> {
   List<Building> findAllByKingdomAndType(Kingdom kingdom, BuildingTypeValue buildingTypeValue);
 
+  @Query("SELECT b FROM Building b WHERE b.constructionStartTime IS NOT NULL")
+  List<Building> findByConstructionStartTimeIsNotNull();
+
   @Query("SELECT b.level FROM Building b WHERE b.kingdom = :kingdom AND b.type = :buildingType")
   int getBuildingLevel(Kingdom kingdom, BuildingTypeValue buildingType);
 

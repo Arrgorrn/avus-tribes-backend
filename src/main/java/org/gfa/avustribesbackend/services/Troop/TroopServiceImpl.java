@@ -65,6 +65,9 @@ public class TroopServiceImpl implements TroopService {
       throw new CreationException("No enough food to feed another hungry troop");
     }
     // creating troop
+    Resource gold = resourceRepository.findByKingdomAndType(kingdom, ResourceTypeValue.GOLD);
+    gold.setAmount(gold.getAmount() - 25);
+    resourceRepository.save(gold);
     Troop databeseTroop = troopRepository.findFirstByOrderByLevelDesc();
     Troop troop;
     if (databeseTroop == null) {

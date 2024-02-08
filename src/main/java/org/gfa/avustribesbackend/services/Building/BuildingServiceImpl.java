@@ -12,11 +12,14 @@ import org.gfa.avustribesbackend.repositories.BuildingRepository;
 import org.gfa.avustribesbackend.repositories.KingdomRepository;
 import org.gfa.avustribesbackend.repositories.ResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ScheduledFuture;
 
 import static org.gfa.avustribesbackend.models.enums.BuildingTypeValue.*;
 
@@ -25,6 +28,7 @@ public class BuildingServiceImpl implements BuildingService {
   private final KingdomRepository kingdomRepository;
   private final BuildingRepository buildingRepository;
   private final ResourceRepository resourceRepository;
+  private final TaskScheduler taskScheduler;
   public static final Map<BuildingTypeValue, Integer> buildingConstructionTimes = new HashMap<>();
   public static final Map<BuildingTypeValue, Integer> buildingCosts = new HashMap<>();
 
@@ -44,10 +48,12 @@ public class BuildingServiceImpl implements BuildingService {
   public BuildingServiceImpl(
       KingdomRepository kingdomRepository,
       BuildingRepository buildingRepository,
-      ResourceRepository resourceRepository) {
+      ResourceRepository resourceRepository,
+      TaskScheduler taskScheduler) {
     this.kingdomRepository = kingdomRepository;
     this.buildingRepository = buildingRepository;
     this.resourceRepository = resourceRepository;
+    this.taskScheduler = taskScheduler;
   }
 
   @Override
@@ -76,9 +82,9 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     gold -= upgradeCost;
+    building.setBuildingFinished(false);
     building.setConstructionStartTime(LocalDateTime.now());
-    // building.setBuildingFinished(false);
-    checkConstructionStatus();
+    checkUpgradeStatus(currentLevel);
     building.incrementLevel();
     buildingRepository.save(building);
     updateGoldAmountInRepository(dto, gold);
@@ -126,6 +132,23 @@ public class BuildingServiceImpl implements BuildingService {
         buildingRepository.save(building);
       }
     }
+  }
+
+  public void checkUpgradeStatus(int currentLevel) {
+    List<Building> buildingsUnderConstruction =
+        buildingRepository.findByConstructionStartTimeIsNotNull();
+    for (Building building : buildingsUnderConstruction) {
+      if (isConstructionComplete(building)) {
+        building.setConstructionStartTime(null);
+        building.setBuildingFinished(true);
+        buildingRepository.save(building);
+      }
+    }
+
+    long newRate = 60000 * currentLevel;
+
+    ScheduledFuture<?> scheduledFuture =
+        taskScheduler.schedule(this::checkConstructionStatus, Instant.now().plusMillis(newRate));
   }
 
   private int calculateUpgradeCost(int currentLevel, BuildingTypeValue buildingType) {

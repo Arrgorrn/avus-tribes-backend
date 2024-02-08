@@ -15,18 +15,18 @@ public interface BuildingRepository extends JpaRepository<Building, Long> {
   @Query("SELECT b FROM Building b WHERE b.constructionStartTime IS NOT NULL")
   List<Building> findByConstructionStartTimeIsNotNull();
 
-  @Query("SELECT b.level FROM Building b WHERE b.id = :buildingId AND b.kingdom.id = :kingdomId AND b.type = :buildingType")
-  int getBuildingLevelByIdAndKingdomIdAndType(
-          @Param("buildingId") Long buildingId,
-          @Param("kingdomId") Long kingdomId,
-          @Param("buildingType") BuildingTypeValue buildingType
-  );
-
+  @Query(
+      "SELECT b.level FROM Building b WHERE b.id = :buildingId AND b.kingdom.id = :kingdomId AND b.type = :buildingType")
+  int getBuildingLevel(
+      @Param("buildingId") Long buildingId,
+      @Param("kingdomId") Long kingdomId,
+      @Param("buildingType") BuildingTypeValue buildingType);
 
   Building findByKingdomAndType(Kingdom kingdom, BuildingTypeValue buildingTypeValue);
 
   Building findByKingdomIdAndTypeAndId(
       Long kingdomId, BuildingTypeValue buildingTypeValue, Long id);
 
-  int getBuildingLevelByKingdomIdAndType(Long kingdomId, BuildingTypeValue buildingTypeValue);
+  @Query("SELECT b.level FROM Building b WHERE b.kingdom.id = :kingdomId AND b.type = 'TOWNHALL'")
+  int findTownhallLevelByKingdomId(@Param("kingdomId") Long kingdomId);
 }

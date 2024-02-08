@@ -54,12 +54,10 @@ public class BuildingServiceImpl implements BuildingService {
   public void upgradeBuilding(UpgradeBuildingDTO dto) {
 
     int currentLevel =
-        buildingRepository.getBuildingLevelByIdAndKingdomIdAndType(
+        buildingRepository.getBuildingLevel(
             dto.getBuildingId(), dto.getKingdomId(), dto.getBuildingType());
     int upgradeCost = calculateUpgradeCost(currentLevel, dto.getBuildingType());
-    int maxAllowedLevel =
-        buildingRepository.getBuildingLevelByKingdomIdAndType(
-            dto.getKingdomId(), BuildingTypeValue.TOWNHALL);
+    int maxAllowedLevel = buildingRepository.findTownhallLevelByKingdomId(dto.getKingdomId());
     Building building =
         buildingRepository.findByKingdomIdAndTypeAndId(
             dto.getKingdomId(), dto.getBuildingType(), dto.getBuildingId());
@@ -88,7 +86,7 @@ public class BuildingServiceImpl implements BuildingService {
 
   @Override
   public int getBuildingLevel(UpgradeBuildingDTO dto) {
-    return buildingRepository.getBuildingLevelByIdAndKingdomIdAndType(
+    return buildingRepository.getBuildingLevel(
         dto.getBuildingId(), dto.getKingdomId(), dto.getBuildingType());
   }
 

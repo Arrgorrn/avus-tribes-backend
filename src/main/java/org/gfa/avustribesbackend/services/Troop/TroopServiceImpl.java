@@ -33,37 +33,8 @@ public class TroopServiceImpl implements TroopService {
   }
 
   @Override
-  public void creating(Kingdom kingdom) {
-    // checks if there is enough gold
-    if (resourceRepository.getResourceAmount(kingdom, ResourceTypeValue.GOLD) < 25) {
-      throw new CreationException("Not enough gold to create troop");
-    }
-    // checks academy
-    boolean hasAcademy = false;
-    if (kingdom.getBuildings() != null) {
-      for (Building building : kingdom.getBuildings()) {
-        if (building.getType().equals(BuildingTypeValue.ACADEMY)) {
-          hasAcademy = true;
-          break;
-        }
-      }
-    }
-    if (!hasAcademy) {
-      throw new CreationException("Need academy to train troops!");
-    }
-    // checks if there is enough food production
-    int totalFoodPerMinute = 0;
-    for (Building building :
-        buildingRepository.findAllByKingdomAndType(kingdom, BuildingTypeValue.FARM)) {
-      totalFoodPerMinute += (building.getLevel() * 5) + 5;
-    }
-    int totalEating = 0;
-    for (Troop troop : troopRepository.findAll()) {
-      totalEating += troop.getLevel() * 5;
-    }
-    if (totalEating >= totalFoodPerMinute) {
-      throw new CreationException("No enough food to feed another hungry troop");
-    }
+  public void create(Kingdom kingdom) {
+    this.check(kingdom);
     // creating troop
     Resource gold = resourceRepository.findByKingdomAndType(kingdom, ResourceTypeValue.GOLD);
     gold.setAmount(gold.getAmount() - 25);
@@ -91,7 +62,7 @@ public class TroopServiceImpl implements TroopService {
 
   @Override
   @Scheduled(fixedRate = 60000)
-  public void eating() {
+  public void eat() {
     List<Troop> troops = troopRepository.findAll();
     for (Troop troop : troops) {
       Resource resource =
@@ -102,7 +73,7 @@ public class TroopServiceImpl implements TroopService {
   }
 
   @Override
-  public void upgrading(Kingdom kingdom) {
+  public void upgrade(Kingdom kingdom) {
     if (resourceRepository.findByKingdomAndType(kingdom, ResourceTypeValue.GOLD).getAmount()
         < 500) {
       throw new CreationException("Not enough gold to upgrade troops");
@@ -125,6 +96,39 @@ public class TroopServiceImpl implements TroopService {
       troop.setHp(troop.getHp() + 10);
       troop.setLevel(troop.getLevel() + 1);
       troopRepository.save(troop);
+    }
+  }
+
+  public void check(Kingdom kingdom){
+    // checks if there is enough gold
+    if (resourceRepository.getResourceAmount(kingdom, ResourceTypeValue.GOLD) < 25) {
+      throw new CreationException("Not enough gold to create troop");
+    }
+    // checks academy
+    boolean hasAcademy = false;
+    if (kingdom.getBuildings() != null) {
+      for (Building building : kingdom.getBuildings()) {
+        if (building.getType().equals(BuildingTypeValue.ACADEMY)) {
+          hasAcademy = true;
+          break;
+        }
+      }
+    }
+    if (!hasAcademy) {
+      throw new CreationException("Need academy to train troops!");
+    }
+    // checks if there is enough food production
+    int totalFoodPerMinute = 0;
+    for (Building building :
+            buildingRepository.findAllByKingdomAndType(kingdom, BuildingTypeValue.FARM)) {
+      totalFoodPerMinute += (building.getLevel() * 5) + 5;
+    }
+    int totalEating = 0;
+    for (Troop troop : troopRepository.findAll()) {
+      totalEating += troop.getLevel() * 5;
+    }
+    if (totalEating >= totalFoodPerMinute) {
+      throw new CreationException("No enough food to feed another hungry troop");
     }
   }
 }

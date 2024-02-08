@@ -38,7 +38,7 @@ class TroopServiceImplTest {
   @Test
   void creating_troop_no_enough_gold() {
     CreationException creationException =
-        assertThrows(CreationException.class, () -> troopService.creating(kingdom));
+        assertThrows(CreationException.class, () -> troopService.create(kingdom));
     assertEquals("Not enough gold to create troop", creationException.getMessage());
   }
 
@@ -46,7 +46,7 @@ class TroopServiceImplTest {
   void creating_troop_no_academy() {
     when(resourceRepository.getResourceAmount(kingdom, ResourceTypeValue.GOLD)).thenReturn(1000);
     CreationException creationException =
-        assertThrows(CreationException.class, () -> troopService.creating(kingdom));
+        assertThrows(CreationException.class, () -> troopService.create(kingdom));
     assertEquals("Need academy to train troops!", creationException.getMessage());
   }
 
@@ -58,7 +58,7 @@ class TroopServiceImplTest {
     buildings.add(building);
     kingdom.setBuildings(buildings);
     CreationException creationException =
-        assertThrows(CreationException.class, () -> troopService.creating(kingdom));
+        assertThrows(CreationException.class, () -> troopService.create(kingdom));
     assertEquals("No enough food to feed another hungry troop", creationException.getMessage());
   }
 
@@ -68,7 +68,7 @@ class TroopServiceImplTest {
     when(resourceRepository.findByKingdomAndType(kingdom, ResourceTypeValue.GOLD))
         .thenReturn(resource);
     CreationException creationException =
-        assertThrows(CreationException.class, () -> troopService.upgrading(kingdom));
+        assertThrows(CreationException.class, () -> troopService.upgrade(kingdom));
     assertEquals("Not enough gold to upgrade troops", creationException.getMessage());
   }
 }

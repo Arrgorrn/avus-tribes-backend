@@ -34,7 +34,7 @@ public class TroopServiceImpl implements TroopService {
 
   @Override
   public void create(Kingdom kingdom) {
-    this.check(kingdom);
+    this.checkTroopCreation(kingdom);
     // creating troop
     Resource gold = resourceRepository.findByKingdomAndType(kingdom, ResourceTypeValue.GOLD);
     gold.setAmount(gold.getAmount() - 25);
@@ -99,7 +99,7 @@ public class TroopServiceImpl implements TroopService {
     }
   }
 
-  public void check(Kingdom kingdom) {
+  public void checkTroopCreation(Kingdom kingdom) {
     // checks if there is enough gold
     if (resourceRepository.getResourceAmount(kingdom, ResourceTypeValue.GOLD) < 25) {
       throw new CreationException("Not enough gold to create troop");

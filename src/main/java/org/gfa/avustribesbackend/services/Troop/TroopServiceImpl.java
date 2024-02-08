@@ -99,7 +99,7 @@ public class TroopServiceImpl implements TroopService {
     }
   }
 
-  public void check(Kingdom kingdom){
+  public void check(Kingdom kingdom) {
     // checks if there is enough gold
     if (resourceRepository.getResourceAmount(kingdom, ResourceTypeValue.GOLD) < 25) {
       throw new CreationException("Not enough gold to create troop");
@@ -120,7 +120,7 @@ public class TroopServiceImpl implements TroopService {
     // checks if there is enough food production
     int totalFoodPerMinute = 0;
     for (Building building :
-            buildingRepository.findAllByKingdomAndType(kingdom, BuildingTypeValue.FARM)) {
+        buildingRepository.findAllByKingdomAndType(kingdom, BuildingTypeValue.FARM)) {
       totalFoodPerMinute += (building.getLevel() * 5) + 5;
     }
     int totalEating = 0;

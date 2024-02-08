@@ -66,11 +66,11 @@ public class KingdomController {
     buildingService.upgradeBuilding(dto);
 
     return ResponseEntity.ok(
-            "Building upgrade started for "
-                    + dto.getBuildingType()
-                    + ". Time required: "
-                    + upgradeTime
-                    + " minutes.");
+        "Building upgrade started for "
+            + dto.getBuildingType()
+            + ". Time required: "
+            + upgradeTime
+            + " minutes.");
   }
 
   @GetMapping("/kingdoms/player")

@@ -57,6 +57,7 @@ jobs:
           echo "RESET_PASSWORD_EMAIL_SUBJECT=${{ secrets.RESET_PASSWORD_EMAIL_SUBJECT }}" >> .env
           echo "VERIFICATION_EMAIL_TEMPLATE_FILEPATH=${{ secrets.VERIFICATION_EMAIL_TEMPLATE_FILEPATH }}" >> .env
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+          echo "API_PATH=${{ secrets.API_PATH }}" >> .env
           cat .env
 
       - name: Run tests

@@ -49,7 +49,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
   @Override
   public void sendVerificationEmail(String token) {
-    Player player = playerRepository.findByVerificationToken(token);
+    Player player = playerRepository.findByEmailVerificationToken(token);
 
     if (player != null) {
       String user = player.getPlayerName();
@@ -81,16 +81,17 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
   @Override
   public boolean isVerified(String token) {
-    Player player = playerRepository.findByVerificationToken(token);
+    Player player = playerRepository.findByEmailVerificationToken(token);
     if (player == null) {
       throw new EmailException("Player not found");
     }
     return player.getIsVerified();
+
   }
 
   @Override
   public boolean verifyEmail(String token) {
-    Player player = playerRepository.findByVerificationToken(token);
+    Player player = playerRepository.findByEmailVerificationToken(token);
 
     if (player == null) {
       return false;
@@ -100,7 +101,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
       // check if token valid
       boolean tokenValid = false;
-      Date expirationDate = player.getVerificationTokenExpiresAt();
+      Date expirationDate = player.getEmailVerification().getExpiresAt();
       Date currentDate = new Date(System.currentTimeMillis());
       if (currentDate.before(expirationDate)) {
         tokenValid = true;
@@ -134,8 +135,9 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     }
 
     String newToken = verificationToken();
-    player.setVerificationToken(newToken);
-    player.setVerificationTokenExpiresAt(calculateTokenExpiration());
+    player.getEmailVerification().setToken(newToken);
+    player.getEmailVerification().setCreatedAt(new Date(System.currentTimeMillis()));
+    player.getEmailVerification().setExpiresAt(calculateTokenExpiration()); //tu zmenit
 
     String verificationLink = url + newToken;
     String htmlMessage =

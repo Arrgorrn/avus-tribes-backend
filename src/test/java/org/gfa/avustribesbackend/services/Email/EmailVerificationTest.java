@@ -1,5 +1,6 @@
 package org.gfa.avustribesbackend.services.Email;
 
+import org.gfa.avustribesbackend.models.EmailVerification;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.junit.jupiter.api.Test;
@@ -20,12 +21,12 @@ class EmailVerificationTest {
 
     String token = "expiredToken";
     Player player = new Player();
-    player.setVerificationToken(token);
-    player.setIsVerified(false);
+    EmailVerification emailVerification = new EmailVerification(token, player);
+    player.setEmailVerification(emailVerification);
     Date pastDate = new Date(System.currentTimeMillis() - 1000000);
-    player.setVerificationTokenExpiresAt(pastDate);
+    player.getEmailVerification().setExpiresAt(pastDate);
 
-    when(playerRepository.findByVerificationToken(token)).thenReturn(player);
+    when(playerRepository.findByEmailVerificationToken(token)).thenReturn(player);
 
     // Act
     boolean result = emailVerificationService.verifyEmail(token);

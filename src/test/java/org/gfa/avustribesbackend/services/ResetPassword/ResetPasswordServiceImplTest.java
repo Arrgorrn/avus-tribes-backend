@@ -5,6 +5,7 @@ import org.gfa.avustribesbackend.dtos.PasswordRequestDTO;
 import org.gfa.avustribesbackend.dtos.TokenDTO;
 import org.gfa.avustribesbackend.exceptions.CredentialException;
 import org.gfa.avustribesbackend.exceptions.VerificationException;
+import org.gfa.avustribesbackend.models.PasswordReset;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ class ResetPasswordServiceImplTest {
   private TokenDTO tokenDTO;
   PasswordRequestDTO passwordRequestDTO;
   private Date date;
+  private PasswordReset passwordReset;
 
   @Test
   void
@@ -215,7 +217,7 @@ class ResetPasswordServiceImplTest {
     passwordRequestDTO = new PasswordRequestDTO("password");
     tokenDTO = new TokenDTO("token");
 
-    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken()))
+    when(playerRepository.existsByPasswordResetToken(tokenDTO.getToken()))
         .thenReturn(false);
 
     Exception exception =
@@ -234,7 +236,7 @@ class ResetPasswordServiceImplTest {
     passwordRequestDTO = new PasswordRequestDTO("passw");
     tokenDTO = new TokenDTO("token");
 
-    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken()))
+    when(playerRepository.existsByPasswordResetToken(tokenDTO.getToken()))
         .thenReturn(true);
 
     Exception exception =
@@ -251,14 +253,17 @@ class ResetPasswordServiceImplTest {
   @Test
   void resetPassword_with_expired_verification_token_should_throw_verification_exception() {
     passwordRequestDTO = new PasswordRequestDTO("password");
-    tokenDTO = new TokenDTO("token");
+    String token = "token";
+    tokenDTO = new TokenDTO(token);
     player = new Player();
+    passwordReset = new PasswordReset(token, player);
     date = new Date(System.currentTimeMillis() - 1000 * 60 * 60);
-    player.setForgottenPasswordTokenExpiresAt(date);
+    player.setPasswordReset(passwordReset);
+    player.getPasswordReset().setExpiresAt(date);
 
-    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken()))
+    when(playerRepository.existsByPasswordResetToken(tokenDTO.getToken()))
         .thenReturn(true);
-    when(playerRepository.findByForgottenPasswordToken(tokenDTO.getToken()))
+    when(playerRepository.findByPasswordResetToken(tokenDTO.getToken()))
         .thenReturn(player);
 
     Exception exception =
@@ -277,15 +282,18 @@ class ResetPasswordServiceImplTest {
       resetPassword_with_no_errors_should_respond_with_status_200_and_set_new_password_to_player() {
     String expectedPassword = "newPassword";
     passwordRequestDTO = new PasswordRequestDTO(expectedPassword);
-    tokenDTO = new TokenDTO("token");
+    String token = "token";
+    tokenDTO = new TokenDTO(token);
     player = new Player();
+    passwordReset = new PasswordReset(token, player);
     date = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
-    player.setForgottenPasswordTokenExpiresAt(date);
+    player.setPasswordReset(passwordReset);
+    player.getPasswordReset().setExpiresAt(date);
     player.setPassword("oldPassword");
 
-    when(playerRepository.existsByForgottenPasswordToken(tokenDTO.getToken()))
+    when(playerRepository.existsByPasswordResetToken(tokenDTO.getToken()))
         .thenReturn(true);
-    when(playerRepository.findByForgottenPasswordToken(tokenDTO.getToken()))
+    when(playerRepository.findByPasswordResetToken(tokenDTO.getToken()))
         .thenReturn(player);
     when(passwordEncoder.encode(passwordRequestDTO.getPassword()))
         .thenReturn(expectedPassword);

@@ -26,7 +26,9 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    String[] authorizedUrls = {"/register", "/reset-password/**", "/email/**", "/login"};
+    String[] authorizedUrls = {
+      "/register", "/reset-password/**", "/email/**", "/login", "/api-docs", "/swagger-ui/**"
+    };
     http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             authorizeHttpRequests ->

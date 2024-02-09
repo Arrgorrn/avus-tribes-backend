@@ -38,7 +38,7 @@ dependencies {
     //H2
     testImplementation("com.h2database:h2:2.2.220")
     //Swagger
-    implementation ("io.springfox:springfox-boot-starter:3.0.0")
+    implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 }
 
 tasks.withType<Test> {

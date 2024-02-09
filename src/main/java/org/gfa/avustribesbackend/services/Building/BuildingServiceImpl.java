@@ -85,7 +85,6 @@ public class BuildingServiceImpl implements BuildingService {
     building.setBuildingFinished(false);
     building.setConstructionStartTime(LocalDateTime.now());
     checkUpgradeStatus(currentLevel);
-    building.incrementLevel();
     buildingRepository.save(building);
     updateGoldAmountInRepository(dto, gold);
   }
@@ -141,6 +140,7 @@ public class BuildingServiceImpl implements BuildingService {
       if (isConstructionComplete(building)) {
         building.setConstructionStartTime(null);
         building.setBuildingFinished(true);
+        building.incrementLevel();
         buildingRepository.save(building);
       }
     }

@@ -5,7 +5,9 @@ import org.gfa.avustribesbackend.dtos.PlayerInfoDTO;
 import org.gfa.avustribesbackend.dtos.PlayerRegistrationBody;
 import org.gfa.avustribesbackend.dtos.TokenDTO;
 import org.gfa.avustribesbackend.exceptions.*;
+import org.gfa.avustribesbackend.models.EmailVerification;
 import org.gfa.avustribesbackend.models.Player;
+import org.gfa.avustribesbackend.repositories.EmailVerificationRepository;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Email.EmailVerificationService;
 import org.gfa.avustribesbackend.services.Kingdom.KingdomService;
@@ -41,6 +43,7 @@ public class PlayerServiceImpl implements PlayerService {
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
   private final JwtServiceImpl jwtServiceImpl;
+  private final EmailVerificationRepository emailVerificationRepository;
 
   @Autowired
   public PlayerServiceImpl(
@@ -49,13 +52,14 @@ public class PlayerServiceImpl implements PlayerService {
       PasswordEncoder passwordEncoder,
       AuthenticationManager authenticationManager,
       JwtServiceImpl jwtServiceImpl,
-      KingdomService kingdomService) {
+      KingdomService kingdomService, EmailVerificationRepository emailVerificationRepository) {
     this.playerRepository = playerRepository;
     this.emailVerificationService = emailVerificationService;
     this.passwordEncoder = passwordEncoder;
     this.authenticationManager = authenticationManager;
     this.jwtServiceImpl = jwtServiceImpl;
     this.kingdomService = kingdomService;
+    this.emailVerificationRepository = emailVerificationRepository;
   }
 
   @Override
@@ -82,17 +86,22 @@ public class PlayerServiceImpl implements PlayerService {
         new Player(
             request.getUsername(),
             request.getEmail(),
-            passwordEncoder.encode(request.getPassword()),
-            verificationToken());
+            passwordEncoder.encode(request.getPassword()));
 
     if (player == null) {
       throw new CreationException("Unknown error");
     }
 
+    EmailVerification emailVerification =
+        new EmailVerification(verificationToken(), player);
+
+    player.setEmailVerification(emailVerification);
+
+    emailVerificationRepository.save(emailVerification);
     playerRepository.save(player);
 
     if (verifyEmailEnabled.equals("true")) {
-      String token = player.getVerificationToken();
+      String token = player.getEmailVerification().getToken();
       emailVerificationService.sendVerificationEmail(token);
     } else {
       Date date = new Date(System.currentTimeMillis());

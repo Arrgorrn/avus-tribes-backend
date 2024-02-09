@@ -3,12 +3,10 @@ package org.gfa.avustribesbackend.dtos;
 import org.gfa.avustribesbackend.models.Player;
 import org.gfa.avustribesbackend.repositories.PlayerRepository;
 import org.gfa.avustribesbackend.services.Player.PlayerServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
@@ -20,15 +18,10 @@ public class PlayerInfoDTOTest {
 
   @Mock private PlayerRepository playerRepository;
 
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.initMocks(this);
-  }
-
   @Test
   void create_PlayerInfoDTO_verified() {
     // Arrange
-    Player player = new Player("username", "email@test.com", "password", "token");
+    Player player = new Player("username", "email@test.com", "password");
     player.setIsVerified(true);
     player.setVerifiedAt(new Date(System.currentTimeMillis()));
 
@@ -44,7 +37,7 @@ public class PlayerInfoDTOTest {
   @Test
   void create_PlayerInfoDTO_not_verified() {
     // Arrange
-    Player player = new Player("username", "email@test.com", "password", "token");
+    Player player = new Player("username", "email@test.com", "password");
     player.setIsVerified(false);
 
     // Act
